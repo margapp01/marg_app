@@ -86,7 +86,7 @@ class HelpSupportPage extends ConsumerWidget {
       context.pushNamed(RouteNames.profileStaticPage, pathParameters: {RoutePaths.staticPageKindParam: kind.name});
 
   Future<void> _contact() async {
-    final uri = Uri(scheme: 'mailto', path: 'support@margapp.in', queryParameters: {'subject': 'MARG Support'});
+    final uri = Uri(scheme: 'mailto', path: 'info@margapp.in', queryParameters: {'subject': 'MARG Support'});
     await launchUrl(uri);
   }
 

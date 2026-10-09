@@ -51,18 +51,18 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDLhna-AaUyKvu4dZiwRo88BMcCtq49IlU',
-    appId: '1:230355655791:android:9d86d2edf86bf0d709819a',
+    appId: '1:230355655791:android:90abf4907be50ced09819a',
     messagingSenderId: '230355655791',
     projectId: 'marg-app-in',
     storageBucket: 'marg-app-in.firebasestorage.app',
   );
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBWl4eSbFAWRX6GXbo23U63N2SwBANJiow',
-    appId: '1:230355655791:ios:db623044d76fe15e09819a',
+    appId: '1:230355655791:ios:82cc99e50a5d158a09819a',
     messagingSenderId: '230355655791',
     projectId: 'marg-app-in',
     storageBucket: 'marg-app-in.firebasestorage.app',
-    iosClientId: '230355655791-dmu78muosjfbpa1uitji0p6i1e2o50eo.apps.googleusercontent.com',
-    iosBundleId: 'in.margapp.margApp',
+    iosClientId: '230355655791-oeds5pdggte7lqij3ca8p04heuevsrjg.apps.googleusercontent.com',
+    iosBundleId: 'com.techluminix.marg',
   );
 }

@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>230355655791-dmu78muosjfbpa1uitji0p6i1e2o50eo.apps.googleusercontent.com</string>
+	<string>230355655791-oeds5pdggte7lqij3ca8p04heuevsrjg.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.230355655791-dmu78muosjfbpa1uitji0p6i1e2o50eo</string>
+	<string>com.googleusercontent.apps.230355655791-oeds5pdggte7lqij3ca8p04heuevsrjg</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>230355655791-82fkmtfdcae8hkverug9u2hqf9ggpqp1.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBWl4eSbFAWRX6GXbo23U63N2SwBANJiow</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>in.margapp.margApp</string>
+	<string>com.techluminix.marg</string>
 	<key>PROJECT_ID</key>
 	<string>marg-app-in</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:230355655791:ios:db623044d76fe15e09819a</string>
+	<string>1:230355655791:ios:82cc99e50a5d158a09819a</string>
 </dict>
 </plist>

@@ -17,8 +17,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     
+    <!-- Cleartext (http://) is allowed only in debug builds (src/debug) for
+         the local dev API; release talks to https://api.margapp.in only. -->
     <application
-        android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         android:label="MARG"
         android:name="${applicationName}"

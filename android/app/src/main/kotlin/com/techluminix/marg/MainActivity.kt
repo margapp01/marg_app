@@ -1,4 +1,4 @@
-package `in`.margapp.marg_app
+package com.techluminix.marg
 
 import android.app.Activity
 import android.content.Intent
@@ -67,7 +67,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private companion object {
-        const val LOCATION_CHANNEL = "in.margapp.marg_app/location"
+        const val LOCATION_CHANNEL = "com.techluminix.marg/location"
         const val REQUEST_LOCATION_SERVICE = 7301
         const val LOCATION_INTERVAL_MS = 10_000L
     }

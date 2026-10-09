@@ -15,11 +15,11 @@ abstract final class AppConstants {
   /// Mapbox Streets raster tiles (retina) for street-level maps such as
   /// directions; `{accessToken}` is filled from the configured token.
   /// Platform channel for MainActivity's "Turn on location" dialog.
-  static const String locationChannel = 'in.margapp.marg_app/location';
+  static const String locationChannel = 'com.techluminix.marg/location';
 
   static const String mapboxStreetsTileUrl =
       'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}';
 
   /// User agent sent with tile requests, per the OSM tile usage policy.
-  static const String mapUserAgent = 'in.margapp.marg';
+  static const String mapUserAgent = 'com.techluminix.marg';
 }

@@ -91,7 +91,7 @@ class HelpSupportPage extends ConsumerWidget {
   }
 
   Future<void> _rate() async {
-    final uri = Uri.parse('https://play.google.com/store/apps/details?id=in.margapp.marg');
+    final uri = Uri.parse('https://play.google.com/store/apps/details?id=com.techluminix.marg');
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }

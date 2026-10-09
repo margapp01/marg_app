@@ -13,11 +13,12 @@ owner can complete — they were deliberately **not fabricated**.
 - Manual: verify the Crashlytics dSYM upload build phase (iOS) and that the Android Crashlytics Gradle plugin is applied for symbol upload on release builds.
 
 ## Signing (required before store upload)
-- **Android** — release build currently uses **debug signing** (`android/app/build.gradle.kts`, TODO). Create an upload keystore, add `key.properties`, and point the `release` `signingConfig` at it. *(Manual — needs keystore.)*
-- **iOS** — signing is managed in Xcode; set the team, bundle id (`in.margapp.marg_app` on Android; set the iOS `PRODUCT_BUNDLE_IDENTIFIER` to match your Apple account), and a distribution provisioning profile. *(Manual — needs Apple Developer account.)*
+- **App id** — `com.techluminix.marg` on both Android (`applicationId`/`namespace`) and iOS (`PRODUCT_BUNDLE_IDENTIFIER`). Firebase apps for this id must exist in `marg-app-in` (see `../docs/DEPLOYMENT_FLOW.md` Phase 4).
+- **Android** — `build.gradle.kts` signs release with the upload keystore from `android/key.properties` (template: `android/key.properties.example`); without that file it falls back to debug signing. *(Manual — create the keystore.)*
+- **iOS** — signing is managed in Xcode; set the team and add the Push Notifications capability. *(Manual — needs Apple Developer account.)*
 
 ## Versioning
-- `pubspec.yaml` is `version: 0.1.0+1`. Bump to `1.0.0+1` (or your launch version) before release. *(Manual.)*
+- `pubspec.yaml` is `version: 1.0.0+1`. Bump the build number (`+N`) on every store upload.
 
 ## Deep Links (routing is ready; OS wiring is manual)
 - The GoRouter exposes a **stable path for every screen** (temple, route, card, achievement, passport, referral, knowledge article, festival), so path-based deep links resolve already.
@@ -29,7 +30,7 @@ owner can complete — they were deliberately **not fabricated**.
 ## Permissions & Privacy
 - iOS: `NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription`, and **`NSLocationWhenInUseUsageDescription`** (added this phase) are present.
 - Android: `RECORD_AUDIO` was removed (no audio/video capture) to avoid a Play Data-safety flag. Remaining permissions (INTERNET, NETWORK_STATE, CAMERA, media/storage, POST_NOTIFICATIONS, WAKE_LOCK, RECEIVE_BOOT_COMPLETED) are all used by image_picker / FCM / connectivity.
-- **`android:usesCleartextTraffic="true"`** is set. If the production API is HTTPS-only (recommended), set this to `false` for release (or add a `network_security_config` that allows cleartext only for your dev host). *(Manual decision — left as-is to avoid breaking a possible HTTP dev backend.)*
+- Cleartext (`http://`) is allowed only in debug builds (`src/debug/AndroidManifest.xml`); release is HTTPS-only. Release builds default to `https://api.margapp.in/api/v1` (`AppConfig`).
 - Complete the **Play Data Safety** form and **Apple Privacy Nutrition Labels** (collects: location, email/name via Google, device token). *(Manual.)*
 
 ## Icons & Splash

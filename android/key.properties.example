@@ -1,0 +1,7 @@
+# Copy to android/key.properties (git-ignored) and fill in. Keep the keystore
+# and these passwords backed up outside the repo — losing them means you can
+# no longer ship updates under the same Play upload key.
+storePassword=<keystore password>
+keyPassword=<key password>
+keyAlias=upload
+storeFile=/Users/<you>/keys/marg-upload.jks

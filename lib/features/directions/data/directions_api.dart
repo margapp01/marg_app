@@ -119,7 +119,7 @@ Dio _routingDio(String baseUrl) => Dio(
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 15),
         // The FOSSGIS routers' usage policy asks clients to identify themselves.
-        headers: const {'Accept': 'application/json', 'User-Agent': 'MARG (in.margapp.marg_app)'},
+        headers: const {'Accept': 'application/json', 'User-Agent': 'MARG (com.techluminix.marg)'},
       ),
     );
 

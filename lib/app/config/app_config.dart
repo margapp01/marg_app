@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Build-time environment. Selected via --dart-define=APP_ENV=…
@@ -22,11 +23,18 @@ class AppConfig {
   bool get isProd => environment == AppEnvironment.prod;
   bool get hasMapbox => mapboxToken.isNotEmpty;
 
+  /// Release builds default to production, so a store build never ships
+  /// pointing at a dev machine even if no --dart-define is passed.
   static AppConfig fromEnvironment() {
-    const envName = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
+    const envName = String.fromEnvironment(
+      'APP_ENV',
+      defaultValue: kReleaseMode ? 'prod' : 'dev',
+    );
     const baseUrl = String.fromEnvironment(
       'API_BASE_URL',
-      defaultValue: 'http://192.168.0.100:8000/api/v1',
+      defaultValue: kReleaseMode
+          ? 'https://api.margapp.in/api/v1'
+          : 'http://192.168.0.100:8000/api/v1',
     );
     const mapboxToken = String.fromEnvironment('MAPBOX_TOKEN');
     final environment = AppEnvironment.values.firstWhere(

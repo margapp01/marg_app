@@ -123,7 +123,7 @@ class _Logo extends StatelessWidget {
       future: rootBundle.load(BrandAssets.logo).then((_) => true).catchError((_) => false),
       builder: (context, snap) {
         if (snap.data == true) {
-          return Image.asset(BrandAssets.logo, height: 56, filterQuality: FilterQuality.medium);
+          return const BrandLogo(size: 40);
         }
         return Text('MARG', style: context.brandText.headlineSmall.copyWith(color: context.colors.gold, letterSpacing: 2));
       },

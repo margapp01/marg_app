@@ -1,10 +1,11 @@
-"""Builds MARG's icon family from the official logo (assets/branding/logo/marg.png).
+"""Builds MARG's icon family from the official logo (tool/art/icon/marg_source.png).
 
-marg.png is the mark on a cream rounded tile with a drop shadow, on a
-transparent canvas. Used as-is for the launcher it reads as a "tile inside a
-tile" with gaps all round. This script lifts the mark off the tile
+The source is the mark on a cream rounded tile with a drop shadow, on a
+transparent 1024² canvas. Used as-is it reads as a "tile inside a tile" with
+gaps all round. This script crops it to the tile, lifts the mark off the tile
 (colour-to-alpha against the tile's cream) and composes:
 
+  assets/branding/logo/marg.png               512² full-bleed logo (tile edge to edge, square corners)
   assets/branding/logo/marg_mark.png          mark only, transparent, tight crop
   tool/art/icon/app_icon.png                  1024² opaque cream icon (iOS / legacy Android)
   tool/art/icon/app_icon_foreground.png       1024² adaptive-icon foreground (safe zone)
@@ -25,7 +26,7 @@ from statistics import median
 from PIL import Image, ImageChops, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[2]
-LOGO = ROOT / 'assets/branding/logo/marg.png'
+LOGO = ROOT / 'tool/art/icon/marg_source.png'
 OUT_LOGO = ROOT / 'assets/branding/logo'
 OUT_ICON = ROOT / 'tool/art/icon'
 RES = ROOT / 'android/app/src/main/res'
@@ -33,6 +34,45 @@ IOS_LAUNCH = ROOT / 'ios/Runner/Assets.xcassets/LaunchImage.imageset'
 
 CREAM = (253, 249, 243)  # AppColors.background — icon + splash canvas
 DENSITIES = {'mdpi': 1, 'hdpi': 1.5, 'xhdpi': 2, 'xxhdpi': 3, 'xxxhdpi': 4}
+
+
+def full_bleed_logo(size: int) -> Image.Image:
+    """The tile alone, edge to edge: no shadow, no padding, square corners."""
+    src = Image.open(LOGO).convert('RGBA')
+    # Tile body with holes closed, anti-aliased rim + edge highlight eroded.
+    body = src.split()[3].point(lambda v: 255 if v > 128 else 0)
+    body = body.filter(ImageFilter.MaxFilter(15)).filter(ImageFilter.MinFilter(15))
+    body = body.filter(ImageFilter.MinFilter(7))
+    box = body.getbbox()
+    tile, mask = src.crop(box), body.crop(box)
+    side = max(tile.size)
+    ox, oy = (side - tile.width) // 2, (side - tile.height) // 2
+
+    # Translucent glyph-edge pixels are composited over the local cream.
+    cream = tile.convert('RGB').filter(ImageFilter.MedianFilter(9))
+    flat = Image.new('RGB', (side, side))
+    flat.paste(Image.composite(tile.convert('RGB'), cream, tile.split()[3]), (ox, oy))
+    known = Image.new('L', (side, side), 0)
+    known.paste(mask, (ox, oy))
+
+    # Rounded corners + square padding: walk toward the centre to the first
+    # tile pixel, step a little further in, and take a 5x5 average — so the
+    # fill follows the tile's own edge shading with no visible seam.
+    fp, kp = flat.load(), known.load()
+    c = side / 2
+    for y in range(side):
+        for x in range(side):
+            if kp[x, y]:
+                continue
+            n = max(abs(c - x), abs(c - y))
+            sx, sy = (c - x) / n, (c - y) / n
+            t = 0
+            while not kp[int(x + sx * t), int(y + sy * t)]:
+                t += 1
+            px, py = int(x + sx * (t + 4)), int(y + sy * (t + 4))
+            win = [fp[i, j] for i in range(px - 2, px + 3) for j in range(py - 2, py + 3) if kp[i, j]]
+            fp[x, y] = tuple(sum(p[k] for p in win) // len(win) for k in range(3))
+    return flat.resize((size, size), Image.LANCZOS).convert('RGBA')
 
 
 def lift_mark() -> Image.Image:
@@ -113,6 +153,7 @@ def silhouette(mark: Image.Image, px: int) -> Image.Image:
 
 def main():
     OUT_ICON.mkdir(parents=True, exist_ok=True)
+    full_bleed_logo(512).save(OUT_LOGO / 'marg.png', optimize=True)
     mark = fade_tail(lift_mark())
     mark.save(OUT_LOGO / 'marg_mark.png')
 

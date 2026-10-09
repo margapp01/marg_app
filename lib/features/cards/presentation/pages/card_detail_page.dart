@@ -214,10 +214,7 @@ class _CardPoster extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ClipRRect(
-                borderRadius: AppRadius.smAll,
-                child: Image.asset(BrandAssets.logo, height: 28, errorBuilder: (_, _, _) => const SizedBox.shrink()),
-              ),
+              const BrandLogo(size: 24),
               const Gap.h(AppSpacing.sm),
               Text('MARG', style: context.brandText.headlineSmall.copyWith(color: gold, letterSpacing: 2)),
             ],

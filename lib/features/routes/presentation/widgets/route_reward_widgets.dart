@@ -86,7 +86,7 @@ class CertificateCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Image.asset(BrandAssets.logo, height: 22, errorBuilder: (_, _, _) => const SizedBox.shrink()),
+                      const BrandLogo(size: 18),
                       Text(l10n.ryCertIssuer, style: context.caption.copyWith(color: context.colors.textSecondary)),
                     ],
                   ),

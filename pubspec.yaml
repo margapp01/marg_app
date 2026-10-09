@@ -1,7 +1,7 @@
 name: marg_app
 description: "MARG — temple discovery and pilgrimage companion."
 publish_to: 'none'
-version: 0.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: ^3.11.0
@@ -81,7 +81,7 @@ flutter:
     - assets/branding/social/
     - assets/branding/splash/
 
-# Launcher icon — generated from the square MARG mark (marg.png).
+# Launcher icon — generated from the official logo (tool/art/icon/marg_source.png).
 # Regenerate: dart run flutter_launcher_icons
 flutter_launcher_icons:
   # Built by tool/art/make_brand_icons.py from the official mark: the full icon

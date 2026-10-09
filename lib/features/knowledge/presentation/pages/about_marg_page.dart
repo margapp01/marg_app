@@ -27,7 +27,7 @@ class AboutMargPage extends ConsumerWidget {
           padding: AppSpacing.screenAll,
           children: [
             const Gap(AppSpacing.md),
-            Center(child: Image.asset(BrandAssets.logo, height: 72)),
+            const Center(child: BrandLogo(size: 48)),
             const Gap(AppSpacing.sm),
             Text(l10n.kbSpiritualCompanion, textAlign: TextAlign.center, style: context.brandText.headlineSmall.copyWith(color: context.scheme.primary)),
             const Gap(AppSpacing.xl),

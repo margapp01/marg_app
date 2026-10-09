@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "230355655791",
+    "project_id": "marg-app-in",
+    "storage_bucket": "marg-app-in.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230355655791:android:9d86d2edf86bf0d709819a",
+        "android_client_info": {
+          "package_name": "in.margapp.marg_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "230355655791-njq3uk58hr4p7u3lq56cl4g89ivt8r1g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLhna-AaUyKvu4dZiwRo88BMcCtq49IlU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "230355655791-njq3uk58hr4p7u3lq56cl4g89ivt8r1g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "230355655791-dmu78muosjfbpa1uitji0p6i1e2o50eo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.margapp.margApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

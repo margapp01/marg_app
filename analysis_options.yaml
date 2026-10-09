@@ -1,0 +1,47 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    # Escalate defaults we never want slipping into main.
+    unused_import: error
+    unused_local_variable: error
+    dead_code: error
+    invalid_annotation_target: ignore # freezed + json_serializable pattern
+  exclude:
+    - '**/*.g.dart'
+    - '**/*.freezed.dart'
+    - lib/app/localization/gen/**
+
+linter:
+  rules:
+    # Style / consistency
+    always_declare_return_types: true
+    avoid_bool_literals_in_conditional_expressions: true
+    directives_ordering: true
+    eol_at_end_of_file: true
+    prefer_final_locals: true
+    prefer_single_quotes: true
+    require_trailing_commas: true
+    sort_pub_dependencies: true
+    unnecessary_lambdas: true
+    unnecessary_parenthesis: true
+
+    # Correctness
+    avoid_dynamic_calls: true
+    avoid_slow_async_io: true
+    avoid_type_to_string: true
+    cancel_subscriptions: true
+    close_sinks: true
+    only_throw_errors: true
+    test_types_in_equals: true
+    throw_in_finally: true
+    unawaited_futures: true
+    unnecessary_statements: true
+
+    # Design
+    prefer_relative_imports: true
+    use_setters_to_change_properties: true

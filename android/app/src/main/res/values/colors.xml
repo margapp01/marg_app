@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#FDF9F3</color>
+    <!-- Tint for the status-bar notification icon (brand saffron). -->
+    <color name="notification_accent">#E8730C</color>
+</resources>

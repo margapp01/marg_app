@@ -1,0 +1,138 @@
+/// Centralized paths to the official MARG branding assets.
+///
+/// These are the single source of truth for brand imagery. Do not hardcode
+/// asset paths in widgets, and do not redesign, recreate, or replace these
+/// assets — reuse them via this class.
+abstract final class BrandAssets {
+  /// Primary MARG logo mark — the square (1024²) "M + temple + path" icon on a
+  /// rounded tile. Use on splash, auth, setup, drawer header, and loading
+  /// screens. Also the source for the launcher icon (see `flutter_launcher_icons`
+  /// in pubspec). Avoid on content screens (home, temples, passport, cards,
+  /// achievements, routes).
+  static const String logo = 'assets/branding/logo/marg.png';
+
+  /// App icon source — the same square mark used for the launcher, notifications,
+  /// app info, and share previews.
+  static const String appIcon = 'assets/branding/logo/marg.png';
+
+  /// Horizontal MARG wordmark (logotype). Use where a wide lock-up reads better
+  /// than the square mark — About screen, headers, marketing.
+  static const String wordmark = 'assets/branding/logo/marg-app.png';
+
+  /// Featured marketing banner. Use only on auth, onboarding, marketing
+  /// sections, and empty states where appropriate.
+  static const String featuredBanner =
+      'assets/branding/social/marg-featured.png';
+
+  // ── Splash screen ───────────────────────────────────────────────────────
+  /// Full-bleed portrait splash backdrop (sky, misty temple, road, and the
+  /// bottom ornamental border baked in).
+  static const String splashBackground =
+      'assets/branding/splash/splash_bg_.png';
+
+  /// Golden lotus ornamental divider (transparent) shown under the tagline.
+  static const String splashLotusDivider =
+      'assets/branding/splash/splash_design.png';
+
+  /// The same golden lotus ornament, cropped tight to its visible strokes
+  /// (splash_design.png carries a tall transparent margin).
+  static const String splashOrnament = 'assets/branding/splash/splash_ornament.png';
+
+  /// The MARG mark alone (M + temple + path) on transparent, lifted off the
+  /// logo tile by tool/art/make_brand_icons.py — splash medallion, icons.
+  static const String logoMark = 'assets/branding/logo/marg_mark.png';
+
+  /// Faint temple-skyline + border band (alternative composition). Unused by
+  /// the default splash because [splashBackground] already includes a skyline
+  /// and border; kept for other layouts.
+  static const String splashSkyline =
+      'assets/branding/splash/splash_overlay.png';
+
+  // ── Home ────────────────────────────────────────────────────────────────
+  /// Home hero photograph (Shri Jagannath Temple, Puri at dusk) — temple on
+  /// the right, open sky on the left for the greeting.
+  static const String homeHero = 'assets/images/home/home_hero.webp';
+
+  // ── Illustrated icons (docs/ASSET_REQUESTS.md) ─────────────────────────
+  // Optional artwork: every use falls back to a tinted Material Symbol until
+  // the file is added, so missing art never breaks a screen.
+  static const String iconRoutes = 'assets/images/icons/qa_routes.png';
+  static const String iconNearby = 'assets/images/icons/qa_nearby.png';
+  static const String iconCards = 'assets/images/icons/qa_cards.png';
+  static const String iconAchievements = 'assets/images/icons/qa_achievements.png';
+  static const String iconPassport = 'assets/images/icons/qa_passport.png';
+  static const String iconSaved = 'assets/images/icons/qa_saved.png';
+  static const String iconFestivals = 'assets/images/icons/qa_festivals.png';
+  static const String iconKnowledge = 'assets/images/icons/qa_knowledge.png';
+  static const String iconInvite = 'assets/images/icons/qa_invite.png';
+  static const String iconSupport = 'assets/images/icons/qa_support.png';
+
+  // ── Deity & category art ───────────────────────────────────────────────
+  static const String deityShiva = 'assets/images/deities/deity_shiva.png';
+  static const String deityDevi = 'assets/images/deities/deity_devi.png';
+  static const String deityVishnu = 'assets/images/deities/deity_vishnu.png';
+  static const String deityGanesha = 'assets/images/deities/deity_ganesha.png';
+  static const String deityHanuman = 'assets/images/deities/deity_hanuman.png';
+  static const String deitySurya = 'assets/images/deities/deity_surya.png';
+  static const String categoryJyotirlinga = 'assets/images/categories/cat_jyotirlinga.png';
+  static const String categoryShaktiPeeth = 'assets/images/categories/cat_shakti_peeth.png';
+  static const String categoryCharDham = 'assets/images/categories/cat_char_dham.png';
+
+  // ── Illustrations ──────────────────────────────────────────────────────
+  // check-in, invite, support, medal and coin art are cut from the /docs
+  // boards (transparent PNG) until higher-resolution versions replace them.
+  /// Temple arch at sunrise (enhanced from the onboarding board) — "You're
+  /// all set" at the end of setup.
+  static const String illustrationSetupComplete = 'assets/images/illustrations/setup_complete.webp';
+  static const String illustrationCheckinSuccess = 'assets/images/illustrations/checkin_success.png';
+  static const String illustrationCheckinFailed = 'assets/images/illustrations/checkin_failed.png';
+  static const String illustrationInviteGift = 'assets/images/illustrations/invite_gift.png';
+  static const String illustrationSupport = 'assets/images/illustrations/support_headset.png';
+
+  /// Trishul medal — default achievement badge art and celebration hero.
+  static const String illustrationMedal = 'assets/images/illustrations/medal_trishul.png';
+
+  /// Saffron line-art temple skyline (transparent, cut from the onboarding
+  /// board) — faint ornament in the bottom navigation bar.
+  static const String skylineLineArt = 'assets/images/illustrations/skyline_lineart.png';
+
+  /// Stack of gold coins — points / rewards balances.
+  static const String illustrationPoints = 'assets/images/illustrations/points_coins.png';
+
+  // ── State illustrations (empty / offline / not found) ──────────────────
+  // Watercolour scenes with the text cropped off and a transparent backdrop,
+  // so titles stay localisable. Sources live in `docs/empty-states/`.
+  static const String stateJourney = 'assets/images/illustrations/state_journey.webp';
+  static const String stateNoVisits = 'assets/images/illustrations/state_no_visits.webp';
+  static const String stateBookmarks = 'assets/images/illustrations/state_bookmarks.webp';
+  static const String stateSavedPlaces = 'assets/images/illustrations/state_saved_places.webp';
+  static const String stateNoResults = 'assets/images/illustrations/state_no_results.webp';
+  static const String stateOffline = 'assets/images/illustrations/state_offline.webp';
+  static const String stateNotFound = 'assets/images/illustrations/state_not_found.webp';
+  static const String stateLocation = 'assets/images/illustrations/state_location.webp';
+  static const String stateNotifications = 'assets/images/illustrations/state_notifications.webp';
+  static const String stateEmpty = 'assets/images/illustrations/state_empty.webp';
+  static const String stateComingSoon = 'assets/images/illustrations/state_coming_soon.webp';
+  static const String stateError = 'assets/images/illustrations/state_error.webp';
+  static const String stateUnexpected = 'assets/images/illustrations/state_unexpected.webp';
+  static const String stateTimeout = 'assets/images/illustrations/state_timeout.webp';
+  static const String statePermission = 'assets/images/illustrations/state_permission.webp';
+  static const String stateCards = 'assets/images/illustrations/state_cards.webp';
+  static const String stateCollection = 'assets/images/illustrations/state_collection.webp';
+  static const String stateAchievements = 'assets/images/illustrations/state_achievements.webp';
+  static const String stateLeaderboard = 'assets/images/illustrations/state_leaderboard.webp';
+  static const String stateReferrals = 'assets/images/illustrations/state_referrals.webp';
+  static const String stateCertificates = 'assets/images/illustrations/state_certificates.webp';
+  static const String stateFestivals = 'assets/images/illustrations/state_festivals.webp';
+  static const String stateKnowledge = 'assets/images/illustrations/state_knowledge.webp';
+
+  // ── Auth ────────────────────────────────────────────────────────────────
+  /// Faint temple-skyline + lotus-border band used along the bottom of the
+  /// login / onboarding screens, blended into the background.
+  static const String loginOverlay = 'assets/branding/splash/bg_overlay.png';
+
+  // ── Maps ────────────────────────────────────────────────────────────────
+  /// Akhand Bharat + Bharat (official India) outlines drawn on every map — a
+  /// GeoJSON FeatureCollection with features `akhandBharat` and `india`.
+  static const String bharatBoundaries = 'assets/geo/bharat_boundaries.geojson';
+}

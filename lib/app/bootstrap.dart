@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -21,15 +22,14 @@ Future<void> bootstrap() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Crashlytics: route Flutter framework + uncaught async errors to Crashlytics.
-  // Collection is disabled in debug so local development never sends reports.
-  final crashlytics = FirebaseCrashlytics.instance;
-  await crashlytics.setCrashlyticsCollectionEnabled(!kDebugMode);
-  FlutterError.onError = crashlytics.recordFlutterFatalError;
-  WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
-    crashlytics.recordError(error, stack, fatal: true);
-    return true;
-  };
+  // Analytics and crash reports stay OFF until the consent screen ships: the
+  // Privacy Policy promises nothing is collected without the user's consent.
+  // The native manifests disable them before Flutter starts, too.
+  await Future.wait([
+    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false),
+    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false),
+  ]);
+  if (kDebugMode) FlutterError.onError = FlutterError.presentError;
 
   runApp(
     ProviderScope(

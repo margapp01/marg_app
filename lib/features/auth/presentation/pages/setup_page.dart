@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../app/constants/app_constants.dart';
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../core/location/captured_location.dart';
 import '../../../../core/media/image_picker_service.dart';
 import '../../../../core/media/picked_photo.dart';
 import '../../../../core/models/spiritual_choices.dart';
+import '../../../../core/utils/age.dart';
 import '../../../../shared/design_system.dart';
 import '../../domain/entities/onboarding_draft.dart';
 import '../controllers/auth_controller.dart';
@@ -41,6 +43,7 @@ class SetupPage extends ConsumerStatefulWidget {
 class _SetupPageState extends ConsumerState<SetupPage> {
   static const int _steps = 5;
   static const int _welcomeStep = 0;
+  static const int _aboutStep = 1;
   static const int _reviewStep = 4;
 
   final _pageController = PageController();
@@ -54,6 +57,7 @@ class _SetupPageState extends ConsumerState<SetupPage> {
   String? _photoUrl;
   PickedPhoto? _pickedPhoto;
   String? _mobileError;
+  String? _dobError;
   DateTime? _dob;
   SetupGender? _gender;
   CapturedLocation? _location;
@@ -127,11 +131,27 @@ class _SetupPageState extends ConsumerState<SetupPage> {
         }
         setState(() => _mobileError = null);
         _go(_step + 1);
+      case _aboutStep:
+        final error = _dobValidation(AppLocalizations.of(context));
+        setState(() => _dobError = error);
+        if (error == null) _go(_step + 1);
       case _reviewStep:
+        if (_dobValidation(AppLocalizations.of(context)) != null) {
+          _go(_aboutStep);
+          return;
+        }
         _submit();
       default:
         _go(_step + 1);
     }
+  }
+
+  /// DOB is required and must meet [AppConstants.minAccountAge] (the API checks too).
+  String? _dobValidation(AppLocalizations l10n) {
+    final dob = _dob;
+    if (dob == null) return l10n.suDobRequired;
+    if (!isAtLeastAge(dob, AppConstants.minAccountAge)) return l10n.suAgeRestricted(AppConstants.minAccountAge);
+    return null;
   }
 
   void _toggle<T>(Set<T> set, T value) => setState(() => set.contains(value) ? set.remove(value) : set.add(value));
@@ -309,7 +329,11 @@ class _SetupPageState extends ConsumerState<SetupPage> {
                       ),
                       AboutStep(
                         dob: _dob,
-                        onPickDob: (d) => setState(() => _dob = d),
+                        onPickDob: (d) => setState(() {
+                          _dob = d;
+                          _dobError = null;
+                        }),
+                        dobError: _dobError,
                         gender: _gender,
                         onPickGender: (g) => setState(() => _gender = g),
                         location: _location,

@@ -12,6 +12,7 @@ class AboutStep extends StatelessWidget {
   const AboutStep({
     required this.dob,
     required this.onPickDob,
+    this.dobError,
     required this.gender,
     required this.onPickGender,
     required this.location,
@@ -21,6 +22,9 @@ class AboutStep extends StatelessWidget {
 
   final DateTime? dob;
   final ValueChanged<DateTime> onPickDob;
+
+  /// Validation message under the date field (missing or under-age).
+  final String? dobError;
   final SetupGender? gender;
   final ValueChanged<SetupGender> onPickGender;
   final CapturedLocation? location;
@@ -41,6 +45,7 @@ class AboutStep extends StatelessWidget {
             key: ValueKey(dobText),
             initialValue: dobText,
             hint: l10n.suSelectDob,
+            errorText: dobError,
             readOnly: true,
             prefixIcon: AppIcons.calendar,
             suffixIcon: AppIcons.expandMore,

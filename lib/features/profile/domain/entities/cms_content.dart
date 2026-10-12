@@ -18,7 +18,7 @@ class Faq {
 /// A CMS static page (ABOUT / CONTACT / PRIVACY / TERMS / …). `contentHtml` is
 /// rendered as plain text (tags stripped) — no HTML dependency is introduced.
 class StaticPage {
-  const StaticPage({required this.title, required this.contentHtml, this.titleHi, this.contentHtmlHi});
+  const StaticPage({required this.title, required this.contentHtml, this.titleHi, this.contentHtmlHi, this.updatedAt});
   final String title;
   final String contentHtml;
 
@@ -26,12 +26,15 @@ class StaticPage {
   final String? titleHi;
   final String? contentHtmlHi;
 
+  /// Last CMS update; legal pages take effect from this date.
+  final DateTime? updatedAt;
+
   /// The page in [languageCode] — Hindi only when a Hindi version exists,
   /// otherwise the English page.
   StaticPage localized(String languageCode) {
     final hi = contentHtmlHi;
     if (languageCode != 'hi' || hi == null) return this;
-    return StaticPage(title: titleHi ?? title, contentHtml: hi);
+    return StaticPage(title: titleHi ?? title, contentHtml: hi, updatedAt: updatedAt);
   }
 
   /// A best-effort plain-text rendering of the stored HTML.
@@ -49,6 +52,7 @@ class StaticPage {
         contentHtml: (j['contentHtml'] as String?) ?? '',
         titleHi: _s(j['titleHi']),
         contentHtmlHi: _s((j['contentHtmlHi'] as String?)?.trim()),
+        updatedAt: DateTime.tryParse(_s(j['updatedAt']) ?? '')?.toLocal(),
       );
 }
 

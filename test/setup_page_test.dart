@@ -61,6 +61,15 @@ void main() {
     await next();
 
     expect(find.text('Tell Us About You'), findsOneWidget);
+    // Date of birth is required (18+): Continue without it stays on the step.
+    await next();
+    expect(find.text('Select your date of birth to continue'), findsOneWidget);
+    expect(find.text('Tell Us About You'), findsOneWidget);
+    // The picker opens on an adult default date; confirming it unblocks the step.
+    await tester.tap(find.text('Select your date of birth'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
     await next();
 
     expect(find.text('What Brings You Here?'), findsOneWidget);

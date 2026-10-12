@@ -2319,6 +2319,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get pfPageEmpty => 'इस पृष्ठ पर अभी कोई सामग्री नहीं है।';
 
   @override
+  String pfLastUpdated(String date) {
+    return 'अंतिम अपडेट: $date';
+  }
+
+  @override
   String get pfDeleteHeading => 'अपना खाता हटाएँ?';
 
   @override
@@ -2858,6 +2863,14 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get suSelectDob => 'अपनी जन्म तिथि चुनें';
+
+  @override
+  String get suDobRequired => 'आगे बढ़ने के लिए अपनी जन्म तिथि चुनें';
+
+  @override
+  String suAgeRestricted(int age) {
+    return 'MARG का उपयोग करने के लिए आपकी आयु कम से कम $age वर्ष होनी चाहिए।';
+  }
 
   @override
   String get suGender => 'लिंग';

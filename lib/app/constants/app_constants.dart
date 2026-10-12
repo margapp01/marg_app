@@ -1,6 +1,10 @@
 /// Global, environment-independent constants.
 abstract final class AppConstants {
   static const String appName = 'MARG';
+
+  /// Minimum account age. 18 until the guardian-consent flow for 13–17 ships
+  /// (DPDP: under-18s need verifiable parental consent); the API enforces it too.
+  static const int minAccountAge = 18;
   static const int defaultPageSize = 20;
   static const Duration networkTimeout = Duration(seconds: 30);
   static const Duration snackBarDuration = Duration(seconds: 4);

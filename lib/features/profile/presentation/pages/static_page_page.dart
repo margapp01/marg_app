@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../shared/design_system.dart';
@@ -27,9 +28,19 @@ class StaticPageScreen extends ConsumerWidget {
           if (text.isEmpty) {
             return EmptyView(art: StateArt.empty, icon: AppIcons.article, title: _fallbackTitle(l10n), message: l10n.pfPageEmpty);
           }
+          final updated = page.updatedAt;
           return SingleChildScrollView(
             padding: AppSpacing.screenAll,
-            child: Text(text, style: context.textTheme.bodyMedium?.copyWith(height: 1.6)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (updated != null) ...[
+                  Text(l10n.pfLastUpdated(DateFormat.yMMMMd(lang).format(updated)), style: context.caption),
+                  const Gap(AppSpacing.md),
+                ],
+                Text(text, style: context.textTheme.bodyMedium?.copyWith(height: 1.6)),
+              ],
+            ),
           );
         },
       ),

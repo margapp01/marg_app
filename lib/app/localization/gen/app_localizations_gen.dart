@@ -4604,6 +4604,12 @@ abstract class AppLocalizations {
   /// **'This page has no content yet.'**
   String get pfPageEmpty;
 
+  /// Date a CMS page (e.g. Privacy Policy) was last updated; it takes effect from this date.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated {date}'**
+  String pfLastUpdated(String date);
+
   /// No description provided for @pfDeleteHeading.
   ///
   /// In en, this message translates to:
@@ -5647,6 +5653,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select your date of birth'**
   String get suSelectDob;
+
+  /// No description provided for @suDobRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your date of birth to continue'**
+  String get suDobRequired;
+
+  /// Shown when the date of birth is under the minimum account age.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be at least {age} to use MARG.'**
+  String suAgeRestricted(int age);
 
   /// No description provided for @suGender.
   ///

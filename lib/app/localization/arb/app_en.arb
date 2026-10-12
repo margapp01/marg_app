@@ -476,7 +476,13 @@
   "exPopular": "Popular Temples",
   "exRecentlyVisited": "Recently Visited",
   "exStateTemples": "{count, plural, =1{1 temple} other{{count} temples}}",
-  "@exStateTemples": {"placeholders": {"count": {"type": "int"}}},
+  "@exStateTemples": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "exVisited": "Visited",
   "exViewAll": "View all",
   "exViewDetails": "View Details",
@@ -545,7 +551,13 @@
   "ntEarlier": "Earlier",
   "ntMarkAllRead": "Mark all read",
   "ntUnreadCount": "{count, plural, =1{1 unread notification} other{{count} unread notifications}}",
-  "@ntUnreadCount": {"placeholders": {"count": {"type": "int"}}},
+  "@ntUnreadCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "ntUnreadHint": "Tap any to open it",
   "ntAllCaughtUp": "You're all caught up",
   "ntMarkAllFailed": "Couldn't mark all as read. Please try again.",
@@ -603,7 +615,16 @@
   "ntMarketingHint": "News, offers, announcements",
   "ntHeroTitle": "Stay in the loop",
   "ntEnabledCount": "{on} of {total} on",
-  "@ntEnabledCount": {"placeholders": {"on": {"type": "int"}, "total": {"type": "int"}}},
+  "@ntEnabledCount": {
+    "placeholders": {
+      "on": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "ntEmailHint": "Updates in your inbox",
   "ntRouteUpdatesHint": "Yatra progress and completions",
   "ntAchievementUpdatesHint": "New achievements unlocked",
@@ -634,7 +655,13 @@
   "pfNearbyRadius": "Nearby radius",
   "pfNearbyRadiusHint": "Alerts and suggestions for temples within this range.",
   "pfRadiusKm": "{km} km",
-  "@pfRadiusKm": {"placeholders": {"km": {"type": "int"}}},
+  "@pfRadiusKm": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
   "pfSavePreferences": "Save Preferences",
   "pfSaveChanges": "Save Changes",
   "pfStatsHeroTitle": "Your journey in numbers",
@@ -713,7 +740,13 @@
   "pfLogoutChecking": "Checking your location…",
   "pfLogoutBlockedTitle": "You're at a temple",
   "pfLogoutBlockedBody": "You're inside the check-in area of {temple}. To keep check-ins fair, you can't log out here. Move away from the temple and try again.",
-  "@pfLogoutBlockedBody": {"placeholders": {"temple": {"type": "String"}}},
+  "@pfLogoutBlockedBody": {
+    "placeholders": {
+      "temple": {
+        "type": "String"
+      }
+    }
+  },
   "pfNoDevices": "No devices yet",
   "pfNoDevicesBody": "Devices you sign in on will appear here.",
   "pfCurrentDevice": "Current Device",
@@ -730,7 +763,13 @@
   "pfDetailedMapHint": "Sharper borders and coastline on every map (about 3 MB)",
   "pfDetailedMapDownload": "Download",
   "pfDetailedMapProgress": "{percent}%",
-  "@pfDetailedMapProgress": {"placeholders": {"percent": {"type": "int"}}},
+  "@pfDetailedMapProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "pfDetailedMapReady": "Downloaded",
   "pfDetailedMapSaved": "Detailed map ready",
   "pfDetailedMapFailed": "Couldn't download the map. Check your connection and try again.",
@@ -757,6 +796,15 @@
   "pfRateApp": "Rate MARG",
   "pfRateAppHint": "Share your feedback",
   "pfPageEmpty": "This page has no content yet.",
+  "pfLastUpdated": "Last updated {date}",
+  "@pfLastUpdated": {
+    "description": "Date a CMS page (e.g. Privacy Policy) was last updated; it takes effect from this date.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "pfDeleteHeading": "Delete your account?",
   "pfDeleteExplain": "This action is permanent and cannot be undone. Your visits, cards, achievements, routes, passport and settings will be removed.",
   "pfLossProgress": "All your progress will be lost",
@@ -931,6 +979,16 @@
   "suMobileNumber": "Mobile Number",
   "suDateOfBirth": "Date of Birth",
   "suSelectDob": "Select your date of birth",
+  "suDobRequired": "Select your date of birth to continue",
+  "suAgeRestricted": "You must be at least {age} to use MARG.",
+  "@suAgeRestricted": {
+    "description": "Shown when the date of birth is under the minimum account age.",
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
   "suGender": "Gender",
   "suSelectGender": "Select gender",
   "suCity": "City",
@@ -966,7 +1024,13 @@
   "suNotifMarketingSubtitle": "Receive occasional updates and offers",
   "suAllSet": "You're all set! 🎉",
   "suCompleteBody": "Your profile is ready and you're set to begin your spiritual journey with {brand}.",
-  "@suCompleteBody": {"placeholders": {"brand": {"type": "String"}}},
+  "@suCompleteBody": {
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
   "suWhatsNext": "What's next?",
   "suWhatsNextSubtitle": "Explore, collect and grow on your spiritual path",
   "suNextExploreTitle": "Explore Temples",
@@ -1012,25 +1076,64 @@
   "dirShowRoute": "Show whole route",
   "dirMyLocation": "My location",
   "dirArriveBy": "Arrive {time}",
-  "@dirArriveBy": {"placeholders": {"time": {"type": "String"}}},
+  "@dirArriveBy": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "dirVia": "via {roads}",
-  "@dirVia": {"placeholders": {"roads": {"type": "String"}}},
+  "@dirVia": {
+    "placeholders": {
+      "roads": {
+        "type": "String"
+      }
+    }
+  },
   "dirLocating": "Finding your location…",
   "dirFinding": "Finding the best route…",
   "dirNoRouteTitle": "Couldn't find a route",
   "dirNoRouteBody": "Check your connection, or open it in your maps app.",
   "dirNeedLocationTitle": "Location needed",
   "dirNeedLocationBody": "Allow location so MARG can guide you to {name}.",
-  "@dirNeedLocationBody": {"placeholders": {"name": {"type": "String"}}},
+  "@dirNeedLocationBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dirArrivedTitle": "You've arrived",
   "dirArrivedBody": "Welcome to {name}. Have a blessed darshan.",
-  "@dirArrivedBody": {"placeholders": {"name": {"type": "String"}}},
+  "@dirArrivedBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dirCheckIn": "Check in",
   "dirDone": "Done",
   "dirMinutes": "{minutes} min",
-  "@dirMinutes": {"placeholders": {"minutes": {"type": "int"}}},
+  "@dirMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "dirHoursMinutes": "{hours} h {minutes} min",
-  "@dirHoursMinutes": {"placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}},
+  "@dirHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "homeGreeting": "Namaste",
   "homeGreetingNamed": "Namaste, {name}",
   "@homeGreetingNamed": {
@@ -1309,15 +1412,21 @@
   "ppTemplesWalked": "Temples Walked",
   "ppCertificatesEarned": "{count, plural, =1{1 certificate earned} other{{count} certificates earned}}",
   "@ppCertificatesEarned": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "ppNextTempleName": "Next: {name}",
   "@ppNextTempleName": {
-    "placeholders": { "name": {} }
+    "placeholders": {
+      "name": {}
+    }
   },
   "ppCompletedOn": "Completed on {date}",
   "@ppCompletedOn": {
-    "placeholders": { "date": {} }
+    "placeholders": {
+      "date": {}
+    }
   },
   "ppStates": "States",
   "ppCertIntro": "A certificate for every sacred route you complete — download it or share it with family.",
@@ -1325,23 +1434,31 @@
   "ppToEarn": "To Earn",
   "ppEarnedCount": "{count} earned",
   "@ppEarnedCount": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "ppCertOfCompletion": "Certificate of Completion",
   "ppTemplesCount": "{count, plural, =1{1 temple} other{{count} temples}}",
   "@ppTemplesCount": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "ppTemplesToGo": "{count, plural, =1{1 temple to go} other{{count} temples to go}}",
   "@ppTemplesToGo": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "ppViewRoute": "View Route",
   "ppFirstCertHint": "Finish a route below to earn your first certificate.",
   "ppShowAll": "Show all",
   "ppVisitsCount": "{count, plural, =1{1 visit} other{{count} visits}}",
   "@ppVisitsCount": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "ppViewTemple": "View temple",
   "ppUnderReview": "Under review",
@@ -1351,15 +1468,22 @@
   "ryYourProgress": "Your Progress",
   "ryVisitedOf": "{done} of {total} temples visited",
   "@ryVisitedOf": {
-    "placeholders": { "done": {}, "total": {} }
+    "placeholders": {
+      "done": {},
+      "total": {}
+    }
   },
   "ryKmRoute": "{km} km route",
   "@ryKmRoute": {
-    "placeholders": { "km": {} }
+    "placeholders": {
+      "km": {}
+    }
   },
   "ryToGo": "{count} to go",
   "@ryToGo": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "ryNotStarted": "Not started yet",
   "ryYatraComplete": "Yatra complete",
@@ -1368,24 +1492,33 @@
   "ryKmCovered": "KM Covered",
   "ryVisitedOn": "Visited {date}",
   "@ryVisitedOn": {
-    "placeholders": { "date": {} }
+    "placeholders": {
+      "date": {}
+    }
   },
   "ryNoVisitsOnRoute": "Your first darshan on this route will appear here.",
   "ryNextBadge": "Next",
   "exCategoriesIntro": "Find temples by the deity they honour.",
   "exMostVisited": "Most visited: {name}",
   "@exMostVisited": {
-    "placeholders": { "name": {} }
+    "placeholders": {
+      "name": {}
+    }
   },
   "rfCodeHint": "Share your code. When a friend joins MARG, you earn points and rewards.",
   "rfToMilestone": "{milestone, plural, =1{Your first friend to join unlocks a reward} other{{count} more friends to reach {milestone}}}",
   "@rfToMilestone": {
-    "placeholders": { "count": {}, "milestone": {} }
+    "placeholders": {
+      "count": {},
+      "milestone": {}
+    }
   },
   "rfAllMilestonesDone": "Every milestone reached — thank you!",
   "rfMilestoneTitle": "{count, plural, =1{1 friend joins} other{{count} friends join}}",
   "@rfMilestoneTitle": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "rfReached": "Reached",
   "rfNextUp": "Next up",
@@ -1413,26 +1546,37 @@
   "exFiltersHint": "Refine the temples you see",
   "exKm": "{km} km",
   "@exKm": {
-    "placeholders": { "km": {} }
+    "placeholders": {
+      "km": {}
+    }
   },
   "exSortPopularHint": "Most visited temples first",
   "exSortNewestHint": "Recently added to MARG",
   "exSortNameHint": "Alphabetical by name",
   "exWithinKm": "Within {km} km",
   "@exWithinKm": {
-    "placeholders": { "km": {} }
+    "placeholders": {
+      "km": {}
+    }
   },
   "exNoNearbyWithin": "No temples within {km} km of you yet. Try a wider radius.",
   "@exNoNearbyWithin": {
-    "placeholders": { "km": {} }
+    "placeholders": {
+      "km": {}
+    }
   },
   "exWidenTo": "Widen to {km} km",
   "@exWidenTo": {
-    "placeholders": { "km": {} }
+    "placeholders": {
+      "km": {}
+    }
   },
   "exNearbyCount": "{count, plural, =1{1 temple} other{{count} temples}} within {km} km",
   "@exNearbyCount": {
-    "placeholders": { "count": {}, "km": {} }
+    "placeholders": {
+      "count": {},
+      "km": {}
+    }
   },
   "searchFilterHint": "Choose where to look and how to order results",
   "searchSortRelevanceHint": "Best matches first",
@@ -1447,7 +1591,10 @@
   "tdCollectCard": "Collect this card",
   "tdStepsDone": "{done} of {total} steps done",
   "@tdStepsDone": {
-    "placeholders": { "done": {}, "total": {} }
+    "placeholders": {
+      "done": {},
+      "total": {}
+    }
   },
   "homeQuestFirstOverline": "Your first Sacred Card",
   "homeQuestFirstTitle": "Collect your first card",
@@ -1459,11 +1606,16 @@
   "homeQuestContinueOverline": "Continue your journey",
   "homeQuestCollected": "{count, plural, =1{1 Sacred Card collected} other{{count} Sacred Cards collected}}",
   "@homeQuestCollected": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "homeQuestToMilestone": "{count} more to reach {milestone} cards",
   "@homeQuestToMilestone": {
-    "placeholders": { "count": {}, "milestone": {} }
+    "placeholders": {
+      "count": {},
+      "milestone": {}
+    }
   },
   "homeQuestAllMilestones": "A true collector — keep going!",
   "homeQuestNextCard": "Your next card awaits",
@@ -1471,30 +1623,43 @@
   "homeQuestMyCollection": "My collection",
   "exTemplesFoundCount": "{count, plural, =1{1 temple found} other{{count} temples found}}",
   "@exTemplesFoundCount": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "searchResultsCount": "{count, plural, =1{1 result found} other{About {count} results found}}",
   "@searchResultsCount": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "tdCheckInAgain": "Check in again",
   "tdCheckedInToday": "Checked in today",
   "tdVisitCount": "{count, plural, =1{Visited once} other{Visited {count} times}}",
   "@tdVisitCount": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "tdLastVisit": "Last visit · {date}",
   "@tdLastVisit": {
-    "placeholders": { "date": {} }
+    "placeholders": {
+      "date": {}
+    }
   },
   "tdNextCheckIn": "Checked in today · next check-in from {when}",
   "@tdNextCheckIn": {
-    "placeholders": { "when": {} }
+    "placeholders": {
+      "when": {}
+    }
   },
   "tvCardInCollection": "In Your Collection",
   "dirDaysHours": "{days} d {hours} h",
   "@dirDaysHours": {
-    "placeholders": { "days": {}, "hours": {} }
+    "placeholders": {
+      "days": {},
+      "hours": {}
+    }
   },
   "dirBike": "Bike",
   "tvModeBike": "Bike",
@@ -1502,7 +1667,9 @@
   "tvGeofenceDetected": "Temple geofence detected",
   "tvAwayFrom": "{distance} from the temple",
   "@tvAwayFrom": {
-    "placeholders": { "distance": {} }
+    "placeholders": {
+      "distance": {}
+    }
   },
   "tvGreetShiva": "Jai Bholenath!",
   "tvGreetVishnu": "Jai Shri Hari!",
@@ -1515,35 +1682,50 @@
   "tvShareCard": "Share Card",
   "tvShareCardText": "I just collected the {card} Sacred Card on MARG 🙏",
   "@tvShareCardText": {
-    "placeholders": { "card": {} }
+    "placeholders": {
+      "card": {}
+    }
   },
   "tvShareFailed": "Couldn't share right now. Please try again.",
   "tvTodayAt": "Today, {time}",
   "@tvTodayAt": {
-    "placeholders": { "time": {} }
+    "placeholders": {
+      "time": {}
+    }
   },
   "tvPointsEarned": "+{points} Points",
   "@tvPointsEarned": {
-    "placeholders": { "points": {} }
+    "placeholders": {
+      "points": {}
+    }
   },
   "tvRouteProgress": "Route Progress",
   "tvTemplesOfTotal": "{done} / {total} temples completed",
   "@tvTemplesOfTotal": {
-    "placeholders": { "done": {}, "total": {} }
+    "placeholders": {
+      "done": {},
+      "total": {}
+    }
   },
   "tvAway": "{distance} away",
   "@tvAway": {
-    "placeholders": { "distance": {} }
+    "placeholders": {
+      "distance": {}
+    }
   },
   "tvStampVerified": "Darshan Verified",
   "tvRouteCompleted": "You have completed every temple on {route}.",
   "@tvRouteCompleted": {
-    "placeholders": { "route": {} }
+    "placeholders": {
+      "route": {}
+    }
   },
   "tvFromThisVisit": "From This Visit",
   "tvNextTempleNamed": "Next: {name}",
   "@tvNextTempleNamed": {
-    "placeholders": { "name": {} }
+    "placeholders": {
+      "name": {}
+    }
   },
   "tvAlsoEarned": "Also Earned",
   "tvDestination": "Destination",
@@ -1555,21 +1737,28 @@
   "exStatesIntro": "Temples across Bharat, state by state.",
   "exStatesStatus": "{states} states · {temples} temples",
   "@exStatesStatus": {
-    "placeholders": { "states": {}, "temples": {} }
+    "placeholders": {
+      "states": {},
+      "temples": {}
+    }
   },
   "exCollectionsIntro": "Temples grouped by what devotees seek most.",
   "exStatsTitle": "Your Exploration",
   "exStatsIntro": "Every verified darshan, across Bharat.",
   "exExploringSince": "Exploring since {date}",
   "@exExploringSince": {
-    "placeholders": { "date": {} }
+    "placeholders": {
+      "date": {}
+    }
   },
   "exStatesVisited": "States Visited",
   "exCitiesVisited": "Cities Visited",
   "exWhereYouveBeen": "Where You've Been",
   "exVisitsCount": "{count} visits",
   "@exVisitsCount": {
-    "placeholders": { "count": {} }
+    "placeholders": {
+      "count": {}
+    }
   },
   "exFromHere": "From Where You Are"
 }

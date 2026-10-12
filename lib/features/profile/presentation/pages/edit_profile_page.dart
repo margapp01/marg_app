@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../app/constants/app_constants.dart';
 import '../../../../app/localization/app_localizations.dart';
+import '../../../../core/utils/age.dart';
 import '../../../../shared/design_system.dart';
 import '../../data/repository/profile_repository.dart';
 import '../../domain/entities/profile.dart';
@@ -73,6 +75,11 @@ class _EditFormState extends ConsumerState<_EditForm> {
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final l10n = AppLocalizations.of(context);
+    final dob = _dob;
+    if (dob != null && !isAtLeastAge(dob, AppConstants.minAccountAge)) {
+      AppSnackbar.error(context, l10n.suAgeRestricted(AppConstants.minAccountAge));
+      return;
+    }
     setState(() => _saving = true);
     try {
       await ref.read(profileRepositoryProvider).updateProfile(

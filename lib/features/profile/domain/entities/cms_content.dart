@@ -18,9 +18,21 @@ class Faq {
 /// A CMS static page (ABOUT / CONTACT / PRIVACY / TERMS / …). `contentHtml` is
 /// rendered as plain text (tags stripped) — no HTML dependency is introduced.
 class StaticPage {
-  const StaticPage({required this.title, required this.contentHtml});
+  const StaticPage({required this.title, required this.contentHtml, this.titleHi, this.contentHtmlHi});
   final String title;
   final String contentHtml;
+
+  /// Hindi version from the CMS; null when the page has none.
+  final String? titleHi;
+  final String? contentHtmlHi;
+
+  /// The page in [languageCode] — Hindi only when a Hindi version exists,
+  /// otherwise the English page.
+  StaticPage localized(String languageCode) {
+    final hi = contentHtmlHi;
+    if (languageCode != 'hi' || hi == null) return this;
+    return StaticPage(title: titleHi ?? title, contentHtml: hi);
+  }
 
   /// A best-effort plain-text rendering of the stored HTML.
   String get plainText => contentHtml
@@ -35,6 +47,8 @@ class StaticPage {
   factory StaticPage.fromJson(Map<String, dynamic> j) => StaticPage(
         title: _s(j['title']) ?? '',
         contentHtml: (j['contentHtml'] as String?) ?? '',
+        titleHi: _s(j['titleHi']),
+        contentHtmlHi: _s((j['contentHtmlHi'] as String?)?.trim()),
       );
 }
 

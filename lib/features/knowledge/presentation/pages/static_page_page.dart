@@ -25,7 +25,8 @@ class KnowledgeStaticPagePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final async = ref.watch(staticPageProvider(_kind));
+    final lang = Localizations.localeOf(context).languageCode;
+    final async = ref.watch(staticPageProvider(_kind)).whenData((p) => p.localized(lang));
 
     return Scaffold(
       backgroundColor: context.scheme.surface,

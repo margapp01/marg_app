@@ -124,14 +124,19 @@ void main() {
   /// The visit page (opened over a home page) with fakes for the repository,
   /// GPS and router. Reduced motion keeps the looping celebrations still so
   /// frames can settle.
-  Future<void> pumpVisit(WidgetTester tester) async {
+  Future<void> pumpVisit(WidgetTester tester, {bool startAtCheckin = false}) async {
     final router = GoRouter(
       initialLocation: '/visit',
       routes: [
         GoRoute(
           path: '/',
           builder: (_, _) => const Scaffold(body: Text('HOME')),
-          routes: [GoRoute(path: 'visit', builder: (_, _) => const TempleVisitPage(slug: 'kashi-vishwanath'))],
+          routes: [
+            GoRoute(
+              path: 'visit',
+              builder: (_, _) => TempleVisitPage(slug: 'kashi-vishwanath', startAtCheckin: startAtCheckin),
+            ),
+          ],
         ),
       ],
     );
@@ -170,6 +175,15 @@ void main() {
     expect(find.text('Bike'), findsOneWidget);
     expect(find.text('Start Navigation'), findsOneWidget);
     expect(find.text("I've Arrived"), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('from directions it opens straight at the check-in step', (tester) async {
+    await pumpVisit(tester, startAtCheckin: true);
+
+    expect(find.text('Confirm Your Arrival'), findsOneWidget);
+    expect(find.text('Check-In Now'), findsOneWidget);
+    expect(find.text("I've Arrived"), findsNothing);
     expect(tester.takeException(), isNull);
   });
 

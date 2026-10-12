@@ -21,13 +21,34 @@ import '../widgets/visit_outcome_phases.dart';
 /// passport stamp, achievement and next temple open from it on request, and
 /// Back from any of them returns to it — kept alive underneath, so it never
 /// replays its celebration or loses its scroll.
-class TempleVisitPage extends ConsumerWidget {
-  const TempleVisitPage({required this.slug, super.key});
+class TempleVisitPage extends ConsumerStatefulWidget {
+  const TempleVisitPage({required this.slug, this.startAtCheckin = false, super.key});
 
   final String slug;
 
+  /// Open at the check-in step (arrival already confirmed by directions).
+  final bool startAtCheckin;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TempleVisitPage> createState() => _TempleVisitPageState();
+}
+
+class _TempleVisitPageState extends ConsumerState<TempleVisitPage> {
+  String get slug => widget.slug;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.startAtCheckin) {
+      // After the first frame: providers can't change while the tree builds.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(templeVisitControllerProvider(slug).notifier).openAtCheckin();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(templeVisitControllerProvider(slug));
     final controller = ref.read(templeVisitControllerProvider(slug).notifier);
     final l10n = AppLocalizations.of(context);
@@ -98,7 +119,7 @@ class TempleVisitPage extends ConsumerWidget {
       case TempleVisitPhase.navigation:
         return NavigationPhase(
           state: state,
-          onStartNavigation: (mode) => _openDirections(context, state, mode),
+          onStartNavigation: (mode) => _openDirections(context, state, controller, mode),
           onArrived: controller.goToArrival,
         );
       case TempleVisitPhase.arrival:
@@ -197,11 +218,16 @@ class TempleVisitPage extends ConsumerWidget {
   void _pop(BuildContext context) => context.canPop() ? context.pop() : context.goNamed(RouteNames.home);
 
   /// In-app directions in the chosen [mode]; on arrival "Check in" returns
-  /// here.
-  void _openDirections(BuildContext context, TempleVisitState state, TravelMode mode) {
+  /// here and opens the check-in step directly.
+  Future<void> _openDirections(
+    BuildContext context,
+    TempleVisitState state,
+    TempleVisitController controller,
+    TravelMode mode,
+  ) async {
     final temple = state.temple;
     if (temple == null) return;
-    context.pushNamed(
+    final checkIn = await context.pushNamed<bool>(
       RouteNames.directions,
       extra: DirectionsArgs(
         name: temple.name,
@@ -214,6 +240,7 @@ class TempleVisitPage extends ConsumerWidget {
         initialMode: mode,
       ),
     );
+    if (checkIn == true && mounted) controller.goToCheckin();
   }
 
   /// Straight into directions to the route's next temple (its own page when

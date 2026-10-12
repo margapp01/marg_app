@@ -2175,6 +2175,17 @@ class AppLocalizationsHi extends AppLocalizations {
   String get pfLogoutConfirm => 'क्या आप वाकई लॉगआउट करना चाहते हैं?';
 
   @override
+  String get pfLogoutChecking => 'आपका स्थान जाँचा जा रहा है…';
+
+  @override
+  String get pfLogoutBlockedTitle => 'आप मंदिर में हैं';
+
+  @override
+  String pfLogoutBlockedBody(String temple) {
+    return 'आप $temple के चेक-इन क्षेत्र में हैं। चेक-इन निष्पक्ष रखने के लिए यहाँ से लॉगआउट नहीं किया जा सकता। मंदिर से दूर जाकर फिर प्रयास करें।';
+  }
+
+  @override
   String get pfNoDevices => 'अभी कोई डिवाइस नहीं';
 
   @override

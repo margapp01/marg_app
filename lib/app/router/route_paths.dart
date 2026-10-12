@@ -16,6 +16,11 @@ abstract final class RoutePaths {
 
   /// The immersive visit journey (navigate → check-in → verify → rewards).
   static const String templeVisit = '/temples/:$templeIdParam/visit';
+
+  /// `?step=checkin` opens the visit at its check-in step (arrival already
+  /// confirmed, e.g. by in-app directions).
+  static const String visitStepParam = 'step';
+  static const String visitStepCheckin = 'checkin';
   static const String directions = '/directions';
 
   static const String passport = '/passport';

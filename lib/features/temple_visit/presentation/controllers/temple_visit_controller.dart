@@ -132,10 +132,15 @@ class TempleVisitController extends AutoDisposeFamilyNotifier<TempleVisitState, 
     return const TempleVisitState();
   }
 
+  /// Set by [openAtCheckin] before the temple has loaded.
+  bool _checkinOnLoad = false;
+
   Future<void> _init() async {
     try {
       final temple = await _repo.temple(arg);
-      state = state.copyWith(phase: TempleVisitPhase.navigation, temple: temple);
+      final phase = _checkinOnLoad ? TempleVisitPhase.checkin : TempleVisitPhase.navigation;
+      _checkinOnLoad = false;
+      state = state.copyWith(phase: phase, temple: temple);
       await refreshLocation();
     } catch (_) {
       state = state.copyWith(phase: TempleVisitPhase.templeError);
@@ -178,6 +183,16 @@ class TempleVisitController extends AutoDisposeFamilyNotifier<TempleVisitState, 
   void goToCheckin() {
     state = state.copyWith(phase: TempleVisitPhase.checkin);
     unawaited(refreshLocation());
+  }
+
+  /// Arrival was confirmed elsewhere (in-app directions): open the check-in
+  /// step now, or as soon as the temple has loaded.
+  void openAtCheckin() {
+    if (state.temple == null) {
+      _checkinOnLoad = true;
+    } else {
+      goToCheckin();
+    }
   }
 
   void backToNavigation() => state = state.copyWith(phase: TempleVisitPhase.navigation);

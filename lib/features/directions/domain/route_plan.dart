@@ -41,7 +41,8 @@ class DirectionsArgs {
   /// Set for temples — enables "Check in" on arrival.
   final String? templeSlug;
 
-  /// Opened from the visit flow: "Check in" just returns to it.
+  /// Opened from the visit flow: "Check in" returns to it (popping `true`),
+  /// and the flow opens its check-in step.
   final bool returnOnArrival;
 
   /// The mode the pilgrim already picked (falls back to drive when walking

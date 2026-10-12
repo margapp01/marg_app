@@ -4334,6 +4334,24 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to log out?'**
   String get pfLogoutConfirm;
 
+  /// No description provided for @pfLogoutChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your location…'**
+  String get pfLogoutChecking;
+
+  /// No description provided for @pfLogoutBlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re at a temple'**
+  String get pfLogoutBlockedTitle;
+
+  /// No description provided for @pfLogoutBlockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re inside the check-in area of {temple}. To keep check-ins fair, you can\'t log out here. Move away from the temple and try again.'**
+  String pfLogoutBlockedBody(String temple);
+
   /// No description provided for @pfNoDevices.
   ///
   /// In en, this message translates to:

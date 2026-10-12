@@ -2180,6 +2180,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pfLogoutConfirm => 'Are you sure you want to log out?';
 
   @override
+  String get pfLogoutChecking => 'Checking your location…';
+
+  @override
+  String get pfLogoutBlockedTitle => 'You\'re at a temple';
+
+  @override
+  String pfLogoutBlockedBody(String temple) {
+    return 'You\'re inside the check-in area of $temple. To keep check-ins fair, you can\'t log out here. Move away from the temple and try again.';
+  }
+
+  @override
   String get pfNoDevices => 'No devices yet';
 
   @override

@@ -2,6 +2,7 @@ package com.techluminix.marg
 
 import android.app.Activity
 import android.content.Intent
+import android.provider.Settings
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -19,6 +20,14 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, LOCATION_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "requestLocationService" -> requestLocationService(result)
+                else -> result.notImplemented()
+            }
+        }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, DEVICE_CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                // Stable per device (and app signing key); survives reinstalls,
+                // unlike Build.ID, which every phone on the same firmware shares.
+                "androidId" -> result.success(Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID))
                 else -> result.notImplemented()
             }
         }
@@ -68,6 +77,7 @@ class MainActivity : FlutterActivity() {
 
     private companion object {
         const val LOCATION_CHANNEL = "com.techluminix.marg/location"
+        const val DEVICE_CHANNEL = "com.techluminix.marg/device"
         const val REQUEST_LOCATION_SERVICE = 7301
         const val LOCATION_INTERVAL_MS = 10_000L
     }

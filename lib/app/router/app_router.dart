@@ -389,6 +389,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: RouteNames.templeVisit,
         builder: (_, state) => TempleVisitPage(
           slug: state.pathParameters[RoutePaths.templeIdParam] ?? '',
+          startAtCheckin: state.uri.queryParameters[RoutePaths.visitStepParam] == RoutePaths.visitStepCheckin,
         ),
       ),
       // Legacy deep links from before the tab shell.

@@ -17,6 +17,12 @@ abstract final class AppConstants {
   /// Platform channel for MainActivity's "Turn on location" dialog.
   static const String locationChannel = 'com.techluminix.marg/location';
 
+  /// Native channel for the stable device identifier (Android `ANDROID_ID`).
+  static const String deviceChannel = 'com.techluminix.marg/device';
+
+  /// Longest the sign-out temple check may take before sign-out proceeds.
+  static const Duration signOutGuardTimeout = Duration(seconds: 12);
+
   static const String mapboxStreetsTileUrl =
       'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}';
 

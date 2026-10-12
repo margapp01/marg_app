@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -6,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../app/router/route_paths.dart';
+import '../../../../features/auth/data/datasource/sign_out_guard.dart';
 import '../../../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../../../shared/design_system.dart';
 import '../../domain/entities/cms_content.dart';
@@ -63,6 +66,20 @@ class PrivacySecurityPage extends ConsumerWidget {
             label: l10n.pfLogout,
             icon: AppIcons.logout,
             onPressed: () async {
+              // No signing out inside a temple's check-in area (anti-fraud).
+              final navigator = Navigator.of(context, rootNavigator: true);
+              unawaited(AppDialogs.loading(context, message: l10n.pfLogoutChecking));
+              final temple = await ref.read(signOutGuardProvider).templeHere();
+              navigator.pop();
+              if (!context.mounted) return;
+              if (temple != null) {
+                await AppDialogs.info(
+                  context,
+                  title: l10n.pfLogoutBlockedTitle,
+                  message: l10n.pfLogoutBlockedBody(temple),
+                );
+                return;
+              }
               final confirmed = await AppDialogs.confirm(
                 context,
                 title: l10n.pfLogout,

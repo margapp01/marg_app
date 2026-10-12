@@ -482,11 +482,14 @@ class _Arrived extends StatelessWidget {
           : AppButton.primary(
               label: l10n.dirCheckIn,
               icon: AppIcons.verified,
+              // Arrival is already confirmed here, so go straight to the
+              // check-in step — back to the visit flow, or into a new one.
               onPressed: () => args.returnOnArrival
-                  ? context.pop()
+                  ? context.pop(true)
                   : context.pushReplacementNamed(
                       RouteNames.templeVisit,
                       pathParameters: {RoutePaths.templeIdParam: slug},
+                      queryParameters: {RoutePaths.visitStepParam: RoutePaths.visitStepCheckin},
                     ),
             ),
     );

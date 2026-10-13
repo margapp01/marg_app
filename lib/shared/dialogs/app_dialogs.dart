@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme/app_icons.dart';
+import '../../app/theme/app_radius.dart';
 import '../../app/theme/app_spacing.dart';
 import '../../core/extensions/context_extensions.dart';
 import '../buttons/app_button.dart';
+import '../loaders/brand_loader.dart';
 import 'app_dialog.dart';
 
 /// One entry point for every standard dialog, so confirmations, destructive
@@ -106,8 +108,8 @@ abstract final class AppDialogs {
           icon: AppIcons.info,
           color: context.colors.info);
 
-  /// Blocking loading dialog. Dismiss with `Navigator.of(context).pop()` when
-  /// the work completes.
+  /// Blocking loading dialog with the MARG [BrandLoader]. Dismiss with
+  /// `Navigator.of(context, rootNavigator: true).pop()` when the work completes.
   static Future<void> loading(
     BuildContext context, {
     String message = 'Please wait…',
@@ -117,11 +119,14 @@ abstract final class AppDialogs {
         barrierDismissible: false,
         builder: (context) => PopScope(
           canPop: false,
-          child: AppDialog(
-            title: message,
-            content: const Padding(
-              padding: EdgeInsets.only(top: AppSpacing.sm),
-              child: CircularProgressIndicator(),
+          child: Dialog(
+            backgroundColor: context.colors.card,
+            surfaceTintColor: Colors.transparent,
+            shape: const RoundedRectangleBorder(borderRadius: AppRadius.xlAll),
+            insetPadding: AppSpacing.screenAll,
+            child: Padding(
+              padding: AppSpacing.allXl,
+              child: BrandLoader(message: message),
             ),
           ),
         ),

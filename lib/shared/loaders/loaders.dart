@@ -2,6 +2,7 @@
 library;
 
 export 'app_loader.dart';
+export 'brand_loader.dart';
 export 'loading_view.dart';
 export 'shimmer.dart';
 export 'skeletons.dart';

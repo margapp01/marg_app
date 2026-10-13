@@ -49,7 +49,7 @@ lib/shared/
   sheets/                     AppSheets.actions/select/confirm (+ SheetAction/SheetOption)
   feedback/                   AppSnackbar (success/error/warning/info), AppToast, FeedbackType
   loaders/                    AppShimmer, SkeletonBox/Line/Circle, SkeletonCard/List/Avatar/Banner,
-                              CircularLoader, LinearLoader, AnimatedLoader, LoadingView
+                              CircularLoader, LinearLoader, BrandLoader, LoadingView
   empty/                      EmptyView + SearchEmpty/NotificationsEmpty/PassportEmpty/VisitsEmpty/
                               RoutesEmpty/CardsEmpty/LeaderboardEmpty/ReferralsEmpty
   error/                      ErrorView + OfflineError/TimeoutError/ServerError/UnknownError/

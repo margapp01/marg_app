@@ -116,6 +116,10 @@ abstract final class RoutePaths {
   static const String staticPageKindParam = 'kind';
   static const String profileStaticPage = '/profile/page/:$staticPageKindParam';
 
+  /// Privacy Policy / Terms readable before sign-in (public; see authGuard).
+  static const String legalPrefix = '/legal/';
+  static const String legalPage = '$legalPrefix:$staticPageKindParam';
+
   /// Knowledge Hub — spiritual content hub + sub-screens.
   static const String knowledge = '/knowledge';
   static const String knowledgeBlogs = '/knowledge/blogs';

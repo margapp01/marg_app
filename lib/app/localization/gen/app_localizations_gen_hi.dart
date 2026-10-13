@@ -3557,6 +3557,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get siSecure => 'सुरक्षित, सरल और सहज';
 
   @override
+  String siLegalConsent(String terms, String privacy) {
+    return 'साइन इन करके, आप $terms और $privacy स्वीकार करते हैं।';
+  }
+
+  @override
   String get exViewTemple => 'मंदिर देखें';
 
   @override

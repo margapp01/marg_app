@@ -1,26 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../app/theme/app_spacing.dart';
+import 'brand_loader.dart';
 
-/// Full-area loading state with optional caption.
+/// Full-area loading state: the MARG [BrandLoader] with an optional caption.
 class LoadingView extends StatelessWidget {
   const LoadingView({this.message, super.key});
 
   final String? message;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          if (message != null) ...[
-            const SizedBox(height: AppSpacing.lg),
-            Text(message!, style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Center(child: BrandLoader(message: message));
 }

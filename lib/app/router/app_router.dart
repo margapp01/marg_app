@@ -140,6 +140,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: RouteNames.setup,
         builder: (_, _) => const SetupPage(),
       ),
+      // Terms / Privacy linked from sign-in: public, outside the shell.
+      GoRoute(
+        path: RoutePaths.legalPage,
+        name: RouteNames.legalPage,
+        builder: (_, state) => StaticPageScreen(
+          kind: PageKind.values.firstWhere(
+            (k) => k.name == state.pathParameters[RoutePaths.staticPageKindParam],
+            orElse: () => PageKind.privacy,
+          ),
+        ),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) => AppShell(navigationShell: shell),
         branches: [

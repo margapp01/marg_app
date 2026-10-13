@@ -24,7 +24,8 @@ GoRouterRedirect composeGuards(List<RouteGuard> guards) {
 
 /// Keeps unauthenticated users out of the app and un-onboarded users in setup.
 ///
-/// The three public locations (splash, auth, setup) own their own navigation —
+/// The public locations (splash, auth, setup, and the legal pages linked from
+/// sign-in) own their own navigation —
 /// the splash resolves the session and routes returning users straight home,
 /// and the sign-in page drives the Google flow — so the guard only *protects*
 /// the authenticated area; it never yanks a user off a public page.
@@ -34,7 +35,8 @@ RouteGuard authGuard(Ref ref) {
     final location = state.matchedLocation;
     final isPublic = location == RoutePaths.splash ||
         location == RoutePaths.auth ||
-        location == RoutePaths.setup;
+        location == RoutePaths.setup ||
+        location.startsWith(RoutePaths.legalPrefix);
 
     switch (auth.status) {
       case AuthStatus.unknown:

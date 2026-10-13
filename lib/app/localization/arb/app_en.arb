@@ -1351,6 +1351,18 @@
   "siSubtitle": "Sign in to continue your spiritual journey",
   "siGoogle": "Continue with Google",
   "siSecure": "Secure, simple and seamless",
+  "siLegalConsent": "By signing in, you accept the {terms} and {privacy}.",
+  "@siLegalConsent": {
+    "description": "Under the Google button. {terms} and {privacy} are tappable links (pfTerms / pfPrivacyPolicy).",
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
   "exViewTemple": "View Temple",
   "exGreeting": "Har Har Mahadev! 🙏",
   "exCurrentLocation": "Current Location",

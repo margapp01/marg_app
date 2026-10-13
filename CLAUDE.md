@@ -22,7 +22,7 @@ If something could serve another feature, it lives in `shared/` or `core/` — n
 - **Badges/Chips** `shared/badges/`, `shared/chips/` → `AppBadge`, `StatusBadge`, `VerificationBadge`, `TrustBadge`, `PointsBadge`, `AchievementBadge`, `AppFilterChip`, `AppChoiceChip`, `AnimatedChip`.
 - **Tiles/Dividers** `shared/tiles/`, `shared/dividers/` → `AppListTile`, `SettingsTile`, `ProfileTile`, `InfoTile`, `ActionTile`, `NavigationTile`, `AppDivider`, `LabelDivider`.
 - **Overlays** `shared/dialogs/`, `shared/sheets/`, `shared/feedback/` → `AppDialogs.confirm/delete/success/failure/info/loading`, `AppSheets.actions/select/confirm`, `AppSnackbar`, `AppToast`.
-- **States** `shared/loaders/`, `shared/empty/`, `shared/error/` → `AppShimmer` + `Skeleton*`, `AnimatedLoader`, `LoadingView`, `EmptyView` (+ per-feature presets), `ErrorView` (+ `OfflineError`/`TimeoutError`/`ServerError`/`UnknownError`/`PermissionDeniedError`).
+- **States** `shared/loaders/`, `shared/empty/`, `shared/error/` → `AppShimmer` + `Skeleton*`, `BrandLoader`, `LoadingView`, `EmptyView` (+ per-feature presets), `ErrorView` (+ `OfflineError`/`TimeoutError`/`ServerError`/`UnknownError`/`PermissionDeniedError`).
 - **Chrome/Images** `shared/app_bar/`, `shared/navigation/`, `shared/images/`, `components/app_scaffold.dart` → `AppAppBar`/`AppSliverAppBar`/`SearchAppBar`, `AppBottomNav`, `AppScaffold` (refresh + loading overlay), `AppNetworkImage`, `AppAvatar`, `AppHeroImage`, `BannerImage`.
 - **Animations** `shared/animations/` → `FadeIn`/`ScaleIn`/`SlideIn` + `.fadeIn()/.scaleIn()/.slideIn()`, `AnimatedCount`, `AppLinearProgress`/`AppCircularProgress`, `StaggeredList`, `ExpandableSection`, `AppPageTransitions`.
 

@@ -4,6 +4,7 @@ abstract final class RouteNames {
   static const String splash = 'splash';
   static const String auth = 'auth';
   static const String setup = 'setup';
+  static const String legalPage = 'legalPage';
   static const String home = 'home';
   static const String search = 'search';
   static const String templeDetail = 'templeDetail';

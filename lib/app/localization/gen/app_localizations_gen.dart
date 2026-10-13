@@ -6884,6 +6884,12 @@ abstract class AppLocalizations {
   /// **'Secure, simple and seamless'**
   String get siSecure;
 
+  /// Under the Google button. {terms} and {privacy} are tappable links (pfTerms / pfPrivacyPolicy).
+  ///
+  /// In en, this message translates to:
+  /// **'By signing in, you accept the {terms} and {privacy}.'**
+  String siLegalConsent(String terms, String privacy);
+
   /// No description provided for @exViewTemple.
   ///
   /// In en, this message translates to:

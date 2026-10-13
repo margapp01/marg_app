@@ -3566,6 +3566,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get siSecure => 'Secure, simple and seamless';
 
   @override
+  String siLegalConsent(String terms, String privacy) {
+    return 'By signing in, you accept the $terms and $privacy.';
+  }
+
+  @override
   String get exViewTemple => 'View Temple';
 
   @override

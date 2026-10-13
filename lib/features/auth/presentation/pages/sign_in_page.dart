@@ -9,6 +9,7 @@ import '../../../../app/router/route_names.dart';
 import '../../../../shared/design_system.dart';
 import '../controllers/auth_controller.dart';
 import '../states/auth_state.dart';
+import '../widgets/legal_consent_text.dart';
 
 const String _googleLogo = 'assets/icons/google.svg';
 
@@ -163,7 +164,9 @@ class _WelcomeCard extends StatelessWidget {
           ),
           const Gap(AppSpacing.xxl),
           _GoogleButton(label: l10n.siGoogle, onPressed: onGoogle, busy: busy),
-          const Gap(AppSpacing.xl),
+          const Gap(AppSpacing.md),
+          const LegalConsentText(),
+          const Gap(AppSpacing.lg),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [

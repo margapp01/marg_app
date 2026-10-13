@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_bar/app_app_bar.dart';
-import '../loaders/app_loader.dart';
+import '../loaders/brand_loader.dart';
 
 /// Standard page chrome so global changes happen in one place. Wraps [Scaffold]
 /// and adds, opt-in:
@@ -72,7 +72,7 @@ class AppScaffold extends StatelessWidget {
             const Positioned.fill(
               child: ColoredBox(
                 color: Color(0x66000000),
-                child: AnimatedLoader(),
+                child: BrandLoader(),
               ),
             ),
         ],

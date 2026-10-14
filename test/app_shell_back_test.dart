@@ -77,6 +77,27 @@ void main() {
     expect(find.text('page /home'), findsOneWidget);
   });
 
+  testWidgets('Android is told the app handles Back on every tab', (tester) async {
+    // With predictive back the OS closes the app itself whenever the framework
+    // last reported `false` here — Back must never reach Android on a tab root.
+    final handlesBack = <bool>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
+      if (call.method == 'SystemNavigator.setFrameworkHandlesBack') handlesBack.add(call.arguments as bool);
+      return null;
+    });
+    addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, null));
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    final router = _router('/home');
+    await _pump(tester, router);
+
+    for (final path in [..._paths.skip(1), _paths.first]) {
+      router.go(path);
+      await tester.pumpAndSettle();
+      expect(handlesBack, isNotEmpty);
+      expect(handlesBack.last, isTrue, reason: 'on $path');
+    }
+  });
+
   testWidgets('Back at Home asks before exiting; Back again exits', (tester) async {
     final calls = <String>[];
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {

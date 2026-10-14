@@ -5534,6 +5534,12 @@ abstract class AppLocalizations {
   /// **'Enter a valid 10-digit mobile number'**
   String get suInvalidMobile;
 
+  /// No description provided for @suMobileTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This mobile number is already registered. Please use a different number.'**
+  String get suMobileTaken;
+
   /// No description provided for @suLocationTitle.
   ///
   /// In en, this message translates to:
@@ -5659,6 +5665,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select your date of birth to continue'**
   String get suDobRequired;
+
+  /// No description provided for @suGenderRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your gender to continue'**
+  String get suGenderRequired;
 
   /// Shown when the date of birth is under the minimum account age.
   ///

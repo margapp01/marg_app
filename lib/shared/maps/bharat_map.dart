@@ -11,16 +11,15 @@ import '../../core/geo/bharat_boundaries.dart';
 
 /// Base map style for a [BharatMap].
 enum MapTiles {
-  /// OpenStreetMap warmed to the cream theme — overviews and browsing.
+  /// Mapbox Light warmed to the cream theme — overviews and browsing.
   warm,
 
-  /// Street-level detail (Mapbox Streets when a token is configured, plain
-  /// OpenStreetMap otherwise) — for directions.
+  /// Mapbox Streets, full street-level detail — for directions and check-in.
   streets,
 }
 
-/// The one map used across MARG: OpenStreetMap tiles warmed to the app's
-/// palette, the Akhand Bharat outline (saffron, with everything beyond it
+/// The one map used across MARG: Mapbox tiles (OpenStreetMap only as the
+/// no-token development fallback) warmed to the app's palette, the Akhand Bharat outline (saffron, with everything beyond it
 /// softly washed out) and Bharat's official boundary (navy) — then the
 /// feature's own [layers] (route polylines, temple markers…) on top.
 ///
@@ -73,25 +72,29 @@ class BharatMap extends ConsumerWidget {
         ? ref.watch(bharatBoundariesProvider).valueOrNull
         : null;
     final token = ref.watch(appConfigProvider).mapboxToken;
-    final mapbox = tiles == MapTiles.streets && token.isNotEmpty;
+    final mapbox = token.isNotEmpty;
+    final warm = tiles == MapTiles.warm
+        ? (BuildContext context, Widget tile, TileImage _) => ColorFiltered(colorFilter: _warmTiles, child: tile)
+        : null;
     return FlutterMap(
       mapController: controller,
       options: options,
       children: [
         if (mapbox)
           TileLayer(
-            urlTemplate: AppConstants.mapboxStreetsTileUrl,
-            additionalOptions: {'accessToken': token},
+            urlTemplate: AppConstants.mapboxTileUrl,
+            additionalOptions: {
+              'accessToken': token,
+              'style': tiles == MapTiles.warm ? AppConstants.mapboxLightStyle : AppConstants.mapboxStreetsStyle,
+            },
             userAgentPackageName: AppConstants.mapUserAgent,
+            tileBuilder: warm,
           )
         else
           TileLayer(
             urlTemplate: AppConstants.osmTileUrl,
             userAgentPackageName: AppConstants.mapUserAgent,
-            tileBuilder: tiles == MapTiles.warm
-                ? (context, tile, _) =>
-                      ColorFiltered(colorFilter: _warmTiles, child: tile)
-                : null,
+            tileBuilder: warm,
           ),
         if (boundaries != null) _BoundaryLayers(boundaries: boundaries),
         ...layers,
@@ -101,7 +104,7 @@ class BharatMap extends ConsumerWidget {
   }
 }
 
-/// The required OpenStreetMap credit as a small frosted pill.
+/// The required map credit (Mapbox + OpenStreetMap data) as a small frosted pill.
 class _Attribution extends StatelessWidget {
   const _Attribution({required this.alignment, required this.mapbox});
 

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +50,7 @@ class _SetupPageState extends ConsumerState<SetupPage> {
   final _pageController = PageController();
   int _step = 0;
   bool _completed = false;
+  bool _registering = false;
 
   // ── Answers (seeded from the Google profile / existing user) ──────────────
   late final TextEditingController _nameController;
@@ -58,6 +60,7 @@ class _SetupPageState extends ConsumerState<SetupPage> {
   PickedPhoto? _pickedPhoto;
   String? _mobileError;
   String? _dobError;
+  String? _genderError;
   DateTime? _dob;
   SetupGender? _gender;
   CapturedLocation? _location;
@@ -94,8 +97,9 @@ class _SetupPageState extends ConsumerState<SetupPage> {
   }
 
   /// A brand-new Google account still needs its mobile number to create the
-  /// Marg session — the only case that shows the mobile field and runs
-  /// complete-registration.
+  /// Marg session — the only case that shows the mobile field. Registration
+  /// runs as soon as the welcome step is confirmed, so a number that is
+  /// already in use is caught there, not after the remaining steps.
   bool get _requiresRegistration => ref.read(authControllerProvider).status == AuthStatus.needsMobile;
 
   bool get _validMobile => _mobileController.text.trim().length == 10;
@@ -125,18 +129,11 @@ class _SetupPageState extends ConsumerState<SetupPage> {
   void _onPrimary() {
     switch (_step) {
       case _welcomeStep:
-        if (_requiresRegistration && !_validMobile) {
-          setState(() => _mobileError = AppLocalizations.of(context).suInvalidMobile);
-          return;
-        }
-        setState(() => _mobileError = null);
-        _go(_step + 1);
+        _confirmWelcome();
       case _aboutStep:
-        final error = _dobValidation(AppLocalizations.of(context));
-        setState(() => _dobError = error);
-        if (error == null) _go(_step + 1);
+        if (_validateAbout()) _go(_step + 1);
       case _reviewStep:
-        if (_dobValidation(AppLocalizations.of(context)) != null) {
+        if (!_validateAbout()) {
           _go(_aboutStep);
           return;
         }
@@ -144,6 +141,68 @@ class _SetupPageState extends ConsumerState<SetupPage> {
       default:
         _go(_step + 1);
     }
+  }
+
+  /// Field errors also raise a toast so they can't be missed.
+  void _showError(String message) => AppToast.show(context, message, type: FeedbackType.error);
+
+  Future<void> _confirmWelcome() async {
+    if (!_requiresRegistration) {
+      _go(_aboutStep);
+      return;
+    }
+    final l10n = AppLocalizations.of(context);
+    if (!_validMobile) {
+      setState(() => _mobileError = l10n.suInvalidMobile);
+      _showError(l10n.suInvalidMobile);
+      return;
+    }
+    setState(() {
+      _mobileError = null;
+      _registering = true;
+    });
+    final name = _nameController.text.trim();
+    try {
+      await ref.read(authControllerProvider.notifier).completeRegistration(
+            mobile: '+91${_mobileController.text.trim()}',
+            name: name.isEmpty ? null : name,
+            profilePhoto: _photoUrl,
+          );
+      if (mounted) _go(_aboutStep);
+    } catch (e) {
+      if (!mounted) return;
+      if (_isMobileTaken(e)) {
+        setState(() => _mobileError = l10n.suMobileTaken);
+        _showError(l10n.suMobileTaken);
+      } else {
+        _showError(l10n.suSetupFailed);
+      }
+    } finally {
+      if (mounted) setState(() => _registering = false);
+    }
+  }
+
+  /// `409 Mobile number already in use` from complete-registration. The error
+  /// envelope has no machine code, so key off status + message.
+  static bool _isMobileTaken(Object error) {
+    if (error is! DioException || error.response?.statusCode != 409) return false;
+    final body = error.response?.data;
+    final message = body is Map ? '${body['message']}' : '';
+    return message.toLowerCase().contains('mobile');
+  }
+
+  /// Date of birth and gender are both required; shows the first problem.
+  bool _validateAbout() {
+    final l10n = AppLocalizations.of(context);
+    final dobError = _dobValidation(l10n);
+    final genderError = _gender == null ? l10n.suGenderRequired : null;
+    setState(() {
+      _dobError = dobError;
+      _genderError = genderError;
+    });
+    final error = dobError ?? genderError;
+    if (error != null) _showError(error);
+    return error == null;
   }
 
   /// DOB is required and must meet [AppConstants.minAccountAge] (the API checks too).
@@ -233,7 +292,7 @@ class _SetupPageState extends ConsumerState<SetupPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final submitting = ref.watch(onboardingControllerProvider).isLoading;
+    final submitting = ref.watch(onboardingControllerProvider).isLoading || _registering;
     final size = MediaQuery.sizeOf(context);
 
     if (_completed) {
@@ -335,7 +394,11 @@ class _SetupPageState extends ConsumerState<SetupPage> {
                         }),
                         dobError: _dobError,
                         gender: _gender,
-                        onPickGender: (g) => setState(() => _gender = g),
+                        onPickGender: (g) => setState(() {
+                          _gender = g;
+                          _genderError = null;
+                        }),
+                        genderError: _genderError,
                         location: _location,
                         onLocation: (loc) => setState(() => _location = loc),
                       ),

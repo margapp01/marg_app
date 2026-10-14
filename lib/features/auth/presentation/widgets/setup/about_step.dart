@@ -15,6 +15,7 @@ class AboutStep extends StatelessWidget {
     this.dobError,
     required this.gender,
     required this.onPickGender,
+    this.genderError,
     required this.location,
     required this.onLocation,
     super.key,
@@ -27,6 +28,9 @@ class AboutStep extends StatelessWidget {
   final String? dobError;
   final SetupGender? gender;
   final ValueChanged<SetupGender> onPickGender;
+
+  /// Validation message under the gender choices (none picked).
+  final String? genderError;
   final CapturedLocation? location;
   final ValueChanged<CapturedLocation> onLocation;
 
@@ -64,19 +68,28 @@ class AboutStep extends StatelessWidget {
         const Gap(AppSpacing.xl),
         LabeledField(
           label: l10n.suGender,
-          child: Row(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final g in SetupGender.values) ...[
-                Expanded(
-                  child: ChoiceTile(
-                    icon: g.icon,
-                    label: g.localizedLabel(l10n),
-                    selected: gender == g,
-                    onTap: () => onPickGender(g),
-                  ),
-                ),
-                if (g != SetupGender.values.last) const Gap.h(AppSpacing.sm),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final g in SetupGender.values) ...[
+                    Expanded(
+                      child: ChoiceTile(
+                        icon: g.icon,
+                        label: g.localizedLabel(l10n),
+                        selected: gender == g,
+                        onTap: () => onPickGender(g),
+                      ),
+                    ),
+                    if (g != SetupGender.values.last) const Gap.h(AppSpacing.sm),
+                  ],
+                ],
+              ),
+              if (genderError != null) ...[
+                const Gap(AppSpacing.xs),
+                Text(genderError!, style: context.textTheme.bodySmall?.withColor(context.scheme.error)),
               ],
             ],
           ),

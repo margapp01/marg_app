@@ -959,6 +959,7 @@
   "suRemovePhoto": "Remove Photo",
   "suPhotoError": "Could not open your photos. Please try again.",
   "suInvalidMobile": "Enter a valid 10-digit mobile number",
+  "suMobileTaken": "This mobile number is already registered. Please use a different number.",
   "suLocationTitle": "Enable location",
   "suLocationSubtitle": "So we can show temples, events and routes near you",
   "suBenefitTemples": "Discover temples near you",
@@ -980,6 +981,7 @@
   "suDateOfBirth": "Date of Birth",
   "suSelectDob": "Select your date of birth",
   "suDobRequired": "Select your date of birth to continue",
+  "suGenderRequired": "Select your gender to continue",
   "suAgeRestricted": "You must be at least {age} to use MARG.",
   "@suAgeRestricted": {
     "description": "Shown when the date of birth is under the minimum account age.",

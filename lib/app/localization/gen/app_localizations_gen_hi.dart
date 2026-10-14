@@ -2801,6 +2801,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get suInvalidMobile => 'मान्य 10 अंकों का मोबाइल नंबर दर्ज करें';
 
   @override
+  String get suMobileTaken =>
+      'यह मोबाइल नंबर पहले से पंजीकृत है। कृपया कोई दूसरा नंबर उपयोग करें।';
+
+  @override
   String get suLocationTitle => 'स्थान सक्षम करें';
 
   @override
@@ -2866,6 +2870,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get suDobRequired => 'आगे बढ़ने के लिए अपनी जन्म तिथि चुनें';
+
+  @override
+  String get suGenderRequired => 'आगे बढ़ने के लिए अपना लिंग चुनें';
 
   @override
   String suAgeRestricted(int age) {

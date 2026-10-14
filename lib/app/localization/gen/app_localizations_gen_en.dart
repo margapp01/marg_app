@@ -2803,6 +2803,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get suInvalidMobile => 'Enter a valid 10-digit mobile number';
 
   @override
+  String get suMobileTaken =>
+      'This mobile number is already registered. Please use a different number.';
+
+  @override
   String get suLocationTitle => 'Enable location';
 
   @override
@@ -2867,6 +2871,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get suDobRequired => 'Select your date of birth to continue';
+
+  @override
+  String get suGenderRequired => 'Select your gender to continue';
 
   @override
   String suAgeRestricted(int age) {

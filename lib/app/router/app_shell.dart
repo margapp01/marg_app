@@ -53,6 +53,17 @@ class AppShell extends StatelessWidget {
 
   static const int _homeIndex = 0;
 
+  /// A tab navigator at its root reports "can't handle Back", and the root
+  /// navigator lets that through (its `canPop()` ignores our [PopScope]), so
+  /// Android's predictive back would close the app before [_onBackAtTabRoot]
+  /// runs. The shell always handles Back (pop → drawer → Home → exit sheet),
+  /// so re-report it as handled.
+  static bool _claimBack(BuildContext context, NavigationNotification n) {
+    if (n.canHandlePop) return false;
+    const NavigationNotification(canHandlePop: true).dispatch(context);
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -63,7 +74,10 @@ class AppShell extends StatelessWidget {
         child: Scaffold(
           key: _scaffoldKey,
           drawer: const HomeDrawer(),
-          body: navigationShell,
+          body: NotificationListener<NavigationNotification>(
+            onNotification: (n) => _claimBack(context, n),
+            child: navigationShell,
+          ),
           bottomNavigationBar: AppBottomNav(
             currentIndex: navigationShell.currentIndex,
             onDestinationSelected: _onTab,

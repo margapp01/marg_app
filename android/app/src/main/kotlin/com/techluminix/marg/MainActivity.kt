@@ -3,6 +3,8 @@ package com.techluminix.marg
 import android.app.Activity
 import android.content.Intent
 import android.provider.Settings
+import com.android.installreferrer.api.InstallReferrerClient
+import com.android.installreferrer.api.InstallReferrerStateListener
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -28,6 +30,7 @@ class MainActivity : FlutterActivity() {
                 // Stable per device (and app signing key); survives reinstalls,
                 // unlike Build.ID, which every phone on the same firmware shares.
                 "androidId" -> result.success(Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID))
+                "installReferrer" -> readInstallReferrer(result)
                 else -> result.notImplemented()
             }
         }
@@ -63,6 +66,38 @@ class MainActivity : FlutterActivity() {
                     result.error("unavailable", error.message, null)
                 }
             }
+    }
+
+    /**
+     * The Play Store install referrer (e.g. `utm_source=margapp.in&ref=CODE`
+     * when installed from a friend's invite page), or null when there is none
+     * or the Play Store can't be reached.
+     */
+    private fun readInstallReferrer(result: MethodChannel.Result) {
+        val client = InstallReferrerClient.newBuilder(this).build()
+        var replied = false
+        fun reply(referrer: String?) {
+            if (replied) return
+            replied = true
+            result.success(referrer)
+            client.endConnection()
+        }
+        try {
+            client.startConnection(object : InstallReferrerStateListener {
+                override fun onInstallReferrerSetupFinished(responseCode: Int) {
+                    val referrer = if (responseCode == InstallReferrerClient.InstallReferrerResponse.OK) {
+                        runCatching { client.installReferrer.installReferrer }.getOrNull()
+                    } else {
+                        null
+                    }
+                    reply(referrer)
+                }
+
+                override fun onInstallReferrerServiceDisconnected() = reply(null)
+            })
+        } catch (e: Exception) {
+            reply(null)
+        }
     }
 
     @Deprecated("Needed for Play services' resolution dialog")

@@ -38,7 +38,12 @@ class BlogDetailPage extends ConsumerWidget {
                   title: b.title,
                   subtitle: b.excerpt,
                   heroImageUrl: b.coverImageUrl,
-                  shareText: '${b.title}${b.excerpt != null ? '\n\n${b.excerpt}' : ''}',
+                  message: ShareMessage(
+                    kind: ShareKind.blog,
+                    itemId: b.slug,
+                    path: SharePaths.blog(b.slug),
+                    text: ShareCopy.blog(l10n, title: b.title, excerpt: b.excerpt),
+                  ),
                 ),
               ),
             ),

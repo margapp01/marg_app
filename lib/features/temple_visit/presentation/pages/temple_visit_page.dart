@@ -191,6 +191,7 @@ class _TempleVisitPageState extends ConsumerState<TempleVisitPage> {
         if (card == null) return const SizedBox.shrink();
         return CardUnlockPhase(
           card: card,
+          templeName: state.temple?.name,
           animate: !state.cardSeen,
           onBack: controller.backToSummary,
           onViewCollection: () => _pushTo(context, RouteNames.cards),

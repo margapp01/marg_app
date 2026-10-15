@@ -813,9 +813,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ryShareAchievement => 'उपलब्धि साझा करें';
 
   @override
-  String get ryShareBody => 'मैंने पूर्ण की';
-
-  @override
   String get ryViewPassport => 'पासपोर्ट देखें';
 
   @override
@@ -911,9 +908,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get scShareCard => 'कार्ड साझा करें';
-
-  @override
-  String get scShareFallback => 'मैंने अनलॉक किया';
 
   @override
   String get scTapToFlip => 'पलटने के लिए कार्ड टैप करें';
@@ -1100,9 +1094,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get acShareAchievement => 'उपलब्धि साझा करें';
-
-  @override
-  String get acShareBody => 'मैंने मार्ग पर एक पवित्र उपलब्धि अर्जित की!';
 
   @override
   String get acBrandTagline => 'मार्ग · भक्तों को दिव्यता से जोड़ना';
@@ -2021,9 +2012,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get pfShare => 'साझा करें';
 
   @override
-  String get pfShareText => 'MARG के साथ आध्यात्मिक यात्रा पर';
-
-  @override
   String get pfSpiritualPreferences => 'आध्यात्मिक प्राथमिकताएँ';
 
   @override
@@ -2447,10 +2435,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get rfMore => 'और';
-
-  @override
-  String get rfShareMessage =>
-      'MARG पर मेरे साथ जुड़ें और भारत के मंदिरों की खोज करें!';
 
   @override
   String get rfAll => 'सभी';
@@ -3861,6 +3845,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ryKmCovered => 'तय कि.मी.';
 
   @override
+  String ryAlsoNearby(int count) {
+    return 'पास में और दर्शन · $count';
+  }
+
+  @override
   String ryVisitedOn(Object date) {
     return '$date को दर्शन';
   }
@@ -4198,11 +4187,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tvShareCard => 'कार्ड शेयर करें';
 
   @override
-  String tvShareCardText(Object card) {
-    return 'मैंने अभी MARG पर $card पवित्र कार्ड प्राप्त किया 🙏';
-  }
-
-  @override
   String get tvShareFailed => 'अभी शेयर नहीं हो सका। कृपया पुनः प्रयास करें।';
 
   @override
@@ -4304,4 +4288,143 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get exFromHere => 'आपके स्थान से';
+
+  @override
+  String get shCardCommon => '🪔 मेरे संग्रह में एक नया पवित्र कार्ड!';
+
+  @override
+  String get shCardRare => '✨ मैंने एक दुर्लभ पवित्र कार्ड अनलॉक किया!';
+
+  @override
+  String get shCardEpic => '🔥 शानदार! मैंने एक एपिक पवित्र कार्ड अनलॉक किया!';
+
+  @override
+  String get shCardLegendary =>
+      '👑 लेजेंडरी! मैंने एक लेजेंडरी पवित्र कार्ड अनलॉक किया!';
+
+  @override
+  String get shCardMythic =>
+      '🌟 मिथिक! मैंने MARG के सबसे दुर्लभ पवित्र कार्डों में से एक अनलॉक किया!';
+
+  @override
+  String shCardProgress(int owned, int total) {
+    return 'अब तक $total में से $owned पवित्र कार्ड एकत्र किए।';
+  }
+
+  @override
+  String get shCardCta =>
+      'हर मंदिर का अपना कार्ड आपकी प्रतीक्षा में है। दर्शन करें, चेक-इन करें और अपना संग्रह शुरू करें 🙏';
+
+  @override
+  String shPassport(int temples, int cards, int percent) {
+    return '🛕 मेरा MARG आध्यात्मिक पासपोर्ट\n$temples मंदिर दर्शन · $cards पवित्र कार्ड · $percent% पूर्ण';
+  }
+
+  @override
+  String get shPassportCta =>
+      'क्या आप मेरी यात्रा से आगे निकल सकते हैं? अपनी यात्रा शुरू करें 👇';
+
+  @override
+  String shAchievement(Object name) {
+    return '🏆 मैंने MARG पर “$name” उपलब्धि अर्जित की!';
+  }
+
+  @override
+  String get shAchievementCta =>
+      'मंदिरों के दर्शन करें, पवित्र कार्ड एकत्र करें और अपनी उपलब्धियाँ अनलॉक करें 👇';
+
+  @override
+  String get shTempleCta =>
+      'MARG पर अपने दर्शन की योजना बनाएँ और यहाँ चेक-इन करके इसका पवित्र कार्ड अनलॉक करें 🪷';
+
+  @override
+  String shRoute(Object route) {
+    return '🚩 $route: MARG पर एक पवित्र यात्रा';
+  }
+
+  @override
+  String get shRouteCta =>
+      'यह यात्रा करें, हर मंदिर में चेक-इन करें और रास्ते का हर पवित्र कार्ड एकत्र करें 👇';
+
+  @override
+  String shRouteCompleted(Object route) {
+    return '🙏 मैंने MARG पर $route यात्रा पूरी की!';
+  }
+
+  @override
+  String get shRouteCompletedCta =>
+      'रास्ते के हर मंदिर ने मुझे एक पवित्र कार्ड दिया। अपनी यात्रा शुरू करें 👇';
+
+  @override
+  String get shInvite =>
+      '🙏 MARG पर मेरे साथ जुड़ें! भारत भर के मंदिरों के दर्शन करें, हर दर्शन पर चेक-इन करें और हर मंदिर का सुंदर पवित्र कार्ड एकत्र करें। मेरे आमंत्रण लिंक का उपयोग करें 👇';
+
+  @override
+  String shProfile(Object name) {
+    return '🪷 $name MARG के साथ आध्यात्मिक यात्रा पर हैं, मंदिरों के दर्शन कर रहे हैं और पवित्र कार्ड एकत्र कर रहे हैं। मेरे साथ जुड़ें 👇';
+  }
+
+  @override
+  String get shBlogCta => 'MARG पर और पढ़ें 👇';
+
+  @override
+  String get shFestivalCta =>
+      'अनुष्ठान, कथाएँ और दर्शन योग्य मंदिर, MARG पर 👇';
+
+  @override
+  String get shQuoteCta => 'MARG पर दैनिक ज्ञान 🙏';
+
+  @override
+  String get shActivityCta => 'MARG पर मेरी मंदिर यात्रा से जुड़ें 👇';
+
+  @override
+  String get shResetLink => 'लिंक रीसेट करें';
+
+  @override
+  String get shResetLinkTitle => 'अपना पासपोर्ट लिंक रीसेट करें?';
+
+  @override
+  String get shResetLinkBody =>
+      'आपके द्वारा पहले साझा किए गए लिंक काम करना बंद कर देंगे। अगली बार नया लिंक साझा होगा।';
+
+  @override
+  String get shResetLinkDone => 'नया पासपोर्ट लिंक बनाया गया';
+
+  @override
+  String get shShare => 'साझा करें';
+
+  @override
+  String get upMajorTitle => 'MARG अपडेट करने का समय';
+
+  @override
+  String get upMajorBody =>
+      'MARG का यह संस्करण अब समर्थित नहीं है। मंदिरों में चेक-इन करते रहने और पवित्र कार्ड एकत्र करने के लिए अपडेट करें।';
+
+  @override
+  String get upMinorTitle => 'नया MARG आ गया है';
+
+  @override
+  String upMinorBody(Object version) {
+    return 'संस्करण $version आपकी यात्रा के लिए नई सुविधाएँ और सुधार लाया है।';
+  }
+
+  @override
+  String upPatchBody(Object version) {
+    return 'एक छोटा अपडेट (v$version) सुधारों के साथ तैयार है।';
+  }
+
+  @override
+  String get upWhatsNew => 'नया क्या है';
+
+  @override
+  String get upUpdateNow => 'अभी अपडेट करें';
+
+  @override
+  String get upUpdate => 'अपडेट करें';
+
+  @override
+  String get upLater => 'बाद में';
+
+  @override
+  String get upDismiss => 'बंद करें';
 }

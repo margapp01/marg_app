@@ -22,6 +22,14 @@ GoRouterRedirect composeGuards(List<RouteGuard> guards) {
   };
 }
 
+/// Splash, sign-in, setup and the legal pages linked from sign-in: reachable
+/// without a session.
+bool isPublicLocation(String location) =>
+    location == RoutePaths.splash ||
+    location == RoutePaths.auth ||
+    location == RoutePaths.setup ||
+    location.startsWith(RoutePaths.legalPrefix);
+
 /// Keeps unauthenticated users out of the app and un-onboarded users in setup.
 ///
 /// The public locations (splash, auth, setup, and the legal pages linked from
@@ -32,11 +40,7 @@ GoRouterRedirect composeGuards(List<RouteGuard> guards) {
 RouteGuard authGuard(Ref ref) {
   return (BuildContext context, GoRouterState state) {
     final auth = ref.read(authControllerProvider);
-    final location = state.matchedLocation;
-    final isPublic = location == RoutePaths.splash ||
-        location == RoutePaths.auth ||
-        location == RoutePaths.setup ||
-        location.startsWith(RoutePaths.legalPrefix);
+    final isPublic = isPublicLocation(state.matchedLocation);
 
     switch (auth.status) {
       case AuthStatus.unknown:

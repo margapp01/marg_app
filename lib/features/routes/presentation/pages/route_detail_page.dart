@@ -12,6 +12,8 @@ import '../../../../app/router/route_paths.dart';
 import '../../../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../../../features/directions/domain/route_plan.dart';
 import '../../../../shared/design_system.dart';
+import '../../../temple_detail/domain/entities/temple_detail.dart' show NearbyTempleRef;
+import '../../../temple_detail/presentation/widgets/temple_sections.dart';
 import '../../data/repository/routes_repository_impl.dart';
 import '../../domain/entities/route_detail_bundle.dart';
 import '../../domain/entities/yatra_route.dart';
@@ -90,6 +92,7 @@ class _RouteDetailViewState extends State<_RouteDetailView> {
                 backgroundColor: context.scheme.secondary,
                 foregroundColor: Colors.white,
                 surfaceTintColor: Colors.transparent,
+                actions: [_ShareRouteButton(route: bundle.route)],
                 flexibleSpace: _Hero(bundle: bundle),
               ),
               SliverPadding(
@@ -125,6 +128,29 @@ class _RouteDetailViewState extends State<_RouteDetailView> {
             const Positioned.fill(child: IgnorePointer(child: ConfettiOverlay())),
         ],
       ),
+    );
+  }
+}
+
+/// Shares the route's public page with an invitation to walk it.
+class _ShareRouteButton extends ConsumerWidget {
+  const _ShareRouteButton({required this.route});
+  final YatraRoute route;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    return IconButton(
+      icon: const Icon(AppIcons.share),
+      tooltip: l10n.shShare,
+      onPressed: () => ref.read(shareServiceProvider).share(
+            ShareMessage(
+              kind: ShareKind.route,
+              itemId: route.slug,
+              path: SharePaths.route(route.slug),
+              text: ShareCopy.route(l10n, name: route.name),
+            ),
+          ),
     );
   }
 }
@@ -533,12 +559,30 @@ class _TemplesTab extends StatelessWidget {
       itemBuilder: (context, i) {
         final entry = temples[i];
         final date = bundle.visitDateByTempleId[entry.temple.id];
-        return TempleChecklistItem(
+        final nearby = bundle.nearbyByTempleId[entry.temple.id] ?? const <NearbyTempleRef>[];
+        final item = TempleChecklistItem(
           index: i + 1,
           entry: entry,
           status: bundle.statusOf(entry),
           visitedOn: date == null ? null : l10n.ryVisitedOn(_date(context, date)),
           onTap: () => _openTemple(context, entry.temple.slug),
+        );
+        if (nearby.isEmpty) return item;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            item,
+            ExpandableSection(
+              padding: AppSpacing.allSm,
+              leading: Icon(AppIcons.nearby, color: context.scheme.primary),
+              title: Text(l10n.ryAlsoNearby(nearby.length), style: context.textTheme.labelLarge?.semiBold),
+              child: NearbyTemplesSection(
+                nearby: nearby,
+                showHeader: false,
+                onOpen: (slug) => _openTemple(context, slug),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -676,13 +720,13 @@ class _RewardsTab extends ConsumerWidget {
           AppButton.primary(
             label: l10n.ryDownloadCertificate,
             icon: AppIcons.description,
-            onPressed: () => _downloadCertificate(context, ref, route.id),
+            onPressed: () => _downloadCertificate(context, ref, route),
           ),
           const Gap(AppSpacing.sm),
           AppButton.outlined(
             label: l10n.ryShareAchievement,
             icon: AppIcons.share,
-            onPressed: () => _share(context, route.name),
+            onPressed: () => _shareCompletion(context, ref, route),
           ),
           const Gap(AppSpacing.sm),
           AppButton.ghost(
@@ -702,15 +746,19 @@ class _RewardsTab extends ConsumerWidget {
     );
   }
 
-  void _share(BuildContext context, String routeName) {
-    final l10n = AppLocalizations.of(context);
-    SharePlus.instance.share(ShareParams(text: '${l10n.ryShareBody} $routeName · MARG'));
-  }
+  Future<void> _shareCompletion(BuildContext context, WidgetRef ref, YatraRoute route) => ref.read(shareServiceProvider).share(
+        ShareMessage(
+          kind: ShareKind.routeCompletion,
+          itemId: route.slug,
+          path: SharePaths.route(route.slug),
+          text: ShareCopy.routeCompleted(AppLocalizations.of(context), name: route.name),
+        ),
+      );
 
-  Future<void> _downloadCertificate(BuildContext context, WidgetRef ref, String routeId) async {
+  Future<void> _downloadCertificate(BuildContext context, WidgetRef ref, YatraRoute route) async {
     final l10n = AppLocalizations.of(context);
     try {
-      final bytes = await ref.read(routesRepositoryProvider).certificate(routeId);
+      final bytes = await ref.read(routesRepositoryProvider).certificate(route.id);
       if (bytes.isEmpty) {
         if (context.mounted) AppSnackbar.error(context, l10n.ryCertUnavailable);
         return;
@@ -720,7 +768,15 @@ class _RewardsTab extends ConsumerWidget {
         name: 'marg-certificate.pdf',
         mimeType: 'application/pdf',
       );
-      await SharePlus.instance.share(ShareParams(files: [file]));
+      await ref.read(shareServiceProvider).share(
+            ShareMessage(
+              kind: ShareKind.certificate,
+              itemId: route.slug,
+              path: SharePaths.route(route.slug),
+              text: ShareCopy.routeCompleted(l10n, name: route.name),
+            ),
+            file: file,
+          );
     } catch (_) {
       if (context.mounted) AppSnackbar.error(context, l10n.ryCertUnavailable);
     }

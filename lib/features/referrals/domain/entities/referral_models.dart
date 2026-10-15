@@ -2,15 +2,13 @@
 // defensive parsing (matches the app convention). Every field degrades to a
 // safe default instead of throwing on a reshaped payload.
 
+import '../../../../core/services/share_service.dart';
+
 String? _s(Object? v) => v is String && v.isNotEmpty ? v : null;
 int _i(Object? v) => v is int ? v : (v is num ? v.toInt() : int.tryParse('$v') ?? 0);
 int? _iN(Object? v) => v == null ? null : _i(v);
 DateTime? _dt(Object? v) => v is String ? DateTime.tryParse(v) : null;
 Map<String, dynamic>? _m(Object? v) => v is Map<dynamic, dynamic> ? v.cast<String, dynamic>() : null;
-
-/// The base the invite link is composed from. The backend returns the referral
-/// **code** only (no full URL), so the client wraps it with the app-owned base.
-const String kReferralLinkBase = 'https://marg.app.link';
 
 /// `GET /my/referral` — the dashboard summary.
 class ReferralSummary {
@@ -30,7 +28,9 @@ class ReferralSummary {
   final int? nextMilestone;
   final int? referralsToNextMilestone;
 
-  String get inviteLink => '$kReferralLinkBase/$code';
+  /// The backend returns the referral **code** only; the invite landing page
+  /// on the website wraps it (`margapp.in/invite/{code}`).
+  String get inviteLink => ShareLinks.invite(code);
 
   /// Progress toward the next milestone (0–1); full when there is no next one.
   double get milestoneProgress {

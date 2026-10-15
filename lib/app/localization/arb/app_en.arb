@@ -264,7 +264,6 @@
   "ryCertIssuer": "MARG Temple Yatra",
   "ryPilgrim": "Pilgrim",
   "ryShareAchievement": "Share Achievement",
-  "ryShareBody": "I completed the",
   "ryViewPassport": "View Passport",
   "ryRewardsLockedHint": "Complete all temples to unlock the certificate and route reward.",
   "scTitle": "My Sacred Collection",
@@ -297,7 +296,6 @@
   "scHistory": "History",
   "scViewTemple": "View Temple",
   "scShareCard": "Share Card",
-  "scShareFallback": "I unlocked the",
   "scTapToFlip": "Tap the card to flip",
   "scEdition": "Edition",
   "scLimited": "Limited",
@@ -359,7 +357,6 @@
   "acUnlockedOn": "Unlocked On",
   "acShare": "Share",
   "acShareAchievement": "Share Achievement",
-  "acShareBody": "I earned a sacred achievement on MARG!",
   "acBrandTagline": "MARG · Connecting Devotees to Divine",
   "acByRarity": "By Rarity",
   "acByCategory": "By Category",
@@ -687,7 +684,6 @@
   "pfPassport": "Passport",
   "pfPreferences": "Settings",
   "pfShare": "Share",
-  "pfShareText": "on a spiritual journey with MARG",
   "pfSpiritualPreferences": "Spiritual Preferences",
   "pfPrivacySecurity": "Privacy & Security",
   "pfMyDevices": "My Devices",
@@ -845,7 +841,6 @@
   "rfScanToJoin": "Scan to join MARG",
   "rfEmail": "Email",
   "rfMore": "More",
-  "rfShareMessage": "Join me on MARG and explore the temples of Bharat!",
   "rfAll": "All",
   "rfStatusPending": "Pending",
   "rfStatusJoined": "Joined",
@@ -1504,6 +1499,15 @@
   "ryJourneySoFar": "Journey so far",
   "ryStillAhead": "Still ahead",
   "ryKmCovered": "KM Covered",
+  "ryAlsoNearby": "Also visit nearby · {count}",
+  "@ryAlsoNearby": {
+    "description": "Expandable row under a route stop listing other temples within about 30 km.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "ryVisitedOn": "Visited {date}",
   "@ryVisitedOn": {
     "placeholders": {
@@ -1694,12 +1698,6 @@
   "tvGreetOther": "May your journey be blessed!",
   "tvRevealCard": "Reveal Your Card",
   "tvShareCard": "Share Card",
-  "tvShareCardText": "I just collected the {card} Sacred Card on MARG 🙏",
-  "@tvShareCardText": {
-    "placeholders": {
-      "card": {}
-    }
-  },
   "tvShareFailed": "Couldn't share right now. Please try again.",
   "tvTodayAt": "Today, {time}",
   "@tvTodayAt": {
@@ -1774,5 +1772,95 @@
       "count": {}
     }
   },
-  "exFromHere": "From Where You Are"
+  "exFromHere": "From Where You Are",
+  "shCardCommon": "🪔 A new Sacred Card for my collection!",
+  "shCardRare": "✨ I unlocked a Rare Sacred Card!",
+  "shCardEpic": "🔥 Epic find! I unlocked an Epic Sacred Card!",
+  "shCardLegendary": "👑 Legendary! I unlocked a Legendary Sacred Card!",
+  "shCardMythic": "🌟 Mythic! I unlocked one of the rarest Sacred Cards on MARG!",
+  "shCardProgress": "{owned} of {total} Sacred Cards collected so far.",
+  "@shCardProgress": {
+    "placeholders": {
+      "owned": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "shCardCta": "Every temple has its own card waiting. Visit, check in and start your collection 🙏",
+  "shPassport": "🛕 My MARG Spiritual Passport\n{temples} temples visited · {cards} Sacred Cards · {percent}% complete",
+  "@shPassport": {
+    "placeholders": {
+      "temples": {
+        "type": "int"
+      },
+      "cards": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "shPassportCta": "Can you beat my journey? Start yours 👇",
+  "shAchievement": "🏆 I just earned “{name}” on MARG!",
+  "@shAchievement": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "shAchievementCta": "Visit temples, collect Sacred Cards and unlock achievements of your own 👇",
+  "shTempleCta": "Plan your darshan on MARG and check in here to unlock its Sacred Card 🪷",
+  "shRoute": "🚩 {route}: a sacred yatra on MARG",
+  "@shRoute": {
+    "placeholders": {
+      "route": {}
+    }
+  },
+  "shRouteCta": "Walk it, check in at every temple and collect each Sacred Card along the way 👇",
+  "shRouteCompleted": "🙏 I completed the {route} yatra on MARG!",
+  "@shRouteCompleted": {
+    "placeholders": {
+      "route": {}
+    }
+  },
+  "shRouteCompletedCta": "Every temple on the way gave me a Sacred Card. Start your own yatra 👇",
+  "shInvite": "🙏 Join me on MARG! Visit temples across Bharat, check in at every darshan and collect a beautiful Sacred Card for each temple. Use my invite link 👇",
+  "shProfile": "🪷 {name} is on a spiritual journey with MARG, visiting temples and collecting Sacred Cards. Join me 👇",
+  "@shProfile": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "shBlogCta": "Read more on MARG 👇",
+  "shFestivalCta": "Rituals, stories and temples to visit, on MARG 👇",
+  "shQuoteCta": "Daily wisdom on MARG 🙏",
+  "shActivityCta": "Follow my temple journey on MARG 👇",
+  "shResetLink": "Reset link",
+  "shResetLinkTitle": "Reset your passport link?",
+  "shResetLinkBody": "Links you have already shared will stop working. Your next share uses a new link.",
+  "shResetLinkDone": "New passport link created",
+  "shShare": "Share",
+  "upMajorTitle": "Time to update MARG",
+  "upMajorBody": "This version of MARG is no longer supported. Update to keep checking in at temples and collecting your Sacred Cards.",
+  "upMinorTitle": "A new MARG is here",
+  "upMinorBody": "Version {version} brings new features and improvements to your journey.",
+  "@upMinorBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "upPatchBody": "A quick update (v{version}) is ready with fixes.",
+  "@upPatchBody": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "upWhatsNew": "What's new",
+  "upUpdateNow": "Update now",
+  "upUpdate": "Update",
+  "upLater": "Later",
+  "upDismiss": "Dismiss"
 }

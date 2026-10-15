@@ -37,8 +37,15 @@ class PassportRemoteDataSource {
   Future<PassportShare> share() async =>
       PassportShare.fromJson(_data(await _dio.get<dynamic>('/my/passport/share')));
 
-  /// Mint a public share link; returns the public path (e.g. `/passport/{token}`).
-  Future<String> mintShareLink() async {
+  /// The public share link, minted on first use; returns the public path
+  /// (e.g. `/passport/{token}`). Stable across calls.
+  Future<String> shareLink() async {
+    final data = _data(await _dio.get<dynamic>('/my/passport/share-link'));
+    return (data['publicPath'] as String?) ?? '';
+  }
+
+  /// Rotate the public share link (old links stop working); returns the new path.
+  Future<String> resetShareLink() async {
     final data = _data(await _dio.post<dynamic>('/my/passport/share-link'));
     return (data['publicPath'] as String?) ?? '';
   }

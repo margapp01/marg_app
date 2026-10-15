@@ -94,6 +94,7 @@ import 'app_shell.dart';
 import 'route_guards.dart';
 import 'route_names.dart';
 import 'route_paths.dart';
+import 'web_links.dart';
 
 /// A child path segment under [parent] (`/explore/nearby` → `nearby`), so
 /// nested routes keep the absolute paths in [RoutePaths] as the single source.
@@ -119,7 +120,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     navigatorKey: rootKey,
     initialLocation: RoutePaths.splash,
     refreshListenable: refresh,
-    redirect: composeGuards([authGuard(ref)]),
+    redirect: composeGuards([webLinkGuard(ref), authGuard(ref)]),
     observers: _analytics(),
     // An unknown/malformed path (stale share link, typo'd deep link) must never
     // show GoRouter's raw debug page — render the shared error state instead.

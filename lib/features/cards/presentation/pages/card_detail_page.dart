@@ -7,7 +7,7 @@ import '../../../../app/localization/app_localizations.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../app/router/route_paths.dart';
 import '../../../../shared/design_system.dart';
-import '../../data/repository/cards_repository_impl.dart';
+import '../../domain/entities/collection_stats.dart';
 import '../../domain/entities/sacred_card.dart';
 import '../controllers/cards_controllers.dart';
 import '../widgets/card_widgets.dart';
@@ -138,7 +138,8 @@ class _Content extends ConsumerWidget {
 }
 
 /// Previews the branded share poster of an owned card and shares it as an
-/// image (with the backend's share text, when available).
+/// image with rarity-led copy, the sharer's collection progress and the
+/// card's public page.
 class _CardShareSheet extends ConsumerStatefulWidget {
   const _CardShareSheet({required this.card});
 
@@ -157,12 +158,24 @@ class _CardShareSheetState extends ConsumerState<_CardShareSheet> {
     final card = widget.card;
     setState(() => _busy = true);
     try {
-      final text = await ref.read(cardsRepositoryProvider).shareText(card.ownership!.userCardId!);
-      await shareBoundaryImage(
-        _posterKey,
-        text: text ?? '${l10n.scShareFallback} ${card.title} · MARG',
-        fileName: 'marg-card.png',
-      );
+      final stats = await ref.read(collectionStatsProvider.future).catchError((Object _) => CollectionStats.empty);
+      await ref.read(shareServiceProvider).share(
+            ShareMessage(
+              kind: ShareKind.card,
+              itemId: card.id,
+              path: SharePaths.card(card.id),
+              text: ShareCopy.card(
+                l10n,
+                rarity: card.rarity,
+                title: card.title,
+                temple: card.temple?.name ?? card.subtitle,
+                owned: stats.ownedCards,
+                total: stats.totalCards,
+              ),
+            ),
+            capture: _posterKey,
+            fileName: 'marg-card.png',
+          );
     } catch (_) {
       if (mounted) AppSnackbar.error(context, l10n.scErrorBody);
     } finally {

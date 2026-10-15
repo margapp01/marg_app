@@ -61,7 +61,10 @@ class PassportRepositoryImpl implements PassportRepository {
   Future<PassportShare> share() => _remote.share();
 
   @override
-  Future<String> mintShareLink() => _remote.mintShareLink();
+  Future<String> shareLink() => _remote.shareLink();
+
+  @override
+  Future<String> resetShareLink() => _remote.resetShareLink();
 
   @override
   Future<List<int>> certificate(String routeId) => _remote.certificate(routeId);

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../shared/design_system.dart';
 
 /// What to render on a branded MARG share card. `heroImageUrl` shows an artwork
 /// band; `verse` renders a scripture card instead of a title/subtitle body.
+/// [message] is the text + public page sent alongside the image.
 class ShareContent {
   const ShareContent({
     required this.title,
@@ -13,7 +15,7 @@ class ShareContent {
     this.heroImageUrl,
     this.verse,
     this.attribution,
-    required this.shareText,
+    required this.message,
   });
 
   final String title;
@@ -21,7 +23,7 @@ class ShareContent {
   final String? heroImageUrl;
   final String? verse;
   final String? attribution;
-  final String shareText;
+  final ShareMessage message;
 }
 
 /// Opens the branded share sheet for any piece of Knowledge Hub content.
@@ -33,15 +35,15 @@ Future<void> showKnowledgeShare(BuildContext context, ShareContent content) {
   );
 }
 
-class _ShareSheet extends StatefulWidget {
+class _ShareSheet extends ConsumerStatefulWidget {
   const _ShareSheet({required this.content});
   final ShareContent content;
 
   @override
-  State<_ShareSheet> createState() => _ShareSheetState();
+  ConsumerState<_ShareSheet> createState() => _ShareSheetState();
 }
 
-class _ShareSheetState extends State<_ShareSheet> {
+class _ShareSheetState extends ConsumerState<_ShareSheet> {
   final _cardKey = GlobalKey();
   bool _busy = false;
 
@@ -49,7 +51,7 @@ class _ShareSheetState extends State<_ShareSheet> {
     final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
-      await shareBoundaryImage(_cardKey, text: widget.content.shareText, fileName: 'marg-share.png');
+      await ref.read(shareServiceProvider).share(widget.content.message, capture: _cardKey, fileName: 'marg-share.png');
     } catch (_) {
       if (mounted) AppSnackbar.error(context, l10n.kbShareFailed);
     } finally {

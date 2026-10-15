@@ -102,9 +102,19 @@ class _AchievementDetailPageState extends ConsumerState<AchievementDetailPage> {
 
   Future<void> _share() async {
     final l10n = AppLocalizations.of(context);
+    final achievement = ref.read(achievementDetailProvider(widget.achievementId)).valueOrNull?.achievement;
+    if (achievement == null) return;
     setState(() => _sharing = true);
     try {
-      await shareBoundaryImage(_shareKey, text: l10n.acShareBody, fileName: 'marg-achievement.png');
+      await ref.read(shareServiceProvider).share(
+            ShareMessage(
+              kind: ShareKind.achievement,
+              itemId: achievement.slug,
+              text: ShareCopy.achievement(l10n, name: achievement.name),
+            ),
+            capture: _shareKey,
+            fileName: 'marg-achievement.png',
+          );
     } catch (_) {
       if (mounted) AppSnackbar.error(context, l10n.acErrorBody);
     } finally {

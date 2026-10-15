@@ -84,28 +84,12 @@ class TempleDetailRemoteDataSource {
     return _dataList(res)
         .whereType<Map<dynamic, dynamic>>()
         .map((row) => row.cast<String, dynamic>())
-        .map(_nearbyFromRow)
+        .map(NearbyTempleRef.fromNearbyRow)
         .where((n) => n.id.isNotEmpty && n.id != excludeId)
         .take(6)
         .toList(growable: false);
   }
 
-  NearbyTempleRef _nearbyFromRow(Map<String, dynamic> row) {
-    final temple = (row['temple'] as Map?)?.cast<String, dynamic>() ?? const {};
-    final city = (temple['city'] as Map?)?.cast<String, dynamic>();
-    final meters = (row['distanceMeters'] as num?)?.round() ?? 0;
-    final formatted = meters < 1000 ? '$meters m' : '${(meters / 1000).toStringAsFixed(1)} km';
-    return NearbyTempleRef(
-      id: (temple['id'] as String?) ?? '',
-      name: (temple['name'] as String?) ?? '',
-      slug: (temple['slug'] as String?) ?? '',
-      city: city?['name'] as String?,
-      formattedDistance: formatted,
-      imageUrl: temple['coverImageUrl'] as String?,
-      ratingAverage: (temple['ratingAverage'] as num?)?.toDouble() ?? 0,
-      ratingCount: (temple['ratingCount'] as num?)?.toInt() ?? 0,
-    );
-  }
 }
 
 final templeDetailRemoteDataSourceProvider = Provider<TempleDetailRemoteDataSource>(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/profile/presentation/controllers/profile_controllers.dart';
+import '../shared/feedback/app_update_gate.dart';
 import 'localization/app_localizations.dart';
 import 'localization/locale_provider.dart';
 import 'router/app_router.dart';
@@ -31,13 +32,14 @@ class MargApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       // Responsive + accessible type: scale every text style by device size ×
       // the user's text-scale setting (clamped for readability). Applied once
-      // here so widgets never touch textScaler themselves.
+      // here so widgets never touch textScaler themselves. The update gate
+      // sits above the navigator so a required update covers every screen.
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(
           textScaler: AppTypography.responsiveTextScaler(context),
           disableAnimations: reduceAnimations || MediaQuery.of(context).disableAnimations,
         ),
-        child: child!,
+        child: AppUpdateGate(child: child!),
       ),
     );
   }

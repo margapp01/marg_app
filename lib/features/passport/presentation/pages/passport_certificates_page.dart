@@ -117,8 +117,17 @@ class _CertificateState extends ConsumerState<_Certificate> {
         if (mounted) AppSnackbar.error(context, l10n.ppCertUnavailable);
         return;
       }
+      final route = widget.route;
       final file = XFile.fromData(Uint8List.fromList(bytes), name: 'marg-certificate.pdf', mimeType: 'application/pdf');
-      await SharePlus.instance.share(ShareParams(files: [file]));
+      await ref.read(shareServiceProvider).share(
+            ShareMessage(
+              kind: ShareKind.certificate,
+              itemId: route.slug,
+              path: SharePaths.route(route.slug),
+              text: ShareCopy.routeCompleted(l10n, name: route.name),
+            ),
+            file: file,
+          );
     } catch (_) {
       if (mounted) AppSnackbar.error(context, l10n.ppCertUnavailable);
     } finally {

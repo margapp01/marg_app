@@ -35,7 +35,12 @@ class FestivalDetailPage extends ConsumerWidget {
                   title: f.name,
                   subtitle: f.deity,
                   heroImageUrl: f.imageUrl,
-                  shareText: '${f.name}${f.startDate != null ? ' · ${festivalDate(f.startDate)}' : ''}',
+                  message: ShareMessage(
+                    kind: ShareKind.festival,
+                    itemId: slug,
+                    path: SharePaths.festival(slug),
+                    text: ShareCopy.festival(l10n, name: f.name, date: f.startDate != null ? festivalDate(f.startDate) : null),
+                  ),
                 ),
               ),
             ),

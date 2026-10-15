@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/dio_client.dart';
+import '../../../temple_detail/domain/entities/temple_detail.dart' show NearbyTempleRef;
 import '../../domain/entities/my_route.dart';
 import '../../domain/entities/route_progress.dart';
 import '../../domain/entities/yatra_route.dart';
@@ -35,6 +36,21 @@ class RoutesRemoteDataSource {
   Future<YatraRoute> detail(String slug) async {
     final res = await _dio.get<dynamic>('/routes/$slug');
     return YatraRoute.fromJson(_data(res));
+  }
+
+  /// "Also visit nearby" per stop: temple id → nearby catalogue temples
+  /// (`/routes/:slug/nearby`, nearest first, route stops excluded).
+  Future<Map<String, List<NearbyTempleRef>>> nearbyByStop(String slug) async {
+    final res = await _dio.get<dynamic>('/routes/$slug/nearby');
+    return {
+      for (final stop in _dataList(res).whereType<Map<dynamic, dynamic>>())
+        if (stop['templeId'] is String)
+          stop['templeId'] as String: ((stop['nearby'] as List?) ?? const [])
+              .whereType<Map<dynamic, dynamic>>()
+              .map((row) => NearbyTempleRef.fromNearbyRow(row.cast<String, dynamic>()))
+              .where((n) => n.id.isNotEmpty)
+              .toList(growable: false),
+    };
   }
 
   Future<RouteProgress> progress(String routeId) async {

@@ -65,15 +65,6 @@ class CardsRepositoryImpl implements CardsRepository {
   }
 
   @override
-  Future<String?> shareText(String userCardId) async {
-    try {
-      return await _remote.shareText(userCardId);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  @override
   Future<List<CollectionGroup>> seriesProgress() => _remote.seriesProgress();
 
   @override

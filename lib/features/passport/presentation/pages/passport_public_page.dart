@@ -41,10 +41,13 @@ class PassportPublicPage extends ConsumerWidget {
               ),
             ),
             const Gap(AppSpacing.lg),
-            PassportShareCard(share: share, qrData: link.valueOrNull),
+            PassportShareCard(share: share, qrData: _publicUrl(link.valueOrNull)),
           ],
         ),
       ),
     );
   }
+
+  static String? _publicUrl(String? path) =>
+      path == null || path.isEmpty ? null : ShareLinks.web(path, kind: ShareKind.passport);
 }

@@ -101,11 +101,6 @@ class CardsRemoteDataSource {
     return SacredCard.fromUserCard(_data(res));
   }
 
-  Future<String?> shareText(String userCardId) async {
-    final res = await _dio.get<dynamic>('/my/cards/$userCardId/share');
-    return _data(res)['shareText'] as String?;
-  }
-
   Future<List<CollectionGroup>> seriesProgress() => _groups('/my/passport/series');
   Future<List<CollectionGroup>> seasonProgress() => _groups('/my/passport/seasons');
 

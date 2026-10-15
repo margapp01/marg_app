@@ -1,11 +1,7 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../features/auth/presentation/controllers/auth_controller.dart';
@@ -26,17 +22,15 @@ class _ShareJourneyPageState extends ConsumerState<ShareJourneyPage> {
   final _cardKey = GlobalKey();
   bool _busy = false;
 
-  Future<void> _share(ReferralSummary summary) async {
+  Future<void> _share() async {
     final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
-      final boundary = _cardKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-      if (boundary == null) return;
-      final image = await boundary.toImage(pixelRatio: 3);
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (bytes == null) return;
-      final file = XFile.fromData(bytes.buffer.asUint8List(), name: 'marg-invite.png', mimeType: 'image/png');
-      await SharePlus.instance.share(ShareParams(files: [file], text: '${l10n.rfShareMessage} ${summary.inviteLink}'));
+      await ref.read(shareServiceProvider).share(
+            ShareMessage(kind: ShareKind.invite, text: ShareCopy.invite(l10n)),
+            capture: _cardKey,
+            fileName: 'marg-invite.png',
+          );
     } catch (_) {
       if (mounted) AppSnackbar.error(context, l10n.rfShareFailed);
     } finally {
@@ -61,7 +55,7 @@ class _ShareJourneyPageState extends ConsumerState<ShareJourneyPage> {
             const Gap(AppSpacing.lg),
             RepaintBoundary(key: _cardKey, child: _ShareCard(summary: summary)),
             const Gap(AppSpacing.xl),
-            AppButton.primary(label: l10n.rfShareNow, icon: AppIcons.share, busy: _busy, onPressed: () => _share(summary)),
+            AppButton.primary(label: l10n.rfShareNow, icon: AppIcons.share, busy: _busy, onPressed: _share),
           ],
         ),
       ),

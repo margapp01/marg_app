@@ -7,7 +7,6 @@ class PassportShare {
     required this.visitedTemples,
     required this.cardsCollected,
     required this.routesCompleted,
-    required this.shareText,
     this.profilePhoto,
     this.memberSince,
   });
@@ -18,7 +17,6 @@ class PassportShare {
   final int visitedTemples;
   final int cardsCollected;
   final int routesCompleted;
-  final String shareText;
   final String? profilePhoto;
   final DateTime? memberSince;
 
@@ -36,7 +34,6 @@ class PassportShare {
       visitedTemples: _i(stats['visitedTemples']),
       cardsCollected: _i(stats['cardsCollected']),
       routesCompleted: _i(stats['routesCompleted']),
-      shareText: (json['shareText'] as String?) ?? '',
     );
   }
 }

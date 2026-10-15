@@ -30,9 +30,6 @@ abstract class CardsRepository {
   /// A single card, enriched with ownership when the user owns it.
   Future<SacredCard> cardDetail(String id);
 
-  /// Backend share text for an owned card (null if not owned / unavailable).
-  Future<String?> shareText(String userCardId);
-
   /// Per-series collection progress.
   Future<List<CollectionGroup>> seriesProgress();
 

@@ -50,7 +50,9 @@ class _FakeRepo implements PassportRepository {
   @override
   Future<PassportShare> share() async => PassportShare.fromJson(const {});
   @override
-  Future<String> mintShareLink() async => 'https://marg.app/p/token123';
+  Future<String> shareLink() async => '/passport/token123';
+  @override
+  Future<String> resetShareLink() async => '/passport/token456';
   @override
   Future<List<int>> certificate(String routeId) async => const [];
 }
@@ -102,12 +104,11 @@ void main() {
       final s = PassportShare.fromJson(const {
         'profileSummary': {'name': 'Meera', 'memberSince': '2025-06-01T00:00:00.000Z'},
         'stats': {'trustScore': 640, 'passportCompletion': 50, 'visitedTemples': 12, 'cardsCollected': 20, 'routesCompleted': 1},
-        'shareText': 'My spiritual journey on MARG',
       });
       expect(s.name, 'Meera');
       expect(s.trustScore, 640);
       expect(s.visitedTemples, 12);
-      expect(s.shareText, 'My spiritual journey on MARG');
+      expect(s.cardsCollected, 20);
     });
   });
 

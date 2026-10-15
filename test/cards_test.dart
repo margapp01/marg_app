@@ -41,9 +41,6 @@ class _FakeRepo implements CardsRepository {
   Future<SacredCard> cardDetail(String id) async => _catalogCard();
 
   @override
-  Future<String?> shareText(String userCardId) async => 'shared';
-
-  @override
   Future<List<CollectionGroup>> seriesProgress() async => [
         CollectionGroup.fromJson(const {'id': 's1', 'name': 'Jyotirlinga Series', 'slug': 'jyoti', 'totalCards': 12, 'ownedCards': 3, 'completionPercent': 25.0, 'completed': false, 'missingCards': <Object>[]}),
       ];

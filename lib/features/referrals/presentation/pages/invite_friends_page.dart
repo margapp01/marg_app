@@ -8,7 +8,7 @@ import '../../../../shared/design_system.dart';
 import '../controllers/referral_controllers.dart';
 import '../widgets/referral_share.dart';
 
-/// Screen 2 — Invite Friends: the real referral link (code + app base), per-app
+/// Screen 2 — Invite Friends: the real referral link (margapp.in/invite/{code}), per-app
 /// share buttons, copy, and a QR of the invite link.
 class InviteFriendsPage extends ConsumerWidget {
   const InviteFriendsPage({super.key});
@@ -25,7 +25,7 @@ class InviteFriendsPage extends ConsumerWidget {
         loading: () => const LoadingView(),
         error: (_, _) => ErrorView(title: l10n.rfErrorTitle, message: l10n.rfErrorBody, onRetry: () => ref.invalidate(referralSummaryProvider)),
         data: (summary) {
-          final text = '${l10n.rfShareMessage} ${summary.inviteLink}';
+          final text = ShareCopy.invite(l10n);
           return ListView(
             padding: AppSpacing.screenAll,
             children: [

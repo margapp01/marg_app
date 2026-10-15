@@ -1,9 +1,5 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../shared/design_system.dart';
@@ -13,7 +9,7 @@ import '../widgets/notification_widgets.dart';
 
 /// Screen 10 — Share Activity: renders a premium share card for a notification
 /// (visit verified, achievement, route completed, card, milestone) and shares
-/// it as an image via share_plus.
+/// it as an image with a link to follow the journey on MARG.
 class ShareActivityPage extends ConsumerStatefulWidget {
   const ShareActivityPage({required this.id, super.key});
   final String id;
@@ -30,13 +26,11 @@ class _ShareActivityPageState extends ConsumerState<ShareActivityPage> {
     final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
-      final boundary = _cardKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-      if (boundary == null) return;
-      final image = await boundary.toImage(pixelRatio: 3);
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (bytes == null) return;
-      final file = XFile.fromData(bytes.buffer.asUint8List(), name: 'marg-activity.png', mimeType: 'image/png');
-      await SharePlus.instance.share(ShareParams(files: [file], text: '${n.title} — via MARG'));
+      await ref.read(shareServiceProvider).share(
+            ShareMessage(kind: ShareKind.activity, itemId: n.kind.wire, text: ShareCopy.activity(l10n, title: n.title)),
+            capture: _cardKey,
+            fileName: 'marg-activity.png',
+          );
     } catch (_) {
       if (mounted) AppSnackbar.error(context, l10n.ntShareFailed);
     } finally {

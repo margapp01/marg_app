@@ -4,22 +4,23 @@ import 'package:url_launcher/url_launcher.dart';
 /// A named social/share target for the Invite Friends screen.
 enum ShareTarget { whatsapp, telegram, twitter, email, facebook, system }
 
-/// Opens a share target with the invite [text]. WhatsApp / Telegram / X / Email
-/// use reliable web-intent URLs; Facebook + "More" fall back to the system share
-/// sheet (share_plus) — no fabricated deep links.
+/// Opens a share target with the invite [text] and [link]. WhatsApp / Telegram
+/// / X / Email use reliable web-intent URLs; Facebook + "More" fall back to the
+/// system share sheet (share_plus) — no fabricated deep links.
 Future<void> shareReferral(ShareTarget target, {required String text, required String link}) async {
+  final message = '$text\n\n$link';
   switch (target) {
     case ShareTarget.whatsapp:
-      await _launch(Uri.parse('https://wa.me/?text=${Uri.encodeComponent(text)}'));
+      await _launch(Uri.parse('https://wa.me/?text=${Uri.encodeComponent(message)}'));
     case ShareTarget.telegram:
       await _launch(Uri.parse('https://t.me/share/url?url=${Uri.encodeComponent(link)}&text=${Uri.encodeComponent(text)}'));
     case ShareTarget.twitter:
-      await _launch(Uri.parse('https://twitter.com/intent/tweet?text=${Uri.encodeComponent(text)}'));
+      await _launch(Uri.parse('https://twitter.com/intent/tweet?text=${Uri.encodeComponent(message)}'));
     case ShareTarget.email:
-      await _launch(Uri(scheme: 'mailto', queryParameters: {'subject': 'Join me on MARG', 'body': text}));
+      await _launch(Uri(scheme: 'mailto', queryParameters: {'subject': 'Join me on MARG', 'body': message}));
     case ShareTarget.facebook:
     case ShareTarget.system:
-      await SharePlus.instance.share(ShareParams(text: text));
+      await SharePlus.instance.share(ShareParams(text: message));
   }
 }
 

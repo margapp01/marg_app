@@ -835,10 +835,14 @@ class GallerySection extends StatelessWidget {
 
 /// Nearby temples — horizontal cards.
 class NearbyTemplesSection extends StatelessWidget {
-  const NearbyTemplesSection({required this.nearby, required this.onOpen, super.key});
+  const NearbyTemplesSection({required this.nearby, required this.onOpen, this.title, this.showHeader = true, super.key});
 
   final List<NearbyTempleRef> nearby;
   final ValueChanged<String> onOpen; // slug
+  /// Header text; defaults to "Nearby Temples".
+  final String? title;
+  /// False when a parent (e.g. an expandable row) already labels the strip.
+  final bool showHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -847,7 +851,7 @@ class NearbyTemplesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(title: l10n.tdNearbyTemples),
+        if (showHeader) SectionHeader(title: title ?? l10n.tdNearbyTemples),
         SizedBox(
           height: 228,
           child: ListView.separated(

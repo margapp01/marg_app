@@ -45,7 +45,8 @@ final passportShareProvider = FutureProvider.autoDispose<PassportShare>(
   (ref) => ref.watch(passportRepositoryProvider).share(),
 );
 
-/// Mints (or reuses) the public passport link — the QR/share target.
+/// The public passport path (`/passport/{token}`) — the QR/share target.
+/// Stable: reopening the share screen never breaks a link already shared.
 final passportShareLinkProvider = FutureProvider.autoDispose<String>(
-  (ref) => ref.watch(passportRepositoryProvider).mintShareLink(),
+  (ref) => ref.watch(passportRepositoryProvider).shareLink(),
 );

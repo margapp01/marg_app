@@ -56,7 +56,7 @@ class DailyQuotesPage extends ConsumerWidget {
                       child: AppButton.primary(
                         label: l10n.kbShare,
                         icon: AppIcons.share,
-                        onPressed: () => showKnowledgeShare(context, _share(quote)),
+                        onPressed: () => showKnowledgeShare(context, _share(l10n, quote)),
                       ),
                     ),
                   ],
@@ -77,12 +77,17 @@ class DailyQuotesPage extends ConsumerWidget {
     AppSnackbar.success(context, l10n.kbCopied);
   }
 
-  ShareContent _share(Quote quote) => ShareContent(
+  ShareContent _share(AppLocalizations l10n, Quote quote) => ShareContent(
         title: quote.text,
         verse: quote.textHi ?? quote.text,
         attribution: quote.attribution.isEmpty ? null : quote.attribution,
-        shareText: [if (quote.textHi != null) quote.textHi, quote.text, if (quote.attribution.isNotEmpty) '— ${quote.attribution}']
-            .whereType<String>()
-            .join('\n'),
+        message: ShareMessage(
+          kind: ShareKind.quote,
+          text: ShareCopy.quote(
+            l10n,
+            text: [?quote.textHi, quote.text].join('\n'),
+            attribution: quote.attribution,
+          ),
+        ),
       );
 }

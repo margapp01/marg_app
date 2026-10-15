@@ -2,6 +2,13 @@
 abstract final class AppConstants {
   static const String appName = 'MARG';
 
+  /// The public website — every shared link lands here (App Links open the
+  /// app instead when it is installed).
+  static const String webBaseUrl = 'https://margapp.in';
+
+  /// The Play Store listing, for shares with no web page to land on.
+  static const String playStoreUrl = 'https://play.google.com/store/apps/details?id=com.techluminix.marg';
+
   /// Minimum account age. 18 until the guardian-consent flow for 13–17 ships
   /// (DPDP: under-18s need verifiable parental consent); the API enforces it too.
   static const int minAccountAge = 18;

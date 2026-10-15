@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../shared/design_system.dart';
@@ -59,19 +58,19 @@ class DailyQuotePage extends ConsumerWidget {
   }
 }
 
-class _QuoteHero extends StatelessWidget {
+class _QuoteHero extends ConsumerWidget {
   const _QuoteHero({required this.quote});
   final Quote quote;
 
-  Future<void> _share() => SharePlus.instance.share(ShareParams(text: _shareText(quote)));
-
-  static String _shareText(Quote q) {
-    final attribution = q.attribution;
-    return '"${q.text}"${attribution.isEmpty ? '' : '\n— $attribution'}\n\n— via MARG';
-  }
+  Future<void> _share(BuildContext context, WidgetRef ref) => ref.read(shareServiceProvider).share(
+        ShareMessage(
+          kind: ShareKind.quote,
+          text: ShareCopy.quote(AppLocalizations.of(context), text: quote.text, attribution: quote.attribution),
+        ),
+      );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     return Container(
       padding: AppSpacing.allLg,
@@ -98,7 +97,7 @@ class _QuoteHero extends StatelessWidget {
             Text('— ${quote.attribution}', style: context.textTheme.bodySmall?.semiBold.copyWith(color: context.scheme.primary)),
           ],
           const Gap(AppSpacing.lg),
-          AppButton.primary(label: l10n.ntShare, icon: AppIcons.share, expand: false, onPressed: _share),
+          AppButton.primary(label: l10n.ntShare, icon: AppIcons.share, expand: false, onPressed: () => _share(context, ref)),
         ],
       ),
     );

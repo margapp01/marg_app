@@ -482,6 +482,24 @@ class NearbyTempleRef {
   final double ratingAverage;
   final int ratingCount;
 
+  /// One `{ temple, distanceMeters }` row, as returned by `/temples/nearby`
+  /// and `/routes/:slug/nearby`.
+  factory NearbyTempleRef.fromNearbyRow(Map<String, dynamic> row) {
+    final temple = (row['temple'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final city = (temple['city'] as Map?)?.cast<String, dynamic>();
+    final meters = (row['distanceMeters'] as num?)?.round() ?? 0;
+    return NearbyTempleRef(
+      id: (temple['id'] as String?) ?? '',
+      name: (temple['name'] as String?) ?? '',
+      slug: (temple['slug'] as String?) ?? '',
+      city: city?['name'] as String?,
+      formattedDistance: meters < 1000 ? '$meters m' : '${(meters / 1000).toStringAsFixed(1)} km',
+      imageUrl: temple['coverImageUrl'] as String?,
+      ratingAverage: (temple['ratingAverage'] as num?)?.toDouble() ?? 0,
+      ratingCount: (temple['ratingCount'] as num?)?.toInt() ?? 0,
+    );
+  }
+
   factory NearbyTempleRef.fromJson(Map<String, dynamic> j) => NearbyTempleRef(
         id: _s(j['id']) ?? '',
         name: _s(j['name']) ?? '',

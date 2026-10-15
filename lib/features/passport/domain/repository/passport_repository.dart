@@ -24,8 +24,11 @@ abstract class PassportRepository {
   /// The shareable passport summary.
   Future<PassportShare> share();
 
-  /// Mint a public share link, returning the public path.
-  Future<String> mintShareLink();
+  /// The public share link (minted on first use), returning the public path.
+  Future<String> shareLink();
+
+  /// Rotate the public share link, retiring links already shared.
+  Future<String> resetShareLink();
 
   /// Route completion-certificate PDF bytes (completed routes only).
   Future<List<int>> certificate(String routeId);

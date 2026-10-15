@@ -19,6 +19,10 @@ export '../app/constants/brand_assets.dart';
 export '../app/theme/theme.dart';
 export '../core/extensions/context_extensions.dart';
 
+// Sharing (links + copy + the system share sheet)
+export '../core/services/share_copy.dart';
+export '../core/services/share_service.dart';
+
 // Animation utilities
 export 'animations/animations.dart';
 
@@ -40,7 +44,6 @@ export 'components/pilgrim_hero.dart';
 export 'components/rank_tier.dart';
 export 'components/rarity.dart';
 export 'components/section_header.dart';
-export 'components/share_image.dart';
 export 'components/sunburst_frame.dart';
 export 'content/html_content_view.dart';
 export 'dialogs/dialogs.dart';

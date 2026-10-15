@@ -9,7 +9,9 @@ import 'package:latlong2/latlong.dart';
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../shared/design_system.dart';
+import '../../../cards/domain/entities/collection_stats.dart';
 import '../../../cards/domain/entities/sacred_card.dart';
+import '../../../cards/presentation/controllers/cards_controllers.dart';
 import '../../../cards/presentation/widgets/card_reveal.dart';
 import '../../../cards/presentation/widgets/card_widgets.dart';
 import '../../../routes/domain/entities/route_detail_bundle.dart';
@@ -352,12 +354,13 @@ String deityGreeting(AppLocalizations l10n, String? deity) => switch (deity?.toU
 /// face-down, flips in a flash of light to reveal itself, then floats amid
 /// gold dust while the rarity banner, confetti and actions arrive. Done ends
 /// the visit; Back returns to the summary. Reopened, the face shows at once.
-class CardUnlockPhase extends StatefulWidget {
+class CardUnlockPhase extends ConsumerStatefulWidget {
   const CardUnlockPhase({
     required this.card,
     required this.onBack,
     required this.onViewCollection,
     required this.onDone,
+    this.templeName,
     this.animate = true,
     super.key,
   });
@@ -366,13 +369,16 @@ class CardUnlockPhase extends StatefulWidget {
   final VoidCallback onBack;
   final VoidCallback onViewCollection;
   final VoidCallback onDone;
+
+  /// The temple the card came from, named in the share text.
+  final String? templeName;
   final bool animate;
 
   @override
-  State<CardUnlockPhase> createState() => _CardUnlockPhaseState();
+  ConsumerState<CardUnlockPhase> createState() => _CardUnlockPhaseState();
 }
 
-class _CardUnlockPhaseState extends State<CardUnlockPhase> {
+class _CardUnlockPhaseState extends ConsumerState<CardUnlockPhase> {
   final _shareKey = GlobalKey();
   bool _revealed = false;
   bool _sharing = false;
@@ -384,13 +390,27 @@ class _CardUnlockPhaseState extends State<CardUnlockPhase> {
 
   Future<void> _share() async {
     final l10n = AppLocalizations.of(context);
+    final card = widget.card;
     setState(() => _sharing = true);
     try {
-      await shareBoundaryImage(
-        _shareKey,
-        text: l10n.tvShareCardText(widget.card.title),
-        fileName: 'marg-card-${widget.card.id}.png',
-      );
+      final stats = await ref.read(collectionStatsProvider.future).catchError((Object _) => CollectionStats.empty);
+      await ref.read(shareServiceProvider).share(
+            ShareMessage(
+              kind: ShareKind.card,
+              itemId: card.id,
+              path: SharePaths.card(card.id),
+              text: ShareCopy.card(
+                l10n,
+                rarity: card.rarity,
+                title: card.title,
+                temple: widget.templeName,
+                owned: stats.ownedCards,
+                total: stats.totalCards,
+              ),
+            ),
+            capture: _shareKey,
+            fileName: 'marg-card-${card.id}.png',
+          );
     } catch (_) {
       if (mounted) AppSnackbar.error(context, l10n.tvShareFailed);
     } finally {

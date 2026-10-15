@@ -812,9 +812,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ryShareAchievement => 'Share Achievement';
 
   @override
-  String get ryShareBody => 'I completed the';
-
-  @override
   String get ryViewPassport => 'View Passport';
 
   @override
@@ -910,9 +907,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scShareCard => 'Share Card';
-
-  @override
-  String get scShareFallback => 'I unlocked the';
 
   @override
   String get scTapToFlip => 'Tap the card to flip';
@@ -1098,9 +1092,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acShareAchievement => 'Share Achievement';
-
-  @override
-  String get acShareBody => 'I earned a sacred achievement on MARG!';
 
   @override
   String get acBrandTagline => 'MARG · Connecting Devotees to Divine';
@@ -2029,9 +2020,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pfShare => 'Share';
 
   @override
-  String get pfShareText => 'on a spiritual journey with MARG';
-
-  @override
   String get pfSpiritualPreferences => 'Spiritual Preferences';
 
   @override
@@ -2450,10 +2438,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rfMore => 'More';
-
-  @override
-  String get rfShareMessage =>
-      'Join me on MARG and explore the temples of Bharat!';
 
   @override
   String get rfAll => 'All';
@@ -3892,6 +3876,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ryKmCovered => 'KM Covered';
 
   @override
+  String ryAlsoNearby(int count) {
+    return 'Also visit nearby · $count';
+  }
+
+  @override
   String ryVisitedOn(Object date) {
     return 'Visited $date';
   }
@@ -4248,11 +4237,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tvShareCard => 'Share Card';
 
   @override
-  String tvShareCardText(Object card) {
-    return 'I just collected the $card Sacred Card on MARG 🙏';
-  }
-
-  @override
   String get tvShareFailed => 'Couldn\'t share right now. Please try again.';
 
   @override
@@ -4355,4 +4339,142 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exFromHere => 'From Where You Are';
+
+  @override
+  String get shCardCommon => '🪔 A new Sacred Card for my collection!';
+
+  @override
+  String get shCardRare => '✨ I unlocked a Rare Sacred Card!';
+
+  @override
+  String get shCardEpic => '🔥 Epic find! I unlocked an Epic Sacred Card!';
+
+  @override
+  String get shCardLegendary =>
+      '👑 Legendary! I unlocked a Legendary Sacred Card!';
+
+  @override
+  String get shCardMythic =>
+      '🌟 Mythic! I unlocked one of the rarest Sacred Cards on MARG!';
+
+  @override
+  String shCardProgress(int owned, int total) {
+    return '$owned of $total Sacred Cards collected so far.';
+  }
+
+  @override
+  String get shCardCta =>
+      'Every temple has its own card waiting. Visit, check in and start your collection 🙏';
+
+  @override
+  String shPassport(int temples, int cards, int percent) {
+    return '🛕 My MARG Spiritual Passport\n$temples temples visited · $cards Sacred Cards · $percent% complete';
+  }
+
+  @override
+  String get shPassportCta => 'Can you beat my journey? Start yours 👇';
+
+  @override
+  String shAchievement(Object name) {
+    return '🏆 I just earned “$name” on MARG!';
+  }
+
+  @override
+  String get shAchievementCta =>
+      'Visit temples, collect Sacred Cards and unlock achievements of your own 👇';
+
+  @override
+  String get shTempleCta =>
+      'Plan your darshan on MARG and check in here to unlock its Sacred Card 🪷';
+
+  @override
+  String shRoute(Object route) {
+    return '🚩 $route: a sacred yatra on MARG';
+  }
+
+  @override
+  String get shRouteCta =>
+      'Walk it, check in at every temple and collect each Sacred Card along the way 👇';
+
+  @override
+  String shRouteCompleted(Object route) {
+    return '🙏 I completed the $route yatra on MARG!';
+  }
+
+  @override
+  String get shRouteCompletedCta =>
+      'Every temple on the way gave me a Sacred Card. Start your own yatra 👇';
+
+  @override
+  String get shInvite =>
+      '🙏 Join me on MARG! Visit temples across Bharat, check in at every darshan and collect a beautiful Sacred Card for each temple. Use my invite link 👇';
+
+  @override
+  String shProfile(Object name) {
+    return '🪷 $name is on a spiritual journey with MARG, visiting temples and collecting Sacred Cards. Join me 👇';
+  }
+
+  @override
+  String get shBlogCta => 'Read more on MARG 👇';
+
+  @override
+  String get shFestivalCta =>
+      'Rituals, stories and temples to visit, on MARG 👇';
+
+  @override
+  String get shQuoteCta => 'Daily wisdom on MARG 🙏';
+
+  @override
+  String get shActivityCta => 'Follow my temple journey on MARG 👇';
+
+  @override
+  String get shResetLink => 'Reset link';
+
+  @override
+  String get shResetLinkTitle => 'Reset your passport link?';
+
+  @override
+  String get shResetLinkBody =>
+      'Links you have already shared will stop working. Your next share uses a new link.';
+
+  @override
+  String get shResetLinkDone => 'New passport link created';
+
+  @override
+  String get shShare => 'Share';
+
+  @override
+  String get upMajorTitle => 'Time to update MARG';
+
+  @override
+  String get upMajorBody =>
+      'This version of MARG is no longer supported. Update to keep checking in at temples and collecting your Sacred Cards.';
+
+  @override
+  String get upMinorTitle => 'A new MARG is here';
+
+  @override
+  String upMinorBody(Object version) {
+    return 'Version $version brings new features and improvements to your journey.';
+  }
+
+  @override
+  String upPatchBody(Object version) {
+    return 'A quick update (v$version) is ready with fixes.';
+  }
+
+  @override
+  String get upWhatsNew => 'What\'s new';
+
+  @override
+  String get upUpdateNow => 'Update now';
+
+  @override
+  String get upUpdate => 'Update';
+
+  @override
+  String get upLater => 'Later';
+
+  @override
+  String get upDismiss => 'Dismiss';
 }

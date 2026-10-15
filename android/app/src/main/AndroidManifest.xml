@@ -45,6 +45,28 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- App Links: shared margapp.in pages open here when MARG is installed
+                 (verified by margapp.in/.well-known/assetlinks.json). Passport
+                 links stay on the web — a pilgrim's public passport has no
+                 in-app screen. The router maps each path (app/router/web_links.dart). -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https" android:host="margapp.in"/>
+                <data android:pathPrefix="/temples/"/>
+                <data android:pathPrefix="/routes/"/>
+                <data android:pathPrefix="/cards/"/>
+                <data android:pathPrefix="/festivals/"/>
+                <data android:pathPrefix="/blogs/"/>
+                <data android:pathPrefix="/invite/"/>
+                <data android:pathPrefix="/hi/temples/"/>
+                <data android:pathPrefix="/hi/routes/"/>
+                <data android:pathPrefix="/hi/cards/"/>
+                <data android:pathPrefix="/hi/festivals/"/>
+                <data android:pathPrefix="/hi/blogs/"/>
+                <data android:pathPrefix="/hi/invite/"/>
+            </intent-filter>
         </activity>
         <!-- Push notifications: the MARG mark as a white status-bar silhouette,
              tinted saffron in the shade (a full-colour launcher icon renders as

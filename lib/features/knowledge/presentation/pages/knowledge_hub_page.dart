@@ -316,7 +316,14 @@ class _LatestAnnouncements extends ConsumerWidget {
             for (final a in items.take(2)) ...[
               AnnouncementCard(
                 announcement: a,
-                onShare: () => showKnowledgeShare(context, ShareContent(title: a.title, subtitle: a.body, shareText: '${a.title}\n\n${a.body}')),
+                onShare: () => showKnowledgeShare(
+                  context,
+                  ShareContent(
+                    title: a.title,
+                    subtitle: a.body,
+                    message: ShareMessage(kind: ShareKind.announcement, text: ShareCopy.activity(l10n, title: a.title, body: a.body)),
+                  ),
+                ),
               ),
               const Gap(AppSpacing.sm),
             ],

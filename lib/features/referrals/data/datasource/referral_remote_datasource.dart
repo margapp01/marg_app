@@ -29,6 +29,10 @@ class ReferralRemoteDataSource {
     return Paged.fromEnvelope(_env(res), ReferralInvite.fromJson);
   }
 
+  /// `POST /referrals/apply` — credit [code]'s owner for this account.
+  Future<void> apply(String code, {String? source}) =>
+      _dio.post<dynamic>('/referrals/apply', data: {'code': code, 'source': ?source});
+
   Future<List<LeaderRow>> leaderboard({int page = 1, int limit = 50}) async {
     final res = await _dio.get<dynamic>('/referrals/leaderboard', queryParameters: {'page': page, 'limit': limit});
     return _list(res).whereType<Map<dynamic, dynamic>>().map((e) => LeaderRow.fromJson(e.cast<String, dynamic>())).toList(growable: false);

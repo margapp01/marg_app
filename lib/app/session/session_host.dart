@@ -6,16 +6,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/location/location_access.dart';
+import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/explore/presentation/controllers/explore_controllers.dart';
 import '../../features/home/presentation/controllers/home_controller.dart';
 import '../../features/notifications/presentation/controllers/notification_controllers.dart';
 import '../../features/notifications/presentation/controllers/push_messaging.dart';
 import '../../features/notifications/presentation/widgets/notification_link.dart';
+import '../../features/referrals/data/referral_attribution.dart';
 import '../../shared/design_system.dart';
 import '../localization/app_localizations.dart';
 import '../router/route_names.dart';
+import '../router/web_links.dart';
 
 /// Signed-in session services that live with the app shell:
+///  - opening a shared link that arrived before sign-in, and crediting the
+///    friend whose invite brought a new pilgrim;
 ///  - the location ask, once per launch while access is missing;
 ///  - keeping the saved location fresh (Nearby Temples + daily nudges), and
 ///    reloading location-aware screens when access is first granted;
@@ -49,6 +54,8 @@ class _SessionHostState extends ConsumerState<SessionHost> {
   }
 
   Future<void> _start() async {
+    _openPendingLink();
+    unawaited(_creditReferral());
     final access = await ref.read(locationAccessProvider.future);
     _granted = access == LocationAccess.granted;
     if (!mounted) return;
@@ -62,6 +69,21 @@ class _SessionHostState extends ConsumerState<SessionHost> {
     unawaited(_syncLocation());
     if (!mounted) return;
     await ref.read(pushMessagingProvider).start(onOpen: _open, onForeground: _banner);
+  }
+
+  void _openPendingLink() {
+    final link = ref.read(pendingWebLinkProvider);
+    if (link == null || !mounted) return;
+    ref.read(pendingWebLinkProvider.notifier).state = null;
+    context.go(link);
+  }
+
+  Future<void> _creditReferral() async {
+    try {
+      final attribution = ref.read(referralAttributionProvider);
+      await attribution.captureInstallReferrer();
+      await attribution.applyPending(joinedAt: ref.read(authControllerProvider).user?.onboardingCompletedAt);
+    } catch (_) {/* best-effort; retried next launch */}
   }
 
   Future<void> _onResume() async {

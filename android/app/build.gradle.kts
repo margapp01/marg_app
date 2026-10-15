@@ -70,4 +70,6 @@ flutter {
 dependencies {
     // The in-app "Turn on location" dialog (MainActivity); same version as geolocator_android.
     implementation("com.google.android.gms:play-services-location:21.2.0")
+    // Play Install Referrer: credits the friend whose invite page led to the install.
+    implementation("com.android.installreferrer:installreferrer:2.2")
 }

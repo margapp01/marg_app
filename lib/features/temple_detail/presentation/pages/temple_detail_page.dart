@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../app/router/route_names.dart';
@@ -66,7 +65,7 @@ class _Content extends ConsumerWidget {
       onRefresh: () async => ref.invalidate(templeDetailControllerProvider(temple.slug)),
       child: CustomScrollView(
         slivers: [
-          _HeroAppBar(temple: temple, saved: status?.saved ?? false, onShare: () => _share(temple)),
+          _HeroAppBar(temple: temple, saved: status?.saved ?? false, onShare: () => _share(context, ref, temple)),
           SliverToBoxAdapter(
             child: FadeIn(
               child: Padding(
@@ -165,8 +164,18 @@ class _Content extends ConsumerWidget {
     );
   }
 
-  Future<void> _share(TempleDetail t) =>
-      SharePlus.instance.share(ShareParams(text: '${t.name} · MARG\nhttps://margapp.in/temples/${t.slug}'));
+  Future<void> _share(BuildContext context, WidgetRef ref, TempleDetail t) => ref.read(shareServiceProvider).share(
+        ShareMessage(
+          kind: ShareKind.temple,
+          itemId: t.slug,
+          path: SharePaths.temple(t.slug),
+          text: ShareCopy.temple(
+            AppLocalizations.of(context),
+            name: t.name,
+            place: [t.cityName, t.stateName].whereType<String>().join(', '),
+          ),
+        ),
+      );
 }
 
 class _HeroAppBar extends StatelessWidget {

@@ -17,7 +17,7 @@ void main() {
         'referralsToNextMilestone': 14,
       });
       expect(s.code, 'MARG1088');
-      expect(s.inviteLink, '$kReferralLinkBase/MARG1088');
+      expect(s.inviteLink, 'https://margapp.in/invite/MARG1088?utm_source=app_share&utm_medium=invite');
       expect(s.milestoneProgress, closeTo(36 / 50, 0.001));
     });
 

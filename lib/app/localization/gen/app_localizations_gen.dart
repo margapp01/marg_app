@@ -1682,12 +1682,6 @@ abstract class AppLocalizations {
   /// **'Share Achievement'**
   String get ryShareAchievement;
 
-  /// No description provided for @ryShareBody.
-  ///
-  /// In en, this message translates to:
-  /// **'I completed the'**
-  String get ryShareBody;
-
   /// No description provided for @ryViewPassport.
   ///
   /// In en, this message translates to:
@@ -1879,12 +1873,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share Card'**
   String get scShareCard;
-
-  /// No description provided for @scShareFallback.
-  ///
-  /// In en, this message translates to:
-  /// **'I unlocked the'**
-  String get scShareFallback;
 
   /// No description provided for @scTapToFlip.
   ///
@@ -2251,12 +2239,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share Achievement'**
   String get acShareAchievement;
-
-  /// No description provided for @acShareBody.
-  ///
-  /// In en, this message translates to:
-  /// **'I earned a sacred achievement on MARG!'**
-  String get acShareBody;
 
   /// No description provided for @acBrandTagline.
   ///
@@ -4034,12 +4016,6 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get pfShare;
 
-  /// No description provided for @pfShareText.
-  ///
-  /// In en, this message translates to:
-  /// **'on a spiritual journey with MARG'**
-  String get pfShareText;
-
   /// No description provided for @pfSpiritualPreferences.
   ///
   /// In en, this message translates to:
@@ -4849,12 +4825,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'More'**
   String get rfMore;
-
-  /// No description provided for @rfShareMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Join me on MARG and explore the temples of Bharat!'**
-  String get rfShareMessage;
 
   /// No description provided for @rfAll.
   ///
@@ -7430,6 +7400,12 @@ abstract class AppLocalizations {
   /// **'KM Covered'**
   String get ryKmCovered;
 
+  /// Expandable row under a route stop listing other temples within about 30 km.
+  ///
+  /// In en, this message translates to:
+  /// **'Also visit nearby · {count}'**
+  String ryAlsoNearby(int count);
+
   /// No description provided for @ryVisitedOn.
   ///
   /// In en, this message translates to:
@@ -7970,12 +7946,6 @@ abstract class AppLocalizations {
   /// **'Share Card'**
   String get tvShareCard;
 
-  /// No description provided for @tvShareCardText.
-  ///
-  /// In en, this message translates to:
-  /// **'I just collected the {card} Sacred Card on MARG 🙏'**
-  String tvShareCardText(Object card);
-
   /// No description provided for @tvShareFailed.
   ///
   /// In en, this message translates to:
@@ -8143,6 +8113,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'From Where You Are'**
   String get exFromHere;
+
+  /// No description provided for @shCardCommon.
+  ///
+  /// In en, this message translates to:
+  /// **'🪔 A new Sacred Card for my collection!'**
+  String get shCardCommon;
+
+  /// No description provided for @shCardRare.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ I unlocked a Rare Sacred Card!'**
+  String get shCardRare;
+
+  /// No description provided for @shCardEpic.
+  ///
+  /// In en, this message translates to:
+  /// **'🔥 Epic find! I unlocked an Epic Sacred Card!'**
+  String get shCardEpic;
+
+  /// No description provided for @shCardLegendary.
+  ///
+  /// In en, this message translates to:
+  /// **'👑 Legendary! I unlocked a Legendary Sacred Card!'**
+  String get shCardLegendary;
+
+  /// No description provided for @shCardMythic.
+  ///
+  /// In en, this message translates to:
+  /// **'🌟 Mythic! I unlocked one of the rarest Sacred Cards on MARG!'**
+  String get shCardMythic;
+
+  /// No description provided for @shCardProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{owned} of {total} Sacred Cards collected so far.'**
+  String shCardProgress(int owned, int total);
+
+  /// No description provided for @shCardCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Every temple has its own card waiting. Visit, check in and start your collection 🙏'**
+  String get shCardCta;
+
+  /// No description provided for @shPassport.
+  ///
+  /// In en, this message translates to:
+  /// **'🛕 My MARG Spiritual Passport\n{temples} temples visited · {cards} Sacred Cards · {percent}% complete'**
+  String shPassport(int temples, int cards, int percent);
+
+  /// No description provided for @shPassportCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Can you beat my journey? Start yours 👇'**
+  String get shPassportCta;
+
+  /// No description provided for @shAchievement.
+  ///
+  /// In en, this message translates to:
+  /// **'🏆 I just earned “{name}” on MARG!'**
+  String shAchievement(Object name);
+
+  /// No description provided for @shAchievementCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit temples, collect Sacred Cards and unlock achievements of your own 👇'**
+  String get shAchievementCta;
+
+  /// No description provided for @shTempleCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your darshan on MARG and check in here to unlock its Sacred Card 🪷'**
+  String get shTempleCta;
+
+  /// No description provided for @shRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'🚩 {route}: a sacred yatra on MARG'**
+  String shRoute(Object route);
+
+  /// No description provided for @shRouteCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk it, check in at every temple and collect each Sacred Card along the way 👇'**
+  String get shRouteCta;
+
+  /// No description provided for @shRouteCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'🙏 I completed the {route} yatra on MARG!'**
+  String shRouteCompleted(Object route);
+
+  /// No description provided for @shRouteCompletedCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Every temple on the way gave me a Sacred Card. Start your own yatra 👇'**
+  String get shRouteCompletedCta;
+
+  /// No description provided for @shInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'🙏 Join me on MARG! Visit temples across Bharat, check in at every darshan and collect a beautiful Sacred Card for each temple. Use my invite link 👇'**
+  String get shInvite;
+
+  /// No description provided for @shProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'🪷 {name} is on a spiritual journey with MARG, visiting temples and collecting Sacred Cards. Join me 👇'**
+  String shProfile(Object name);
+
+  /// No description provided for @shBlogCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Read more on MARG 👇'**
+  String get shBlogCta;
+
+  /// No description provided for @shFestivalCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Rituals, stories and temples to visit, on MARG 👇'**
+  String get shFestivalCta;
+
+  /// No description provided for @shQuoteCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily wisdom on MARG 🙏'**
+  String get shQuoteCta;
+
+  /// No description provided for @shActivityCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow my temple journey on MARG 👇'**
+  String get shActivityCta;
+
+  /// No description provided for @shResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset link'**
+  String get shResetLink;
+
+  /// No description provided for @shResetLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your passport link?'**
+  String get shResetLinkTitle;
+
+  /// No description provided for @shResetLinkBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Links you have already shared will stop working. Your next share uses a new link.'**
+  String get shResetLinkBody;
+
+  /// No description provided for @shResetLinkDone.
+  ///
+  /// In en, this message translates to:
+  /// **'New passport link created'**
+  String get shResetLinkDone;
+
+  /// No description provided for @shShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shShare;
+
+  /// No description provided for @upMajorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to update MARG'**
+  String get upMajorTitle;
+
+  /// No description provided for @upMajorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This version of MARG is no longer supported. Update to keep checking in at temples and collecting your Sacred Cards.'**
+  String get upMajorBody;
+
+  /// No description provided for @upMinorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A new MARG is here'**
+  String get upMinorTitle;
+
+  /// No description provided for @upMinorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} brings new features and improvements to your journey.'**
+  String upMinorBody(Object version);
+
+  /// No description provided for @upPatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A quick update (v{version}) is ready with fixes.'**
+  String upPatchBody(Object version);
+
+  /// No description provided for @upWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get upWhatsNew;
+
+  /// No description provided for @upUpdateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get upUpdateNow;
+
+  /// No description provided for @upUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get upUpdate;
+
+  /// No description provided for @upLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get upLater;
+
+  /// No description provided for @upDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get upDismiss;
 }
 
 class _AppLocalizationsDelegate

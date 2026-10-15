@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../app/router/route_names.dart';
@@ -233,12 +232,12 @@ class _JourneySnapshot extends ConsumerWidget {
   }
 }
 
-class _QuickActions extends StatelessWidget {
+class _QuickActions extends ConsumerWidget {
   const _QuickActions({required this.profile});
   final Profile profile;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final p = context.palette;
     return Row(
@@ -267,7 +266,7 @@ class _QuickActions extends StatelessWidget {
           p.accentBlue,
           () => context.pushNamed(RouteNames.profileAppPreferences),
         ),
-        _action(context, AppIcons.share, l10n.pfShare, p.tileMint, p.accentGreen, () => _share(profile, l10n)),
+        _action(context, AppIcons.share, l10n.pfShare, p.tileMint, p.accentGreen, () => _share(ref, profile, l10n)),
       ],
     );
   }
@@ -300,8 +299,10 @@ class _QuickActions extends StatelessWidget {
         ),
       );
 
-  void _share(Profile profile, AppLocalizations l10n) {
-    SharePlus.instance.share(ShareParams(text: '${profile.name ?? l10n.pfPilgrim} · ${l10n.pfShareText}'));
+  void _share(WidgetRef ref, Profile profile, AppLocalizations l10n) {
+    ref.read(shareServiceProvider).share(
+          ShareMessage(kind: ShareKind.profile, text: ShareCopy.profile(l10n, name: profile.name ?? l10n.pfPilgrim)),
+        );
   }
 }
 

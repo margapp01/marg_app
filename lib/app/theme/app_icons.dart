@@ -49,6 +49,8 @@ abstract final class AppIcons {
   static const IconData gallery = Symbols.photo_library_rounded;
   static const IconData upload = Symbols.upload_rounded;
   static const IconData copy = Symbols.content_copy_rounded;
+  static const IconData link = Symbols.link_rounded;
+  static const IconData update = Symbols.system_update_rounded;
   static const IconData qrScan = Symbols.qr_code_scanner_rounded;
 
   // ── Feedback / status ─────────────────────────────────────────────────

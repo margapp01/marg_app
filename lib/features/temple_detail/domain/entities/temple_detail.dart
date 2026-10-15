@@ -63,11 +63,16 @@ class TempleDetail {
   final int ratingCount;
   final VisitorInfo visitorInfo;
 
-  String? get coverImage {
+  TempleImage? get _cover {
     if (images.isEmpty) return null;
     final cover = images.where((i) => i.isCover);
-    return (cover.isNotEmpty ? cover.first : images.first).url;
+    return cover.isNotEmpty ? cover.first : images.first;
   }
+
+  String? get coverImage => _cover?.url;
+
+  /// The cover is MARG's painted temple art, not a photograph of this temple.
+  bool get coverIsIllustration => _cover?.isIllustration ?? false;
 
   String get location => [cityName, stateName].whereType<String>().where((e) => e.isNotEmpty).join(', ');
 
@@ -206,6 +211,9 @@ class TempleImage {
   final String? caption;
   final bool isCover;
   final int position;
+
+  /// MARG temple art carries the backend caption "Illustration · MARG temple art …".
+  bool get isIllustration => caption?.startsWith('Illustration') ?? false;
 
   factory TempleImage.fromJson(Map<String, dynamic> j) => TempleImage(
         url: _s(j['url']) ?? '',

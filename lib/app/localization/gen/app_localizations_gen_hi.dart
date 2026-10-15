@@ -253,6 +253,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get searchViewDetails => 'विवरण देखें';
 
   @override
+  String get tdIllustration => 'चित्रण';
+
+  @override
   String get tdVerified => 'सत्यापित मंदिर';
 
   @override

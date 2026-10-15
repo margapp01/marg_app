@@ -252,6 +252,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchViewDetails => 'View Details';
 
   @override
+  String get tdIllustration => 'Illustration';
+
+  @override
   String get tdVerified => 'Verified Temple';
 
   @override

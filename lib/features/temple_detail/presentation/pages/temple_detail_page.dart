@@ -234,6 +234,7 @@ class _HeroAppBar extends StatelessWidget {
                     children: [
                       if (temple.isVerified)
                         PhotoPill(label: l10n.tdVerified, icon: AppIcons.verified, color: context.colors.success),
+                      if (temple.coverIsIllustration) PhotoPill(label: l10n.tdIllustration, icon: AppIcons.palette),
                       if (temple.deity != null)
                         PhotoPill(
                           label: InfoSection.titleCase(temple.deity!),

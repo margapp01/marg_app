@@ -578,6 +578,12 @@ abstract class AppLocalizations {
   /// **'View Details'**
   String get searchViewDetails;
 
+  /// Badge on a temple photo that is MARG artwork, not a photograph of the temple.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration'**
+  String get tdIllustration;
+
   /// No description provided for @tdVerified.
   ///
   /// In en, this message translates to:

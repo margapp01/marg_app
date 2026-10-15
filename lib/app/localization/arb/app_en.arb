@@ -80,6 +80,8 @@
   "searchOfflineSubtitle": "Showing your recent searches. Reconnect to search.",
   "searchErrorTitle": "Something went wrong",
   "searchViewDetails": "View Details",
+  "tdIllustration": "Illustration",
+  "@tdIllustration": { "description": "Badge on a temple photo that is MARG artwork, not a photograph of the temple." },
   "tdVerified": "Verified Temple",
   "tdOpen": "Open",
   "tdClosed": "Closed",

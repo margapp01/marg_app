@@ -6,9 +6,14 @@ import 'package:marg_app/app/localization/app_localizations.dart';
 import 'package:marg_app/app/theme/app_theme.dart';
 import 'package:marg_app/core/location/captured_location.dart';
 import 'package:marg_app/core/location/location_service.dart';
+import 'package:marg_app/core/services/connectivity_service.dart';
 import 'package:marg_app/core/services/device_context_service.dart';
+import 'package:marg_app/features/auth/domain/entities/auth_user.dart';
+import 'package:marg_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:marg_app/features/auth/presentation/states/auth_state.dart';
 import 'package:marg_app/features/cards/presentation/widgets/card_reveal.dart';
 import 'package:marg_app/features/directions/domain/route_plan.dart';
+import 'package:marg_app/features/temple_visit/data/offline_checkins.dart';
 import 'package:marg_app/features/temple_visit/data/repository/temple_visit_repository_impl.dart';
 import 'package:marg_app/features/temple_visit/domain/entities/checkin_failure.dart';
 import 'package:marg_app/features/temple_visit/domain/entities/checkin_request.dart';
@@ -20,6 +25,7 @@ import 'package:marg_app/features/temple_visit/presentation/controllers/visit_ro
 import 'package:marg_app/features/temple_visit/presentation/pages/temple_visit_page.dart';
 import 'package:marg_app/features/temple_visit/presentation/widgets/visit_outcome_phases.dart';
 import 'package:marg_app/shared/design_system.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 VisitTemple _temple() => VisitTemple.fromJson(const {
       'id': 't1',
@@ -75,6 +81,20 @@ class _FakeDevice extends DeviceContextService {
   Future<DeviceContext> load() async => DeviceContext.unknown;
 }
 
+/// Connectivity comes over a platform channel tests never answer.
+class _FakeConnectivity extends ConnectivityService {
+  _FakeConnectivity({required this.online});
+  final bool online;
+
+  @override
+  Future<bool> isOnline() async => online;
+}
+
+class _SignedIn extends AuthController {
+  @override
+  AuthState build() => const AuthState(status: AuthStatus.authenticated, user: AuthUser(id: 'u1'));
+}
+
 void main() {
   group('temple_visit models', () {
     test('VisitTemple parses geofence + cover image', () {
@@ -124,7 +144,7 @@ void main() {
   /// The visit page (opened over a home page) with fakes for the repository,
   /// GPS and router. Reduced motion keeps the looping celebrations still so
   /// frames can settle.
-  Future<void> pumpVisit(WidgetTester tester, {bool startAtCheckin = false}) async {
+  Future<void> pumpVisit(WidgetTester tester, {bool startAtCheckin = false, bool online = true}) async {
     final router = GoRouter(
       initialLocation: '/visit',
       routes: [
@@ -147,6 +167,8 @@ void main() {
           templeVisitRepositoryProvider.overrideWithValue(_FakeRepo()),
           locationServiceProvider.overrideWithValue(const _FakeLocation()),
           deviceContextServiceProvider.overrideWithValue(_FakeDevice()),
+          connectivityServiceProvider.overrideWithValue(_FakeConnectivity(online: online)),
+          authControllerProvider.overrideWith(_SignedIn.new),
           visitRouteProvider.overrideWith(
             (ref, q) async => RoutePlan(points: [q.from, q.to], distanceMeters: 1200, durationSeconds: 360),
           ),
@@ -184,6 +206,24 @@ void main() {
     expect(find.text('Confirm Your Arrival'), findsOneWidget);
     expect(find.text('Check-In Now'), findsOneWidget);
     expect(find.text("I've Arrived"), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('no network at the shrine: the check-in is saved on the phone', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await pumpVisit(tester, startAtCheckin: true, online: false);
+
+    await tester.tap(find.text('Check-In Now'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Darshan saved'), findsOneWidget);
+    expect(find.textContaining('Kashi Vishwanath Temple is saved on this phone'), findsOneWidget);
+    expect(find.text('Done'), findsOneWidget);
+    final saved = (await OfflineCheckinStore().all()).single;
+    expect(saved.templeId, 't1');
+    expect(saved.userId, 'u1');
+    expect(saved.request.offline, isTrue);
+    expect(saved.request.capturedAt!.isAtSameMomentAs(DateTime(2026)), isTrue);
     expect(tester.takeException(), isNull);
   });
 

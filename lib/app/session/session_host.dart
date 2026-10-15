@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/location/location_access.dart';
+import '../../core/services/connectivity_service.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/explore/presentation/controllers/explore_controllers.dart';
 import '../../features/home/presentation/controllers/home_controller.dart';
@@ -13,6 +14,8 @@ import '../../features/notifications/presentation/controllers/notification_contr
 import '../../features/notifications/presentation/controllers/push_messaging.dart';
 import '../../features/notifications/presentation/widgets/notification_link.dart';
 import '../../features/referrals/data/referral_attribution.dart';
+import '../../features/temple_detail/presentation/controllers/temple_detail_controller.dart';
+import '../../features/temple_visit/data/offline_checkins.dart';
 import '../../shared/design_system.dart';
 import '../localization/app_localizations.dart';
 import '../router/route_names.dart';
@@ -25,7 +28,9 @@ import '../router/web_links.dart';
 ///  - keeping the saved location fresh (Nearby Temples + daily nudges), and
 ///    reloading location-aware screens when access is first granted;
 ///  - push notifications: registration, opening a tapped notification, and
-///    an in-app banner for one that arrives while the app is open.
+///    an in-app banner for one that arrives while the app is open;
+///  - submitting check-ins saved without network at a shrine — on launch, on
+///    resume and when the network returns — and saying how each one went.
 class SessionHost extends ConsumerStatefulWidget {
   const SessionHost({required this.child, super.key});
 
@@ -44,6 +49,9 @@ class _SessionHostState extends ConsumerState<SessionHost> {
   void initState() {
     super.initState();
     _lifecycle = AppLifecycleListener(onResume: _onResume);
+    ref.listenManual<AsyncValue<bool>>(connectivityStatusProvider, (prev, next) {
+      if (next.valueOrNull == true && prev?.valueOrNull == false) unawaited(_syncOfflineCheckins());
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) => _start());
   }
 
@@ -56,6 +64,7 @@ class _SessionHostState extends ConsumerState<SessionHost> {
   Future<void> _start() async {
     _openPendingLink();
     unawaited(_creditReferral());
+    unawaited(_syncOfflineCheckins());
     final access = await ref.read(locationAccessProvider.future);
     _granted = access == LocationAccess.granted;
     if (!mounted) return;
@@ -87,6 +96,7 @@ class _SessionHostState extends ConsumerState<SessionHost> {
   }
 
   Future<void> _onResume() async {
+    unawaited(_syncOfflineCheckins());
     _noteAccess(await ref.read(locationAccessProvider.notifier).refresh());
     await _syncLocation();
   }
@@ -101,6 +111,34 @@ class _SessionHostState extends ConsumerState<SessionHost> {
   Future<void> _syncLocation() async {
     if (ref.read(locationAccessProvider).valueOrNull != LocationAccess.granted) return;
     await ref.read(locationSyncProvider).syncIfStale();
+  }
+
+  Future<void> _syncOfflineCheckins() async {
+    final userId = ref.read(authControllerProvider).user?.id;
+    if (userId == null) return;
+    final List<OfflineSyncOutcome> outcomes;
+    try {
+      outcomes = await ref.read(offlineCheckinSyncProvider).run(userId);
+    } catch (_) {
+      return; // Still saved; retried on the next launch, resume or reconnect.
+    }
+    if (outcomes.isEmpty || !mounted) return;
+    ref.invalidate(homeControllerProvider);
+    final l10n = AppLocalizations.of(context);
+    for (final o in outcomes) {
+      final temple = o.checkin.templeName;
+      if (o.checkin.slug.isNotEmpty) ref.invalidate(templeDetailControllerProvider(o.checkin.slug));
+      switch (o.result) {
+        case OfflineSyncResult.verified:
+          AppSnackbar.success(context, l10n.tvOfflineVerified(temple));
+        case OfflineSyncResult.notVerified:
+          AppSnackbar.info(context, l10n.tvOfflineNotVerified(temple));
+        case OfflineSyncResult.rejected:
+          AppSnackbar.warning(context, l10n.tvOfflineRejected(temple, o.message ?? ''));
+        case OfflineSyncResult.expired:
+          AppSnackbar.warning(context, l10n.tvOfflineExpired(temple));
+      }
+    }
   }
 
   void _reloadLocationAware() {

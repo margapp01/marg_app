@@ -90,6 +90,7 @@ class _TempleVisitPageState extends ConsumerState<TempleVisitPage> {
       TempleVisitPhase.achievement => l10n.tvAchievementBarTitle,
       TempleVisitPhase.continueJourney => l10n.tvContinueTitle,
       TempleVisitPhase.failure => l10n.tvFailureBarTitle,
+      TempleVisitPhase.savedOffline => l10n.tvSavedOfflineBarTitle,
       _ => l10n.tvTitle,
     };
     return AppBar(
@@ -147,6 +148,8 @@ class _TempleVisitPageState extends ConsumerState<TempleVisitPage> {
       case TempleVisitPhase.failure:
         final failure = state.failure;
         return FailurePhase(failure: failure!, onRetry: controller.retryCheckIn, onGoBack: () => _pop(context));
+      case TempleVisitPhase.savedOffline:
+        return OfflineSavedPhase(templeName: state.temple?.name ?? '', onDone: () => _pop(context));
     }
   }
 

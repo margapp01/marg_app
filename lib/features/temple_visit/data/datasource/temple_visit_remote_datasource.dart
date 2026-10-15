@@ -6,7 +6,6 @@ import '../../domain/entities/checkin_failure.dart';
 import '../../domain/entities/checkin_request.dart';
 import '../../domain/entities/checkin_result.dart';
 import '../../domain/entities/visit_route_progress.dart';
-import '../../domain/entities/visit_temple.dart';
 
 /// Talks to the temple + check-in + progress endpoints over the authenticated
 /// Dio. Backend messages are surfaced verbatim on failure.
@@ -18,9 +17,11 @@ class TempleVisitRemoteDataSource {
   Map<String, dynamic> _data(Response<dynamic> res) =>
       ((res.data as Map)['data'] as Map).cast<String, dynamic>();
 
-  Future<VisitTemple> temple(String slug) async {
+  /// Raw `/temples/:slug` `data` map — the same payload Temple Detail caches,
+  /// so a temple opened before still loads at a shrine without network.
+  Future<Map<String, dynamic>> templeData(String slug) async {
     final res = await _dio.get<dynamic>('/temples/$slug');
-    return VisitTemple.fromJson(_data(res));
+    return _data(res);
   }
 
   /// POST the check-in. Translates any Dio error into a [CheckinFailure]

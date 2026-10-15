@@ -411,6 +411,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tvFailureBarTitle => 'Check-In Failed';
 
   @override
+  String get tvSavedOfflineBarTitle => 'Saved Offline';
+
+  @override
+  String get tvSavedOfflineTitle => 'Darshan saved';
+
+  @override
+  String tvSavedOfflineBody(Object temple) {
+    return 'Your check-in at $temple is saved on this phone. MARG will verify it as soon as you\'re back online.';
+  }
+
+  @override
+  String get tvSavedOfflineHintTitle => 'Open MARG when you have signal';
+
+  @override
+  String get tvSavedOfflineHintBody =>
+      'Stay signed in. Your card and points arrive once it\'s verified.';
+
+  @override
+  String get tvSavedOfflineLimitTitle => 'Within 3 days';
+
+  @override
+  String get tvSavedOfflineLimitBody =>
+      'A saved check-in must reach MARG within 3 days to be verified.';
+
+  @override
+  String tvOfflineVerified(Object temple) {
+    return 'Your darshan at $temple is now verified.';
+  }
+
+  @override
+  String tvOfflineNotVerified(Object temple) {
+    return 'Your check-in at $temple was received and is under review.';
+  }
+
+  @override
+  String tvOfflineRejected(Object temple, Object reason) {
+    return 'Your saved check-in at $temple could not be verified: $reason';
+  }
+
+  @override
+  String tvOfflineExpired(Object temple) {
+    return 'Your saved check-in at $temple is more than 3 days old and could not be verified.';
+  }
+
+  @override
   String get tvDistanceLeft => 'Distance Left';
 
   @override

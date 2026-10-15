@@ -20,6 +20,10 @@ abstract final class AppConstants {
   /// verification steps read as deliberate even when the server responds fast.
   static const Duration visitVerificationFloor = Duration(milliseconds: 2600);
 
+  /// How long a check-in saved without network can wait to be verified
+  /// (the backend refuses older ones).
+  static const Duration offlineCheckinMaxAge = Duration(hours: 72);
+
   /// OpenStreetMap raster tiles (no API key) — only the fallback for builds
   /// without a Mapbox token (local development); production uses Mapbox, as
   /// OSM's tile policy does not allow apps to rely on its volunteer servers.

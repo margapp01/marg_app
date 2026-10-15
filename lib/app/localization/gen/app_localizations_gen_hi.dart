@@ -412,6 +412,51 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tvFailureBarTitle => 'चेक-इन विफल';
 
   @override
+  String get tvSavedOfflineBarTitle => 'ऑफ़लाइन सहेजा गया';
+
+  @override
+  String get tvSavedOfflineTitle => 'दर्शन सहेजा गया';
+
+  @override
+  String tvSavedOfflineBody(Object temple) {
+    return '$temple में आपका चेक-इन इस फ़ोन पर सहेजा गया है। नेटवर्क मिलते ही MARG इसे सत्यापित कर देगा।';
+  }
+
+  @override
+  String get tvSavedOfflineHintTitle => 'नेटवर्क मिलने पर MARG खोलें';
+
+  @override
+  String get tvSavedOfflineHintBody =>
+      'साइन इन रहें। सत्यापन के बाद आपका कार्ड और अंक मिलेंगे।';
+
+  @override
+  String get tvSavedOfflineLimitTitle => '3 दिनों के भीतर';
+
+  @override
+  String get tvSavedOfflineLimitBody =>
+      'सहेजा गया चेक-इन सत्यापन के लिए 3 दिनों के भीतर MARG तक पहुँचना चाहिए।';
+
+  @override
+  String tvOfflineVerified(Object temple) {
+    return '$temple में आपका दर्शन अब सत्यापित हो गया है।';
+  }
+
+  @override
+  String tvOfflineNotVerified(Object temple) {
+    return '$temple में आपका चेक-इन मिल गया है और समीक्षा में है।';
+  }
+
+  @override
+  String tvOfflineRejected(Object temple, Object reason) {
+    return '$temple में सहेजा गया आपका चेक-इन सत्यापित नहीं हो सका: $reason';
+  }
+
+  @override
+  String tvOfflineExpired(Object temple) {
+    return '$temple में सहेजा गया आपका चेक-इन 3 दिन से पुराना है और सत्यापित नहीं हो सका।';
+  }
+
+  @override
   String get tvDistanceLeft => 'शेष दूरी';
 
   @override

@@ -134,6 +134,43 @@
   "tvAchievementBarTitle": "Achievement Unlocked",
   "tvContinueTitle": "Continue Your Journey",
   "tvFailureBarTitle": "Check-In Failed",
+  "tvSavedOfflineBarTitle": "Saved Offline",
+  "tvSavedOfflineTitle": "Darshan saved",
+  "tvSavedOfflineBody": "Your check-in at {temple} is saved on this phone. MARG will verify it as soon as you're back online.",
+  "@tvSavedOfflineBody": {
+    "placeholders": {
+      "temple": {}
+    }
+  },
+  "tvSavedOfflineHintTitle": "Open MARG when you have signal",
+  "tvSavedOfflineHintBody": "Stay signed in. Your card and points arrive once it's verified.",
+  "tvSavedOfflineLimitTitle": "Within 3 days",
+  "tvSavedOfflineLimitBody": "A saved check-in must reach MARG within 3 days to be verified.",
+  "tvOfflineVerified": "Your darshan at {temple} is now verified.",
+  "@tvOfflineVerified": {
+    "placeholders": {
+      "temple": {}
+    }
+  },
+  "tvOfflineNotVerified": "Your check-in at {temple} was received and is under review.",
+  "@tvOfflineNotVerified": {
+    "placeholders": {
+      "temple": {}
+    }
+  },
+  "tvOfflineRejected": "Your saved check-in at {temple} could not be verified: {reason}",
+  "@tvOfflineRejected": {
+    "placeholders": {
+      "temple": {},
+      "reason": {}
+    }
+  },
+  "tvOfflineExpired": "Your saved check-in at {temple} is more than 3 days old and could not be verified.",
+  "@tvOfflineExpired": {
+    "placeholders": {
+      "temple": {}
+    }
+  },
   "tvDistanceLeft": "Distance Left",
   "tvEta": "ETA",
   "tvArrivalTime": "Arrival Time",

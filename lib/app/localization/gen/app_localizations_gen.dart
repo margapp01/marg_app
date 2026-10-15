@@ -896,6 +896,72 @@ abstract class AppLocalizations {
   /// **'Check-In Failed'**
   String get tvFailureBarTitle;
 
+  /// No description provided for @tvSavedOfflineBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved Offline'**
+  String get tvSavedOfflineBarTitle;
+
+  /// No description provided for @tvSavedOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Darshan saved'**
+  String get tvSavedOfflineTitle;
+
+  /// No description provided for @tvSavedOfflineBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your check-in at {temple} is saved on this phone. MARG will verify it as soon as you\'re back online.'**
+  String tvSavedOfflineBody(Object temple);
+
+  /// No description provided for @tvSavedOfflineHintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open MARG when you have signal'**
+  String get tvSavedOfflineHintTitle;
+
+  /// No description provided for @tvSavedOfflineHintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay signed in. Your card and points arrive once it\'s verified.'**
+  String get tvSavedOfflineHintBody;
+
+  /// No description provided for @tvSavedOfflineLimitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 3 days'**
+  String get tvSavedOfflineLimitTitle;
+
+  /// No description provided for @tvSavedOfflineLimitBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A saved check-in must reach MARG within 3 days to be verified.'**
+  String get tvSavedOfflineLimitBody;
+
+  /// No description provided for @tvOfflineVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Your darshan at {temple} is now verified.'**
+  String tvOfflineVerified(Object temple);
+
+  /// No description provided for @tvOfflineNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Your check-in at {temple} was received and is under review.'**
+  String tvOfflineNotVerified(Object temple);
+
+  /// No description provided for @tvOfflineRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Your saved check-in at {temple} could not be verified: {reason}'**
+  String tvOfflineRejected(Object temple, Object reason);
+
+  /// No description provided for @tvOfflineExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your saved check-in at {temple} is more than 3 days old and could not be verified.'**
+  String tvOfflineExpired(Object temple);
+
   /// No description provided for @tvDistanceLeft.
   ///
   /// In en, this message translates to:

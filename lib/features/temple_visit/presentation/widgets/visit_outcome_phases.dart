@@ -1183,36 +1183,7 @@ class FailurePhase extends StatelessWidget {
           style: context.textTheme.bodyMedium?.withColor(context.colors.textSecondary),
         ),
         const Gap(AppSpacing.lg),
-        AppCard(
-          child: Column(
-            children: [
-              for (final (i, (icon, title, body)) in hints.indexed) ...[
-                if (i > 0) const AppDivider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-                  child: Row(
-                    children: [
-                      VisitIconDisc(icon: icon, color: i == 0 ? error : context.scheme.primary),
-                      const Gap.h(AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              title,
-                              style: context.textTheme.bodyMedium?.semiBold.withColor(context.scheme.secondary),
-                            ),
-                            Text(body, style: context.caption.copyWith(color: context.colors.textSecondary)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ).fadeIn(delay: AppDurations.slow + AppDurations.stagger * i),
-              ],
-            ],
-          ),
-        ),
+        _HintCard(hints: hints, leadColor: error),
       ],
       actions: [
         AppButton.primary(label: l10n.tvTryAgain, icon: AppIcons.refresh, onPressed: onRetry),
@@ -1237,4 +1208,96 @@ class FailurePhase extends StatelessWidget {
       (AppIcons.cloudOff, l10n.tvHintConnectionTitle, l10n.tvHintConnectionBody),
     ],
   };
+}
+
+// ─────────────────────────── Saved Offline ───────────────────────────
+
+/// No network at the shrine: the check-in was saved on the phone and is
+/// verified by the server once the devotee is back in coverage.
+class OfflineSavedPhase extends StatelessWidget {
+  const OfflineSavedPhase({required this.templeName, required this.onDone, super.key});
+
+  final String templeName;
+  final VoidCallback onDone;
+
+  static const double _stage = 180;
+  static const double _art = 112;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final accent = context.scheme.primary;
+
+    return VisitPhaseBody(
+      content: [
+        SizedBox(
+          height: _stage,
+          child: Center(
+            child: GlowPulse(
+              color: accent.withValues(alpha: 0.5),
+              radius: _art * 0.75,
+              child: IllustratedIcon(fallbackIcon: AppIcons.cloudOff, color: accent, size: _art).scaleIn(),
+            ),
+          ),
+        ),
+        Text(l10n.tvSavedOfflineTitle, textAlign: TextAlign.center, style: context.displayText.titleLarge.withColor(accent)),
+        const Gap(AppSpacing.sm),
+        Text(
+          l10n.tvSavedOfflineBody(templeName),
+          textAlign: TextAlign.center,
+          style: context.textTheme.bodyMedium?.withColor(context.colors.textSecondary),
+        ),
+        const Gap(AppSpacing.lg),
+        _HintCard(
+          hints: [
+            (AppIcons.offline, l10n.tvSavedOfflineHintTitle, l10n.tvSavedOfflineHintBody),
+            (AppIcons.timer, l10n.tvSavedOfflineLimitTitle, l10n.tvSavedOfflineLimitBody),
+          ],
+          leadColor: accent,
+        ),
+      ],
+      actions: [AppButton.primary(label: l10n.tvDone, icon: AppIcons.check, onPressed: onDone)],
+    );
+  }
+}
+
+/// The guidance rows under a check-in outcome.
+class _HintCard extends StatelessWidget {
+  const _HintCard({required this.hints, required this.leadColor});
+
+  final List<(IconData, String, String)> hints;
+
+  /// Colour of the first row's icon (the others use the primary colour).
+  final Color leadColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        children: [
+          for (final (i, (icon, title, body)) in hints.indexed) ...[
+            if (i > 0) const AppDivider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+              child: Row(
+                children: [
+                  VisitIconDisc(icon: icon, color: i == 0 ? leadColor : context.scheme.primary),
+                  const Gap.h(AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title, style: context.textTheme.bodyMedium?.semiBold.withColor(context.scheme.secondary)),
+                        Text(body, style: context.caption.copyWith(color: context.colors.textSecondary)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ).fadeIn(delay: AppDurations.slow + AppDurations.stagger * i),
+          ],
+        ],
+      ),
+    );
+  }
 }

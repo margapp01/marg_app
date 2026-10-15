@@ -7,8 +7,11 @@ import 'package:geolocator/geolocator.dart';
 import '../../../../app/constants/app_constants.dart';
 import '../../../../core/location/captured_location.dart';
 import '../../../../core/location/location_service.dart';
+import '../../../../core/services/connectivity_service.dart';
 import '../../../../core/services/device_context_service.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../temple_detail/presentation/controllers/temple_detail_controller.dart';
+import '../../data/offline_checkins.dart';
 import '../../data/repository/temple_visit_repository_impl.dart';
 import '../../domain/entities/checkin_failure.dart';
 import '../../domain/entities/checkin_request.dart';
@@ -31,6 +34,8 @@ enum TempleVisitPhase {
   passportUpdate,
   achievement,
   continueJourney,
+  // No network at the shrine: the check-in is saved on the phone.
+  savedOffline,
   failure;
 
   /// The success summary and the screens opened from it.
@@ -213,6 +218,7 @@ class TempleVisitController extends AutoDisposeFamilyNotifier<TempleVisitState, 
     }
 
     state = state.copyWith(phase: TempleVisitPhase.verifying, submitting: true, clearFailure: true);
+    final online = await _isOnline();
 
     final device = await _loadDevice();
     final request = CheckinRequest(
@@ -229,6 +235,7 @@ class TempleVisitController extends AutoDisposeFamilyNotifier<TempleVisitState, 
 
     // Choreograph: run the request and a minimum-duration floor together.
     final floor = Future<void>.delayed(AppConstants.visitVerificationFloor);
+    if (!online && await _saveForLater(temple, loc, request, floor)) return;
     try {
       final result = await _repo.checkIn(temple.id, request);
       _refreshTempleDetail();
@@ -242,6 +249,7 @@ class TempleVisitController extends AutoDisposeFamilyNotifier<TempleVisitState, 
         routeProgress: progress,
       );
     } on CheckinFailure catch (f) {
+      if (f.kind == CheckinFailureKind.offline && await _saveForLater(temple, loc, request, floor)) return;
       if (f.kind == CheckinFailureKind.alreadyCheckedIn) _refreshTempleDetail();
       await floor;
       state = state.copyWith(phase: TempleVisitPhase.failure, submitting: false, failure: f);
@@ -252,6 +260,36 @@ class TempleVisitController extends AutoDisposeFamilyNotifier<TempleVisitState, 
         submitting: false,
         failure: CheckinFailure.offline('$e'),
       );
+    }
+  }
+
+  /// Without network, keep a check-in taken inside the circle on the phone —
+  /// it is submitted (and verified by the server) once the network returns.
+  /// False when it cannot be saved, so the usual failure screen shows.
+  Future<bool> _saveForLater(VisitTemple temple, CapturedLocation loc, CheckinRequest request, Future<void> floor) async {
+    final userId = ref.read(authControllerProvider).user?.id;
+    if (userId == null || loc.isMocked || !state.withinGeofence) return false;
+    try {
+      await ref.read(offlineCheckinStoreProvider).save(PendingCheckin(
+            userId: userId,
+            templeId: temple.id,
+            slug: temple.slug,
+            templeName: temple.name,
+            request: request.forOffline(loc.capturedAt),
+          ));
+    } catch (_) {
+      return false;
+    }
+    await floor;
+    state = state.copyWith(phase: TempleVisitPhase.savedOffline, submitting: false);
+    return true;
+  }
+
+  Future<bool> _isOnline() async {
+    try {
+      return await ref.read(connectivityServiceProvider).isOnline();
+    } catch (_) {
+      return true; // Unknown: try the network, and fall back on a connection error.
     }
   }
 

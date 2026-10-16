@@ -2363,6 +2363,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get docOnThisPage => 'On this page';
+
+  @override
+  String docSections(int count) {
+    return '$count sections';
+  }
+
+  @override
+  String docReadTime(int minutes) {
+    return '$minutes min read';
+  }
+
+  @override
+  String get docBackToTop => 'Back to top';
+
+  @override
   String get pfDeleteHeading => 'Delete your account?';
 
   @override

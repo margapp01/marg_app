@@ -4658,6 +4658,30 @@ abstract class AppLocalizations {
   /// **'Last updated {date}'**
   String pfLastUpdated(String date);
 
+  /// No description provided for @docOnThisPage.
+  ///
+  /// In en, this message translates to:
+  /// **'On this page'**
+  String get docOnThisPage;
+
+  /// No description provided for @docSections.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sections'**
+  String docSections(int count);
+
+  /// No description provided for @docReadTime.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min read'**
+  String docReadTime(int minutes);
+
+  /// No description provided for @docBackToTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to top'**
+  String get docBackToTop;
+
   /// No description provided for @pfDeleteHeading.
   ///
   /// In en, this message translates to:

@@ -2360,6 +2360,22 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get docOnThisPage => 'इस पृष्ठ पर';
+
+  @override
+  String docSections(int count) {
+    return '$count भाग';
+  }
+
+  @override
+  String docReadTime(int minutes) {
+    return '$minutes मिनट में पढ़ें';
+  }
+
+  @override
+  String get docBackToTop => 'ऊपर जाएँ';
+
+  @override
   String get pfDeleteHeading => 'अपना खाता हटाएँ?';
 
   @override

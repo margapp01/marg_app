@@ -31,8 +31,15 @@ class LocationPermissionSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final route = ModalRoute.of(context);
     ref.listen(locationAccessProvider, (_, next) {
-      if (next.valueOrNull == LocationAccess.granted) Navigator.of(context).pop(true);
+      // Every re-read notifies, even an unchanged "granted" (the ask, the
+      // resume after each system dialog), and the sheet keeps listening while
+      // it slides away. Close it once: a second pop would take the page under
+      // it too and leave a blank screen.
+      if (next.valueOrNull == LocationAccess.granted && (route?.isActive ?? false)) {
+        Navigator.of(context).pop(true);
+      }
     });
     final access = ref.watch(locationAccessProvider).valueOrNull ?? LocationAccess.denied;
     final (label, icon) = switch (access) {

@@ -16,7 +16,7 @@ class Faq {
 }
 
 /// A CMS static page (ABOUT / CONTACT / PRIVACY / TERMS / …). `contentHtml` is
-/// rendered as plain text (tags stripped) — no HTML dependency is introduced.
+/// rendered by the design system's own HTML renderer — no HTML dependency.
 class StaticPage {
   const StaticPage({required this.title, required this.contentHtml, this.titleHi, this.contentHtmlHi, this.updatedAt});
   final String title;

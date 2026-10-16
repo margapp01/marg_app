@@ -83,6 +83,9 @@ List<String> _items(String listHtml) =>
 
 String _stripTags(String s) => s.replaceAll(RegExp(r'<[^>]+>'), '');
 
+/// [html] as plain, entity-decoded text — e.g. a heading for a contents list.
+String htmlToPlainText(String html) => _decode(_stripTags(html)).trim();
+
 String _decode(String s) => s
     .replaceAll('&nbsp;', ' ')
     .replaceAll('&amp;', '&')
@@ -109,16 +112,23 @@ final _inlinePattern = RegExp(
 /// ordered/unordered lists, blockquotes, images, rules, and inline
 /// bold / italic / links. Reused by Blog Detail and the Static Pages screens.
 class HtmlContentView extends StatelessWidget {
-  const HtmlContentView({required this.html, this.textStyle, super.key});
+  const HtmlContentView({required this.html, this.textStyle, super.key}) : _blocks = null;
+
+  /// Renders blocks already split out by [parseHtmlBlocks] — e.g. one section
+  /// of a longer document.
+  const HtmlContentView.blocks(List<HtmlBlock> blocks, {this.textStyle, super.key})
+      : html = '',
+        _blocks = blocks;
 
   final String html;
+  final List<HtmlBlock>? _blocks;
 
   /// Base paragraph style; defaults to `bodyLarge` with comfortable line height.
   final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
-    final blocks = parseHtmlBlocks(html);
+    final blocks = _blocks ?? parseHtmlBlocks(html);
     if (blocks.isEmpty) {
       return Text(
         _decode(_stripTags(html)).trim(),

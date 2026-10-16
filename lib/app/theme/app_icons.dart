@@ -61,6 +61,9 @@ abstract final class AppIcons {
   static const IconData error = Symbols.error_rounded;
   static const IconData verified = Symbols.verified_rounded;
   static const IconData shield = Symbols.shield_rounded;
+  static const IconData gavel = Symbols.gavel_rounded;
+  static const IconData contents = Symbols.toc_rounded;
+  static const IconData arrowUpward = Symbols.arrow_upward_rounded;
 
   // ── Inputs ────────────────────────────────────────────────────────────
   static const IconData visibility = Symbols.visibility_rounded;

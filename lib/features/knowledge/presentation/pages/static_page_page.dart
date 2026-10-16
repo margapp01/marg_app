@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../shared/design_system.dart';
+import '../../../profile/presentation/pages/static_page_page.dart';
 import '../../domain/entities/knowledge_models.dart';
 import '../controllers/knowledge_controllers.dart';
 
-/// Screen 10 — a CMS static page (Privacy / Terms / Contact / About) rendered
-/// cleanly from HTML. Community Guidelines is not offered — there is no such
+/// Screen 10 — a CMS static page (Privacy / Terms / Contact / About) laid out
+/// as a readable document. Community Guidelines is not offered — there is no such
 /// `PageKind` in the backend.
 class KnowledgeStaticPagePage extends ConsumerWidget {
   const KnowledgeStaticPagePage({required this.kindWire, super.key});
@@ -41,16 +41,11 @@ class KnowledgeStaticPagePage extends ConsumerWidget {
           if (page.contentHtml.isEmpty) {
             return EmptyView(art: StateArt.empty, icon: AppIcons.description, title: page.title.isEmpty ? l10n.kbAbout : page.title, message: l10n.kbNoContentBody);
           }
-          final updated = page.updatedAt;
-          return ListView(
-            padding: AppSpacing.screenAll,
-            children: [
-              if (updated != null) ...[
-                Text(l10n.pfLastUpdated(DateFormat.yMMMMd(lang).format(updated)), style: context.caption),
-                const Gap(AppSpacing.md),
-              ],
-              HtmlContentView(html: page.contentHtml),
-            ],
+          return CmsDocumentView(
+            title: page.title.isEmpty ? l10n.kbAbout : page.title,
+            html: page.contentHtml,
+            icon: StaticPageScreen.iconFor(_kind),
+            updatedAt: page.updatedAt,
           );
         },
       ),

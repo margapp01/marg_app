@@ -45,6 +45,7 @@ export 'components/rank_tier.dart';
 export 'components/rarity.dart';
 export 'components/section_header.dart';
 export 'components/sunburst_frame.dart';
+export 'content/cms_document_view.dart';
 export 'content/html_content_view.dart';
 export 'dialogs/dialogs.dart';
 export 'dividers/dividers.dart';

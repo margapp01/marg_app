@@ -840,6 +840,24 @@
       }
     }
   },
+  "docOnThisPage": "On this page",
+  "docSections": "{count} sections",
+  "@docSections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "docReadTime": "{minutes} min read",
+  "@docReadTime": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "docBackToTop": "Back to top",
   "pfDeleteHeading": "Delete your account?",
   "pfDeleteExplain": "This action is permanent and cannot be undone. Your visits, cards, achievements, routes, passport and settings will be removed.",
   "pfLossProgress": "All your progress will be lost",

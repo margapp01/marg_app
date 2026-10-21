@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/localization/app_localizations.dart';
+import '../../../../app/router/app_navigation.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../app/router/route_paths.dart';
 import '../../../../core/location/location_service.dart';
@@ -218,7 +219,7 @@ class _TempleVisitPageState extends ConsumerState<TempleVisitPage> {
   }
 
   void _leaveTo(BuildContext context, String routeName) => context.goNamed(routeName);
-  void _pushTo(BuildContext context, String routeName) => context.pushNamed(routeName);
+  void _pushTo(BuildContext context, String routeName) => context.openNamed(routeName);
   void _pop(BuildContext context) => context.canPop() ? context.pop() : context.goNamed(RouteNames.home);
 
   /// In-app directions in the chosen [mode]; on arrival "Check in" returns

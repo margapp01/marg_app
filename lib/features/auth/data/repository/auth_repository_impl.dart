@@ -35,7 +35,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthUser> completeRegistration({
-    required String mobile,
+    String? mobile,
     String? name,
     String? profilePhoto,
   }) async {

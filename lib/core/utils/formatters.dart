@@ -30,9 +30,6 @@ String formatHour(int hour, {int minute = 0}) {
   return minute == 0 ? '$h12 $suffix' : '$h12:${minute.toString().padLeft(2, '0')} $suffix';
 }
 
-/// A one-hour slot starting at [hour]: `6` → "6 AM – 7 AM".
-String formatHourSlot(int hour) => '${formatHour(hour)} – ${formatHour(hour + 1)}';
-
 /// "850 m" under a kilometre, "12.4 km" beyond; "—" when unknown.
 String formatDistance(double? meters) {
   if (meters == null) return '—';

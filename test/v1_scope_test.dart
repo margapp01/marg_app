@@ -45,9 +45,8 @@ void main() {
     }
   });
 
-  test('Home quick actions contain no Booking/Pandit action', () {
-    expect(HomeQuickAction.values, hasLength(6));
-    for (final a in [...HomeQuickAction.values, ...HomeShortcut.values]) {
+  test('Home shortcuts contain no Booking/Pandit action', () {
+    for (final a in HomeShortcut.values) {
       expect(mentionsBanned(a.name), isFalse, reason: '${a.name} is out of v1 scope');
     }
   });

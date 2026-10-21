@@ -9,9 +9,10 @@ abstract interface class AuthRepository {
   /// is already complete; otherwise the result carries [requiresMobile].
   Future<FirebaseAuthResult> signInWithGoogle();
 
-  /// `POST /auth/complete-registration` — attach mobile, persist tokens.
+  /// `POST /auth/complete-registration` — activate the account (attaching
+  /// the optional mobile), persist tokens.
   Future<AuthUser> completeRegistration({
-    required String mobile,
+    String? mobile,
     String? name,
     String? profilePhoto,
   });

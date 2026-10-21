@@ -10,6 +10,7 @@ import '../../../../app/router/route_names.dart';
 import '../../../../core/location/captured_location.dart';
 import '../../../../core/media/image_picker_service.dart';
 import '../../../../core/media/picked_photo.dart';
+import '../../../../core/models/country_dial_code.dart';
 import '../../../../core/models/spiritual_choices.dart';
 import '../../../../core/utils/age.dart';
 import '../../../../shared/design_system.dart';
@@ -26,14 +27,18 @@ import '../widgets/setup/setup_complete_view.dart';
 import '../widgets/setup/setup_models.dart';
 import '../widgets/setup/setup_stepper.dart';
 
-/// "Complete Your Profile" — five steps: welcome (photo, name, email) → about
-/// you (birthday, gender, city) → what brings you here (interests) → spiritual
+/// "Complete Your Profile" — five steps: welcome (photo, name, email, optional
+/// mobile with a country picker, city) → about you (birthday, gender,
+/// notification permission) → what brings you here (interests) → spiritual
 /// preferences (deities, visit frequency, yatras, language) → review.
 ///
-/// Answers live in local state, seeded from the Google profile; "Complete
-/// Setup" on the review step persists everything in one pass (registration →
-/// profile → location → notification defaults → complete-onboarding), then
-/// shows "You're all set!" before entering the app.
+/// Only step 1 matters to get going: "Skip for now" (every step) saves what
+/// has been filled in and enters the app; Profile then shows how much is left
+/// to complete. Answers live in local state, seeded from the Google profile;
+/// finishing persists everything in one pass (registration → profile →
+/// location → notification defaults → complete-onboarding), then shows
+/// "You're all set!" before entering the app. Without a date of birth the
+/// devotee confirms the minimum age first.
 class SetupPage extends ConsumerStatefulWidget {
   const SetupPage({super.key});
 
@@ -55,12 +60,12 @@ class _SetupPageState extends ConsumerState<SetupPage> {
   // ── Answers (seeded from the Google profile / existing user) ──────────────
   late final TextEditingController _nameController;
   final _mobileController = TextEditingController();
+  CountryDialCode _country = CountryDialCode.deviceDefault;
   String _email = '';
   String? _photoUrl;
   PickedPhoto? _pickedPhoto;
   String? _mobileError;
   String? _dobError;
-  String? _genderError;
   DateTime? _dob;
   SetupGender? _gender;
   CapturedLocation? _location;
@@ -84,6 +89,12 @@ class _SetupPageState extends ConsumerState<SetupPage> {
     _gender = SetupGender.fromWire(user?.gender);
     _language = SetupLanguage.fromWire(user?.preferredLanguage);
 
+    final phone = CountryDialCode.parse(user?.phone, preferred: _country);
+    if (phone != null) {
+      _country = phone.country;
+      _mobileController.text = phone.digits;
+    }
+
     final seeded = (user?.interests ?? const []).map(SetupInterest.fromWire).whereType<SetupInterest>();
     _interests.addAll(seeded.isEmpty ? {SetupInterest.templeVisits} : seeded);
   }
@@ -96,13 +107,25 @@ class _SetupPageState extends ConsumerState<SetupPage> {
     super.dispose();
   }
 
-  /// A brand-new Google account still needs its mobile number to create the
-  /// Marg session — the only case that shows the mobile field. Registration
-  /// runs as soon as the welcome step is confirmed, so a number that is
-  /// already in use is caught there, not after the remaining steps.
-  bool get _requiresRegistration => ref.read(authControllerProvider).status == AuthStatus.needsMobile;
+  /// A brand-new Google account has no Marg session yet. Registration runs as
+  /// soon as the welcome step is confirmed, so a mobile number that is already
+  /// in use is caught there, not after the remaining steps.
+  bool get _requiresRegistration => ref.read(authControllerProvider).status == AuthStatus.needsRegistration;
 
-  bool get _validMobile => _mobileController.text.trim().length == 10;
+  String get _mobileDigits => _mobileController.text.trim();
+
+  /// E.164 mobile, or null when the optional field is empty.
+  String? get _mobile => _mobileDigits.isEmpty ? null : _country.e164(_mobileDigits);
+
+  /// The mobile is optional, but one that was typed must be a plausible length.
+  bool _validateMobile() {
+    final error = _mobileDigits.isEmpty || _country.accepts(_mobileDigits)
+        ? null
+        : AppLocalizations.of(context).suInvalidMobile;
+    setState(() => _mobileError = error);
+    if (error != null) _showError(error);
+    return error == null;
+  }
 
   /// City name for the profile, derived from the reverse geocode.
   String? get _city {
@@ -133,38 +156,55 @@ class _SetupPageState extends ConsumerState<SetupPage> {
       case _aboutStep:
         if (_validateAbout()) _go(_step + 1);
       case _reviewStep:
-        if (!_validateAbout()) {
-          _go(_aboutStep);
-          return;
-        }
-        _submit();
+        _finish();
       default:
         _go(_step + 1);
     }
+  }
+
+  /// "Skip for now": keep what's been entered and go straight to the app.
+  void _skip() {
+    if (_step == _welcomeStep && !_validateMobile()) return;
+    _finish();
+  }
+
+  /// Saves and completes setup. A birthday that was entered must pass the age
+  /// check; without one, the devotee confirms the minimum age instead.
+  Future<void> _finish() async {
+    if (!_validateAbout()) {
+      _go(_aboutStep);
+      return;
+    }
+    if (_dob == null && !await _confirmAge()) return;
+    await _submit();
+  }
+
+  Future<bool> _confirmAge() {
+    final l10n = AppLocalizations.of(context);
+    return AppSheets.confirm(
+      context,
+      title: l10n.suAgeConfirmTitle,
+      message: l10n.suAgeConfirmBody(AppConstants.minAccountAge),
+      confirmLabel: l10n.suAgeConfirmYes(AppConstants.minAccountAge),
+      cancelLabel: l10n.suAgeConfirmNo,
+    );
   }
 
   /// Field errors also raise a toast so they can't be missed.
   void _showError(String message) => AppToast.show(context, message, type: FeedbackType.error);
 
   Future<void> _confirmWelcome() async {
+    if (!_validateMobile()) return;
     if (!_requiresRegistration) {
       _go(_aboutStep);
       return;
     }
     final l10n = AppLocalizations.of(context);
-    if (!_validMobile) {
-      setState(() => _mobileError = l10n.suInvalidMobile);
-      _showError(l10n.suInvalidMobile);
-      return;
-    }
-    setState(() {
-      _mobileError = null;
-      _registering = true;
-    });
+    setState(() => _registering = true);
     final name = _nameController.text.trim();
     try {
       await ref.read(authControllerProvider.notifier).completeRegistration(
-            mobile: '+91${_mobileController.text.trim()}',
+            mobile: _mobile,
             name: name.isEmpty ? null : name,
             profilePhoto: _photoUrl,
           );
@@ -191,26 +231,16 @@ class _SetupPageState extends ConsumerState<SetupPage> {
     return message.toLowerCase().contains('mobile');
   }
 
-  /// Date of birth and gender are both required; shows the first problem.
+  /// Date of birth and gender are optional; a birthday that was entered must
+  /// meet [AppConstants.minAccountAge] (the API checks too).
   bool _validateAbout() {
-    final l10n = AppLocalizations.of(context);
-    final dobError = _dobValidation(l10n);
-    final genderError = _gender == null ? l10n.suGenderRequired : null;
-    setState(() {
-      _dobError = dobError;
-      _genderError = genderError;
-    });
-    final error = dobError ?? genderError;
+    final dob = _dob;
+    final error = dob != null && !isAtLeastAge(dob, AppConstants.minAccountAge)
+        ? AppLocalizations.of(context).suAgeRestricted(AppConstants.minAccountAge)
+        : null;
+    setState(() => _dobError = error);
     if (error != null) _showError(error);
     return error == null;
-  }
-
-  /// DOB is required and must meet [AppConstants.minAccountAge] (the API checks too).
-  String? _dobValidation(AppLocalizations l10n) {
-    final dob = _dob;
-    if (dob == null) return l10n.suDobRequired;
-    if (!isAtLeastAge(dob, AppConstants.minAccountAge)) return l10n.suAgeRestricted(AppConstants.minAccountAge);
-    return null;
   }
 
   void _toggle<T>(Set<T> set, T value) => setState(() => set.contains(value) ? set.remove(value) : set.add(value));
@@ -247,7 +277,7 @@ class _SetupPageState extends ConsumerState<SetupPage> {
     final requiresRegistration = _requiresRegistration;
     final draft = OnboardingDraft(
       name: _nameController.text.trim(),
-      mobile: requiresRegistration ? '+91${_mobileController.text.trim()}' : null,
+      mobile: _mobile,
       dob: _dob,
       gender: _gender?.wire,
       city: _city,
@@ -279,9 +309,10 @@ class _SetupPageState extends ConsumerState<SetupPage> {
   List<ReviewRow> _reviewRows(AppLocalizations l10n) {
     String? joined(Iterable<String> items) => items.isEmpty ? null : items.join(', ');
     return [
+      (icon: AppIcons.phone, value: _mobile),
+      (icon: AppIcons.location, value: _city),
       (icon: AppIcons.calendar, value: _dob == null ? null : formatSetupDate(_dob!)),
       (icon: _gender?.icon ?? AppIcons.profile, value: _gender?.localizedLabel(l10n)),
-      (icon: AppIcons.location, value: _city),
       (icon: AppIcons.favorite, value: joined(_interests.map((i) => i.localizedLabel(l10n)))),
       (icon: AppIcons.temple, value: joined(_deities.map((d) => d.localizedLabel(l10n)))),
       (icon: AppIcons.timer, value: _frequency?.localizedLabel(l10n)),
@@ -340,10 +371,14 @@ class _SetupPageState extends ConsumerState<SetupPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.xs, AppSpacing.xs, 0),
-                  child: Row(
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      AppIconButton(icon: AppIcons.back, tooltip: l10n.suBack, onPressed: submitting ? null : _back),
-                      Expanded(
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: AppIconButton(icon: AppIcons.back, tooltip: l10n.suBack, onPressed: submitting ? null : _back),
+                      ),
+                      Center(
                         child: Text.rich(
                           TextSpan(
                             children: [
@@ -360,8 +395,14 @@ class _SetupPageState extends ConsumerState<SetupPage> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      // Balances the back button so the label stays centred.
-                      const SizedBox(width: 48),
+                      if (_step != _reviewStep)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: submitting ? null : _skip,
+                            child: Text(l10n.suSkip),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -381,9 +422,15 @@ class _SetupPageState extends ConsumerState<SetupPage> {
                         email: _email,
                         photoUrl: _photoUrl,
                         pickedPhoto: _pickedPhoto,
-                        showMobile: _requiresRegistration,
                         mobileController: _mobileController,
+                        country: _country,
+                        onCountryChanged: (c) => setState(() {
+                          _country = c;
+                          _mobileError = null;
+                        }),
                         mobileError: _mobileError,
+                        location: _location,
+                        onLocation: (loc) => setState(() => _location = loc),
                         onEditPhoto: _pickPhoto,
                       ),
                       AboutStep(
@@ -394,13 +441,7 @@ class _SetupPageState extends ConsumerState<SetupPage> {
                         }),
                         dobError: _dobError,
                         gender: _gender,
-                        onPickGender: (g) => setState(() {
-                          _gender = g;
-                          _genderError = null;
-                        }),
-                        genderError: _genderError,
-                        location: _location,
-                        onLocation: (loc) => setState(() => _location = loc),
+                        onPickGender: (g) => setState(() => _gender = g),
                       ),
                       InterestsStep(selected: _interests, onToggle: (i) => _toggle(_interests, i)),
                       SpiritualStep(

@@ -326,51 +326,10 @@ class _Gem extends StatelessWidget {
   }
 }
 
-/// A rarity distribution bar for the Statistics screen.
-class RarityBar extends StatelessWidget {
-  const RarityBar({required this.rarity, required this.owned, required this.max, super.key});
-
-  final String rarity;
-  final int owned;
-  final int max;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = rarityColor(context, rarity);
-    final fraction = max == 0 ? 0.0 : (owned / max).clamp(0.0, 1.0);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 84,
-            child: Text(rarityLabel(AppLocalizations.of(context), rarity),
-                style: context.textTheme.bodySmall?.copyWith(color: c)),
-          ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) => TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: fraction),
-                duration: AppDurations.slow,
-                curve: AppCurves.emphasize,
-                builder: (context, v, _) => Stack(
-                  children: [
-                    Container(height: 10, decoration: BoxDecoration(color: context.colors.border, borderRadius: AppRadius.fullAll)),
-                    Container(height: 10, width: constraints.maxWidth * v, decoration: BoxDecoration(color: c, borderRadius: AppRadius.fullAll)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const Gap(AppSpacing.sm),
-          SizedBox(width: 28, child: Text('$owned', style: context.textTheme.bodySmall?.semiBold, textAlign: TextAlign.end)),
-        ],
-      ),
-    );
-  }
-}
-
-/// A series/season progress row: emblem, name, completion bar and count.
+/// A series / season as a collector's album: a gilt frame in the group's
+/// accent (gold once complete) around a completion ring, the name, a row of
+/// card slots — gilt for owned, stone and locked for missing — and the next
+/// card still to collect with its rarity. Completed albums carry a gold seal.
 class GroupProgressTile extends StatelessWidget {
   const GroupProgressTile({required this.group, this.accent, this.onTap, super.key});
 
@@ -378,44 +337,142 @@ class GroupProgressTile extends StatelessWidget {
   final Color? accent;
   final VoidCallback? onTap;
 
+  static const int _maxSlots = 12;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final tint = accent ?? context.scheme.primary;
     final done = group.completed;
-    return AppCard(
-      onTap: onTap,
-      child: Row(
-        children: [
-          IllustratedIcon(fallbackIcon: AppIcons.temple, color: tint, size: 48),
-          const Gap.h(AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(group.name, style: context.textTheme.titleSmall?.semiBold, maxLines: 1, overflow: TextOverflow.ellipsis),
+    final gold = context.colors.gold;
+    final tint = done ? gold : accent ?? context.scheme.primary;
+    final next = group.missingCards.firstOrNull;
+    final slots = group.totalCards.clamp(0, _maxSlots);
+    final ownedSlots = group.ownedCards.clamp(0, slots);
+    return Semantics(
+      button: onTap != null,
+      label: '${group.name}, ${group.ownedCards} / ${group.totalCards} ${l10n.scCardsOwned}, ${group.percent}%',
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: GiltFrame(
+          accent: tint,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [context.colors.card, Color.lerp(context.colors.card, tint, 0.1)!],
+              ),
+            ),
+            child: Padding(
+              padding: AppSpacing.allMd,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      done
+                          ? const GoldSeal(size: 56, glow: true)
+                          : AppCircularProgress(
+                              value: (group.percent / 100).clamp(0, 1),
+                              size: 56,
+                              strokeWidth: 5,
+                              color: tint,
+                              backgroundColor: tint.withValues(alpha: 0.15),
+                              center: Text('${group.percent}%', style: context.textTheme.labelMedium?.bold.withColor(tint)),
+                            ),
+                      const Gap.h(AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              group.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.displayText.titleLarge.withColor(context.scheme.secondary),
+                            ),
+                            const Gap(AppSpacing.xxs),
+                            Text(
+                              done ? l10n.scAlbumComplete : '${group.ownedCards} / ${group.totalCards} ${l10n.scCardsOwned}',
+                              style: (done ? context.caption.semiBold : context.caption)
+                                  .copyWith(color: done ? gold : context.colors.textSecondary),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (onTap != null) Icon(AppIcons.chevronRight, color: context.colors.textSecondary),
+                    ],
+                  ),
+                  if (slots > 0) ...[
+                    const Gap(AppSpacing.md),
+                    Row(
+                      children: [
+                        for (var i = 0; i < slots; i++) ...[
+                          if (i > 0) const Gap.h(AppSpacing.xxs + 1),
+                          Expanded(child: _Slot(owned: i < ownedSlots, accent: tint)),
+                        ],
+                        if (group.totalCards > _maxSlots) ...[
+                          const Gap.h(AppSpacing.xs),
+                          Text('+${group.totalCards - _maxSlots}', style: context.caption.copyWith(color: context.colors.textSecondary)),
+                        ],
+                      ],
                     ),
-                    const Gap.h(AppSpacing.sm),
-                    if (done)
-                      Icon(AppIcons.verified, color: context.colors.success, size: 20, fill: 1)
-                    else
-                      Text('${group.percent}%', style: context.textTheme.bodyMedium?.bold.withColor(tint)),
                   ],
-                ),
-                const Gap(AppSpacing.sm),
-                AppLinearProgress(value: (group.percent / 100).clamp(0, 1), color: done ? context.colors.success : tint),
-                const Gap(AppSpacing.xs),
-                Text(
-                  '${group.ownedCards} / ${group.totalCards} ${l10n.scCardsOwned}',
-                  style: context.textTheme.bodySmall?.copyWith(color: context.colors.textSecondary),
-                ),
-              ],
+                  if (!done && next != null) ...[
+                    const Gap(AppSpacing.md),
+                    Row(
+                      children: [
+                        Icon(AppIcons.lock, size: 14, color: context.colors.textSecondary),
+                        const Gap.h(AppSpacing.xs),
+                        Expanded(
+                          child: Text(
+                            l10n.scAlbumNext(next.templeName ?? next.title),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: context.caption.copyWith(color: context.scheme.secondary),
+                          ),
+                        ),
+                        const Gap.h(AppSpacing.xs),
+                        RarityChip(rarity: next.rarity, compact: true),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
             ),
           ),
-        ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One card slot in an album row: gilt for owned, stone with a lock if not.
+class _Slot extends StatelessWidget {
+  const _Slot({required this.owned, required this.accent});
+
+  final bool owned;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: SacredCardFace.aspect,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: owned ? AppGradients.gilt : AppGradients.stone,
+          borderRadius: AppRadius.xsAll,
+          boxShadow: owned ? [BoxShadow(color: accent.withValues(alpha: 0.35), blurRadius: 4)] : null,
+        ),
+        child: owned
+            ? null
+            : FittedBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xxs),
+                  child: Icon(AppIcons.lock, color: context.colors.templeStone),
+                ),
+              ),
       ),
     );
   }
@@ -471,6 +528,75 @@ class _CardFlipState extends State<CardFlip> with SingleTickerProviderStateMixin
                 : widget.front,
           );
         },
+      ),
+    );
+  }
+}
+
+/// The night-sky header of the Series / Seasons screens: how many sets are
+/// complete, the cards held across them and overall completion.
+class GroupsSummary extends StatelessWidget {
+  const GroupsSummary({required this.groups, required this.series, super.key});
+
+  final List<CollectionGroup> groups;
+  final bool series;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final gold = context.colors.gold;
+    final light = context.colors.card;
+    final done = groups.where((g) => g.completed).length;
+    final owned = groups.fold<int>(0, (n, g) => n + g.ownedCards);
+    final total = groups.fold<int>(0, (n, g) => n + g.totalCards);
+    final fraction = total == 0 ? 0.0 : owned / total;
+    Widget stat(String value, String label) => Expanded(
+          child: Column(
+            children: [
+              Text(value, style: context.displayText.titleLarge.withColor(light)),
+              Text(label, textAlign: TextAlign.center, style: context.caption.copyWith(color: light.withValues(alpha: 0.75))),
+            ],
+          ),
+        );
+    return GiltFrame(
+      accent: gold,
+      large: true,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(gradient: AppGradients.night),
+        child: Padding(
+          padding: AppSpacing.allLg,
+          child: Row(
+            children: [
+              AppCircularProgress(
+                value: fraction.clamp(0, 1),
+                size: 84,
+                strokeWidth: 7,
+                color: gold,
+                backgroundColor: light.withValues(alpha: 0.12),
+                center: Text('${(fraction * 100).round()}%', style: context.textTheme.titleMedium?.bold.withColor(light)),
+              ),
+              const Gap.h(AppSpacing.lg),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      (series ? l10n.scSeriesSummary : l10n.scSeasonsSummary).toUpperCase(),
+                      style: context.overline.copyWith(color: gold, letterSpacing: 1.4),
+                    ),
+                    const Gap(AppSpacing.sm),
+                    Row(
+                      children: [
+                        stat('$done/${groups.length}', l10n.scSetsComplete),
+                        stat('$owned/$total', l10n.scShowcaseCards),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

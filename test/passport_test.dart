@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:marg_app/app/localization/app_localizations.dart';
 import 'package:marg_app/app/theme/app_theme.dart';
-import 'package:marg_app/features/passport/data/repository/passport_repository_impl.dart';
 import 'package:marg_app/features/passport/domain/entities/passport.dart';
 import 'package:marg_app/features/passport/domain/entities/passport_lists.dart';
 import 'package:marg_app/features/passport/domain/entities/passport_share.dart';
 import 'package:marg_app/features/passport/domain/entities/timeline_event.dart';
 import 'package:marg_app/features/passport/domain/repository/passport_repository.dart';
-import 'package:marg_app/features/passport/presentation/pages/passport_dashboard_page.dart';
+import 'package:marg_app/features/passport/presentation/widgets/passport_widgets.dart';
 
 PassportOverview _overview() => PassportOverview.fromJson(const {
       'user': {'id': 'ab12cd34-0000-0000-0000-000000000000', 'name': 'Arjun Rao', 'memberSince': '2025-01-10T00:00:00.000Z'},
@@ -112,15 +110,17 @@ void main() {
     });
   });
 
-  testWidgets('Dashboard renders identity, completion and trust score', (tester) async {
+  testWidgets('Passport identity renders name, completion, trust score and id', (tester) async {
+    final bundle = await _FakeRepo().dashboard();
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [passportRepositoryProvider.overrideWithValue(_FakeRepo())],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const PassportDashboardPage(),
+      MaterialApp(
+        theme: AppTheme.light,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: PassportHeroCard(overview: bundle.overview, rank: bundle.rank),
+          ),
         ),
       ),
     );

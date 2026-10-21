@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 
 import '../../../../app/localization/app_localizations.dart';
@@ -15,53 +17,90 @@ int? nextCardMilestone(int collected) {
   return null;
 }
 
-/// The card quest at the top of Home — keeps every devotee moving.
+/// Home's card-first section: the card quest and the temples near you in one
+/// night-sky frame — Sacred Cards are what MARG is about.
 ///
 /// A fresh devotee (no cards yet) is invited to collect their first Sacred
-/// Card: three locked cards, how it works in three steps, and one action —
-/// find a temple nearby. Everyone else continues their journey: their latest
-/// cards fanned out, progress to the next collection milestone, and the
-/// nearest temple whose card is waiting.
+/// Card (three locked cards, how it works in three steps); everyone else sees
+/// their latest cards fanned out with progress to the next milestone. Below
+/// sits a rail of nearby temples drawn as the cards waiting there — rarity,
+/// blurred art and a lock until collected — so the next card is one tap away.
 class CardJourneyCard extends StatelessWidget {
   const CardJourneyCard({
     required this.collected,
     required this.recent,
+    required this.temples,
     required this.onFindTemple,
     required this.onOpenCollection,
     required this.onOpenTemple,
-    this.nextTemple,
+    this.nearby = true,
     super.key,
   });
 
   final int collected;
   final List<HomeCard> recent;
 
-  /// The nearest temple to visit next, when known.
-  final NearbyTemple? nextTemple;
+  /// Nearby temples (or popular ones when location is off) as waiting cards.
+  final List<NearbyTemple> temples;
+
+  /// False when [temples] are popular picks rather than ones near the devotee.
+  final bool nearby;
   final VoidCallback onFindTemple;
   final VoidCallback onOpenCollection;
   final ValueChanged<NearbyTemple> onOpenTemple;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final gold = context.colors.gold;
     final first = collected == 0;
     return GiltFrame(
       accent: gold,
+      large: true,
       child: DecoratedBox(
         decoration: const BoxDecoration(gradient: AppGradients.night),
         child: Padding(
-          padding: AppSpacing.allLg,
-          child: first
-              ? _FirstCard(nextTemple: nextTemple, onFindTemple: onFindTemple, onOpenTemple: onOpenTemple)
-              : _Continue(
-                  collected: collected,
-                  recent: recent,
-                  nextTemple: nextTemple,
-                  onFindTemple: onFindTemple,
-                  onOpenCollection: onOpenCollection,
-                  onOpenTemple: onOpenTemple,
-                ),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: AppSpacing.screenH,
+                child: first ? const _FirstCard() : _Continue(collected: collected, recent: recent),
+              ),
+              if (temples.isNotEmpty) ...[
+                const Gap(AppSpacing.lg),
+                _WaitingRail(temples: temples, nearby: nearby, onSeeAll: onFindTemple, onOpen: onOpenTemple),
+              ],
+              const Gap(AppSpacing.lg),
+              Padding(
+                padding: AppSpacing.screenH,
+                child: first
+                    ? AppButton.primary(label: l10n.homeQuestFindTemple, icon: AppIcons.nearby, onPressed: onFindTemple)
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: AppButton.outlined(
+                              label: l10n.homeQuestMyCollection,
+                              icon: AppIcons.card,
+                              size: AppButtonSize.small,
+                              onPressed: onOpenCollection,
+                            ),
+                          ),
+                          const Gap.h(AppSpacing.sm),
+                          Expanded(
+                            child: AppButton.primary(
+                              label: l10n.homeQuestCollectMore,
+                              icon: AppIcons.nearby,
+                              size: AppButtonSize.small,
+                              onPressed: onFindTemple,
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -69,18 +108,13 @@ class CardJourneyCard extends StatelessWidget {
 }
 
 class _FirstCard extends StatelessWidget {
-  const _FirstCard({required this.nextTemple, required this.onFindTemple, required this.onOpenTemple});
-
-  final NearbyTemple? nextTemple;
-  final VoidCallback onFindTemple;
-  final ValueChanged<NearbyTemple> onOpenTemple;
+  const _FirstCard();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final light = context.colors.card;
     final gold = context.colors.gold;
-    final next = nextTemple;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -112,33 +146,16 @@ class _FirstCard extends StatelessWidget {
             Expanded(child: _Step(icon: AppIcons.card, label: l10n.homeQuestStepCard)),
           ],
         ),
-        if (next != null) ...[
-          const Gap(AppSpacing.md),
-          _NextTempleRow(temple: next, onTap: () => onOpenTemple(next)),
-        ],
-        const Gap(AppSpacing.md),
-        AppButton.primary(label: l10n.homeQuestFindTemple, icon: AppIcons.nearby, onPressed: onFindTemple),
       ],
     );
   }
 }
 
 class _Continue extends StatelessWidget {
-  const _Continue({
-    required this.collected,
-    required this.recent,
-    required this.nextTemple,
-    required this.onFindTemple,
-    required this.onOpenCollection,
-    required this.onOpenTemple,
-  });
+  const _Continue({required this.collected, required this.recent});
 
   final int collected;
   final List<HomeCard> recent;
-  final NearbyTemple? nextTemple;
-  final VoidCallback onFindTemple;
-  final VoidCallback onOpenCollection;
-  final ValueChanged<NearbyTemple> onOpenTemple;
 
   @override
   Widget build(BuildContext context) {
@@ -148,58 +165,26 @@ class _Continue extends StatelessWidget {
     final milestone = nextCardMilestone(collected);
     final previous = kCardMilestones.lastWhere((m) => m <= collected, orElse: () => 0);
     final progress = milestone == null ? 1.0 : (collected - previous) / (milestone - previous);
-    final next = nextTemple;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Row(
       children: [
-        Row(
-          children: [
-            _CardFan(cards: recent),
-            const Gap.h(AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.homeQuestContinueOverline.toUpperCase(), style: context.overline.copyWith(color: gold, letterSpacing: 1.4)),
-                  const Gap(AppSpacing.xxs),
-                  Text(l10n.homeQuestCollected(collected), style: context.displayText.titleLarge.withColor(light)),
-                  const Gap(AppSpacing.sm),
-                  AppLinearProgress(value: progress.clamp(0, 1), height: 6, color: gold, backgroundColor: light.withValues(alpha: 0.15)),
-                  const Gap(AppSpacing.xs),
-                  Text(
-                    milestone == null ? l10n.homeQuestAllMilestones : l10n.homeQuestToMilestone(milestone - collected, milestone),
-                    style: context.caption.copyWith(color: light.withValues(alpha: 0.8)),
-                  ),
-                ],
+        _CardFan(cards: recent),
+        const Gap.h(AppSpacing.lg),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.homeQuestContinueOverline.toUpperCase(), style: context.overline.copyWith(color: gold, letterSpacing: 1.4)),
+              const Gap(AppSpacing.xxs),
+              Text(l10n.homeQuestCollected(collected), style: context.displayText.titleLarge.withColor(light)),
+              const Gap(AppSpacing.sm),
+              AppLinearProgress(value: progress.clamp(0, 1), height: 6, color: gold, backgroundColor: light.withValues(alpha: 0.15)),
+              const Gap(AppSpacing.xs),
+              Text(
+                milestone == null ? l10n.homeQuestAllMilestones : l10n.homeQuestToMilestone(milestone - collected, milestone),
+                style: context.caption.copyWith(color: light.withValues(alpha: 0.8)),
               ),
-            ),
-          ],
-        ),
-        if (next != null) ...[
-          const Gap(AppSpacing.md),
-          _NextTempleRow(temple: next, onTap: () => onOpenTemple(next)),
-        ],
-        const Gap(AppSpacing.md),
-        Row(
-          children: [
-            Expanded(
-              child: AppButton.outlined(
-                label: l10n.homeQuestMyCollection,
-                icon: AppIcons.card,
-                size: AppButtonSize.small,
-                onPressed: onOpenCollection,
-              ),
-            ),
-            const Gap.h(AppSpacing.sm),
-            Expanded(
-              child: AppButton.primary(
-                label: l10n.homeQuestCollectMore,
-                icon: AppIcons.nearby,
-                size: AppButtonSize.small,
-                onPressed: onFindTemple,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -318,62 +303,146 @@ class _StepArrow extends StatelessWidget {
       );
 }
 
-/// "Your next card awaits · Sankat Mochan · 3.4 km ›".
-class _NextTempleRow extends StatelessWidget {
-  const _NextTempleRow({required this.temple, required this.onTap});
-  final NearbyTemple temple;
-  final VoidCallback onTap;
+/// "Cards waiting near you" — a horizontal rail of [CardWaitingTile]s.
+class _WaitingRail extends StatelessWidget {
+  const _WaitingRail({required this.temples, required this.nearby, required this.onSeeAll, required this.onOpen});
 
-  static const double _thumb = 44;
+  final List<NearbyTemple> temples;
+  final bool nearby;
+  final VoidCallback onSeeAll;
+  final ValueChanged<NearbyTemple> onOpen;
+
+  static const double _tileWidth = 132;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final light = context.colors.card;
-    final url = temple.imageUrl;
-    final meta = [if (temple.formattedDistance.isNotEmpty) temple.formattedDistance, if (temple.place.isNotEmpty) temple.place];
-    return Material(
-      color: light.withValues(alpha: 0.08),
-      borderRadius: AppRadius.mdAll,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: AppRadius.mdAll,
-        child: Padding(
-          padding: AppSpacing.allSm,
+    final gold = context.colors.gold;
+    final waiting = temples.where((t) => t.card != null && !t.card!.collected).length;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.xs),
           child: Row(
             children: [
-              ClipRRect(
-                borderRadius: AppRadius.smAll,
-                child: SizedBox.square(
-                  dimension: _thumb,
-                  child: url == null
-                      ? const BrandedImageFallback(iconSize: 20)
-                      : AppNetworkImage(url: url, fallback: const BrandedImageFallback(iconSize: 20)),
+              Icon(nearby ? AppIcons.nearby : AppIcons.card, size: 16, color: gold),
+              const Gap.h(AppSpacing.xs),
+              Expanded(
+                child: Text(
+                  (nearby ? l10n.homeQuestWaitingNearby(waiting) : l10n.homeQuestWaitingPopular).toUpperCase(),
+                  style: context.overline.copyWith(color: gold, letterSpacing: 1.2),
                 ),
               ),
-              const Gap.h(AppSpacing.sm),
-              Expanded(
+              TextButton(
+                onPressed: onSeeAll,
+                style: TextButton.styleFrom(foregroundColor: context.colors.card),
+                child: Text(l10n.commonViewAll),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: _tileWidth * 4 / 3,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: AppSpacing.screenH,
+            itemCount: temples.length,
+            separatorBuilder: (_, _) => const Gap.h(AppSpacing.md),
+            itemBuilder: (context, i) => SizedBox(
+              width: _tileWidth,
+              child: CardWaitingTile(temple: temples[i], onTap: () => onOpen(temples[i]))
+                  .fadeIn(delay: AppDurations.stagger * i),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// A temple as the Sacred Card waiting there: a 3:4 gilt card in its rarity
+/// colour. Until collected the art is veiled (blurred, sealed with a lock);
+/// once collected it shows clear with a "Collected" seal. Temples without a
+/// published card show their photo in a stone frame.
+class CardWaitingTile extends StatelessWidget {
+  const CardWaitingTile({required this.temple, required this.onTap, super.key});
+
+  final NearbyTemple temple;
+  final VoidCallback onTap;
+
+  static const double _veil = 5;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final card = temple.card;
+    final light = context.colors.card;
+    final collected = card?.collected ?? false;
+    final accent = card == null ? context.colors.templeStone : rarityColor(context, card.rarity);
+    final art = card?.imageUrl ?? temple.imageUrl;
+    final image = art == null
+        ? const BrandedImageFallback(iconSize: 28)
+        : AppNetworkImage(url: art, fit: BoxFit.cover, fallback: const BrandedImageFallback(iconSize: 28));
+    final status = card == null
+        ? l10n.homeCardVisit
+        : collected
+            ? l10n.homeCardCollected
+            : l10n.homeCardWaiting;
+    return Semantics(
+      button: true,
+      label: [temple.name, if (card != null) rarityLabel(l10n, card.rarity), status, temple.formattedDistance].join(', '),
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: GiltFrame(
+          accent: accent,
+          locked: card == null,
+          aspectRatio: 3 / 4,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (card != null && !collected)
+                ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: _veil, sigmaY: _veil), child: image)
+              else
+                image,
+              const DecoratedBox(decoration: BoxDecoration(gradient: AppGradients.photoScrim)),
+              if (card != null)
+                Positioned(top: AppSpacing.xs, left: AppSpacing.xs, child: RarityChip(rarity: card.rarity, compact: true)),
+              if (card != null)
+                Center(
+                  child: Container(
+                    padding: AppSpacing.allSm,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (collected ? context.colors.success : context.palette.night).withValues(alpha: 0.75),
+                      border: Border.all(color: context.colors.gold, width: 1.2),
+                    ),
+                    child: Icon(collected ? AppIcons.check : AppIcons.lock, size: 18, color: light),
+                  ),
+                ),
+              Positioned(
+                left: AppSpacing.sm,
+                right: AppSpacing.sm,
+                bottom: AppSpacing.sm,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.homeQuestNextCard, style: context.caption.copyWith(color: context.colors.gold)),
                     Text(
                       temple.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textTheme.labelLarge?.semiBold.withColor(light),
+                    ),
+                    Text(
+                      [status, if (temple.formattedDistance.isNotEmpty) temple.formattedDistance].join(' · '),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: context.textTheme.titleSmall?.semiBold.withColor(light),
+                      style: context.caption.copyWith(color: collected ? light.withValues(alpha: 0.8) : context.colors.gold),
                     ),
-                    if (meta.isNotEmpty)
-                      Text(
-                        meta.join(' · '),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.caption.copyWith(color: light.withValues(alpha: 0.7)),
-                      ),
                   ],
                 ),
               ),
-              Icon(AppIcons.chevronRight, color: light.withValues(alpha: 0.7)),
             ],
           ),
         ),

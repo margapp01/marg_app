@@ -366,12 +366,16 @@ class NearbyTemple {
     this.distanceKm = 0,
     this.formattedDistance = '',
     this.travelTimeMinutes,
+    this.card,
   });
 
   final String id;
   final String name;
   final String slug;
   final String? deity;
+
+  /// The temple's Sacred Card and whether the devotee holds it; null when the
+  /// temple has no published card.
   final String? city;
   final String? state;
   final String? imageUrl;
@@ -384,6 +388,7 @@ class NearbyTemple {
   /// Display distance ("850 m"); empty for popular temples.
   final String formattedDistance;
   final int? travelTimeMinutes;
+  final TempleCardStatus? card;
 
   /// "Varanasi, Uttar Pradesh" (whichever parts are known).
   String get place => [?city, ?state].join(', ');
@@ -404,6 +409,27 @@ class NearbyTemple {
         formattedDistance: _str(j['formattedDistance']) ?? '',
         travelTimeMinutes:
             j['travelTimeMinutes'] == null ? null : _int(j['travelTimeMinutes']),
+        card: j['card'] is Map ? TempleCardStatus.fromJson(_map(j['card'])!) : null,
+      );
+}
+
+/// A temple's Sacred Card as Home shows it — waiting to be collected, or
+/// already in the devotee's collection.
+class TempleCardStatus {
+  const TempleCardStatus({required this.id, this.title = '', this.imageUrl, this.rarity = 'COMMON', this.collected = false});
+
+  final String id;
+  final String title;
+  final String? imageUrl;
+  final String rarity;
+  final bool collected;
+
+  factory TempleCardStatus.fromJson(Map<String, dynamic> j) => TempleCardStatus(
+        id: _str(j['id']) ?? '',
+        title: _str(j['title']) ?? '',
+        imageUrl: _str(j['imageUrl']),
+        rarity: _str(j['rarity']) ?? 'COMMON',
+        collected: j['collected'] == true,
       );
 }
 

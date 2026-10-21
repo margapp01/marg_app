@@ -6,7 +6,7 @@ import '../../app/constants/app_constants.dart';
 import '../storage/shared_prefs_store.dart';
 import 'location_api.dart';
 import 'location_service.dart';
-import 'mapbox_geocoder.dart';
+import 'place_lookup.dart';
 
 /// Where location access stands right now.
 enum LocationAccess { granted, denied, deniedForever, serviceOff }
@@ -129,14 +129,12 @@ class LocationSync {
           Geolocator.distanceBetween(lat, lng, location.latitude, location.longitude) > _movedMeters;
       if (recent && !moved) return false;
 
-      final geocoder = _ref.read(mapboxGeocoderProvider);
-      if (geocoder.token.isNotEmpty) {
-        try {
-          location = location.withPlace(
-            await geocoder.reverse(latitude: location.latitude, longitude: location.longitude),
+      // The place is optional; coordinates are what matter.
+      final place = await _ref.read(placeLookupProvider).reverse(
+            latitude: location.latitude,
+            longitude: location.longitude,
           );
-        } catch (_) {/* the place is optional; coordinates are what matter */}
-      }
+      if (!place.isEmpty) location = location.withPlace(place);
       await _ref.read(locationApiProvider).updateMyLocation(location);
       await store.setString(_syncedAtKey, DateTime.now().toIso8601String());
       await store.setString(_latKey, '${location.latitude}');

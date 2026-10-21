@@ -33,9 +33,12 @@ class ProfileRemoteDataSource {
     List<String>? festivalInterests,
     int? nearbyRadiusKm,
     String? profilePhoto,
+    String? phone,
   }) async {
     final body = <String, dynamic>{
       'name': ?name,
+      // E.164 to add/change the mobile; an empty string removes it.
+      if (phone != null) 'phone': phone.isEmpty ? null : phone,
       'dob': ?dob?.toUtc().toIso8601String(),
       'gender': ?gender,
       'city': ?city,

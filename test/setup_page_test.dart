@@ -36,10 +36,10 @@ class _MobileTakenAuthController extends AuthController {
   int attempts = 0;
 
   @override
-  AuthState build() => const AuthState(status: AuthStatus.needsMobile);
+  AuthState build() => const AuthState(status: AuthStatus.needsRegistration);
 
   @override
-  Future<void> completeRegistration({required String mobile, String? name, String? profilePhoto}) async {
+  Future<void> completeRegistration({String? mobile, String? name, String? profilePhoto}) async {
     attempts++;
     final request = RequestOptions(path: '/auth/complete-registration');
     throw DioException(
@@ -88,24 +88,11 @@ void main() {
     expect(find.text('Step 1 of 5', findRichText: true), findsOneWidget);
     await next();
 
+    // Birthday and gender are optional now; the notification ask sits here.
     expect(find.text('Tell Us About You'), findsOneWidget);
-    // Date of birth is required (18+): Continue without it stays on the step,
-    // with the reason inline and in a toast.
-    await next();
-    expect(find.text('Select your date of birth to continue'), findsNWidgets(2));
-    expect(find.text('Tell Us About You'), findsOneWidget);
-    // The picker opens on an adult default date; confirming it clears that error.
-    await tester.tap(find.text('Select your date of birth'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-    // Gender is required too.
-    await next();
-    expect(find.text('Select your gender to continue'), findsNWidgets(2));
-    expect(find.text('Tell Us About You'), findsOneWidget);
+    expect(find.text('Turn on notifications'), findsOneWidget);
     await tester.tap(find.text('Female'));
     await tester.pump();
-    expect(find.text('Select your gender to continue'), findsOneWidget, reason: 'inline error clears; toast remains');
     await next();
 
     expect(find.text('What Brings You Here?'), findsOneWidget);
@@ -122,7 +109,14 @@ void main() {
     await tester.tap(find.text('Complete Setup'));
     await tester.pumpAndSettle();
 
+    // No birthday given → confirm the minimum age before saving.
+    expect(find.text('Confirm your age'), findsOneWidget);
+    expect(repo.submitted, isNull);
+    await tester.tap(find.text("I'm 18 or older"));
+    await tester.pumpAndSettle();
+
     expect(repo.submitted?.favoriteDeities, ['SHIVA']);
+    expect(repo.submitted?.gender, 'FEMALE');
     expect(repo.submitted?.profilePatch()['favoriteDeities'], ['SHIVA']);
 
     // Saved → "You're all set!", and "Start My Journey" enters the app.
@@ -131,6 +125,66 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('HOME'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('"Skip for now" on the first step saves the basics and finishes', (tester) async {
+    final repo = _FakeOnboardingRepository();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [onboardingRepositoryProvider.overrideWithValue(repo)],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: _setupRouter(),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text('Skip for now'));
+    await tester.pumpAndSettle();
+    // Age is confirmed in one tap when no birthday was given; going back keeps
+    // the devotee on the step without saving.
+    await tester.tap(find.text('Go back'));
+    await tester.pumpAndSettle();
+    expect(repo.submitted, isNull);
+    expect(find.text('Step 1 of 5', findRichText: true), findsOneWidget);
+
+    await tester.tap(find.text('Skip for now'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("I'm 18 or older"));
+    await tester.pumpAndSettle();
+
+    expect(repo.submitted, isNotNull);
+    expect(repo.submitted?.mobile, isNull, reason: 'mobile is optional');
+    expect(repo.submitted?.dob, isNull);
+    expect(find.text("You're all set! 🎉"), findsOneWidget);
+  });
+
+  testWidgets('a mobile that was typed must be a plausible length for its country', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: _setupRouter(),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    final mobile = find.byType(TextField).last;
+    await tester.ensureVisible(mobile);
+    await tester.pumpAndSettle();
+    await tester.enterText(mobile, '98765');
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Check the mobile number — it looks too short or too long'), findsNWidgets(2));
+    expect(find.text('Step 1 of 5', findRichText: true), findsOneWidget);
+    await tester.pump(const Duration(seconds: 3));
   });
 
   testWidgets('an already-registered mobile is rejected on the first step', (tester) async {

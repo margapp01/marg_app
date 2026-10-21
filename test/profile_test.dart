@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:marg_app/app/localization/app_localizations.dart';
-import 'package:marg_app/app/theme/app_theme.dart';
 import 'package:marg_app/features/profile/domain/entities/app_preferences.dart';
 import 'package:marg_app/features/profile/domain/entities/cms_content.dart';
 import 'package:marg_app/features/profile/domain/entities/profile.dart';
 import 'package:marg_app/features/profile/domain/entities/user_device.dart';
-import 'package:marg_app/features/profile/presentation/widgets/profile_widgets.dart';
 
 void main() {
   group('Profile parsing', () {
@@ -62,20 +58,5 @@ void main() {
     expect(next.reduceAnimations, isTrue);
     expect(next.units, DistanceUnit.miles);
     expect(next.highQualityImages, isTrue); // unchanged
-  });
-
-  testWidgets('ProfileStatTile renders value + label', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.light,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const Scaffold(body: ProfileStatTile(icon: Icons.star, value: '156', label: 'Visits')),
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('156'), findsOneWidget);
-    expect(find.text('Visits'), findsOneWidget);
-    expect(tester.takeException(), isNull);
   });
 }

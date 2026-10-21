@@ -13,10 +13,12 @@ import '../../domain/entities/my_route.dart';
 import '../controllers/routes_controllers.dart';
 import '../widgets/route_widgets.dart';
 
-enum _YatraFilter { all, inProgress, planned, completed }
+enum _YatraTab { discover, inProgress, planned, completed }
 
-/// My Yatras — the user's active + completed pilgrimage routes, with a
-/// "Continue Journey" banner and an entry to Discover.
+/// The Yatra tab: pilgrimage routes first. "Discover" (the default) lists every
+/// published route by type — with progress on the ones the devotee has joined
+/// and a nudge to continue the furthest one — and the other tabs hold their
+/// own yatras: in progress, planned and completed, each with its count.
 class MyYatrasPage extends ConsumerStatefulWidget {
   const MyYatrasPage({super.key});
 
@@ -25,12 +27,19 @@ class MyYatrasPage extends ConsumerStatefulWidget {
 }
 
 class _MyYatrasPageState extends ConsumerState<MyYatrasPage> {
-  _YatraFilter _filter = _YatraFilter.all;
+  _YatraTab _tab = _YatraTab.discover;
+  String? _type; // Discover filter; null = all
+
+  static const _types = [null, 'JYOTIRLINGA', 'SHAKTI_PEETH', 'CHAR_DHAM', 'CUSTOM'];
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final async = ref.watch(myRoutesProvider);
+    final mine = ref.watch(myRoutesProvider).valueOrNull ?? const <MyRouteProgress>[];
+    final inProgress = mine.where((r) => r.inProgress).toList()..sort((a, b) => b.percent.compareTo(a.percent));
+    final planned = mine.where((r) => r.planned).toList();
+    final completed = mine.where((r) => r.isComplete).toList();
+    String counted(String label, int n) => n == 0 ? label : '$label · $n';
 
     return Scaffold(
       backgroundColor: context.scheme.surface,
@@ -42,15 +51,31 @@ class _MyYatrasPageState extends ConsumerState<MyYatrasPage> {
             onNotifications: () => context.pushNamed(RouteNames.notifications),
             notificationCount: ref.watch(unreadBadgeProvider),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.sm),
+            child: PillTabs(
+              labels: [
+                l10n.ryDiscoverTab,
+                counted(l10n.ryInProgress, inProgress.length),
+                counted(l10n.ryPlanned, planned.length),
+                counted(l10n.ryCompleted, completed.length),
+              ],
+              selected: _tab.index,
+              onChanged: (i) => setState(() => _tab = _YatraTab.values[i]),
+            ),
+          ),
           Expanded(
-            child: async.when(
-              loading: () => const LoadingView(),
-              error: (e, _) => ErrorView(
-                title: l10n.ryErrorTitle,
-                message: l10n.ryErrorBody,
-                onRetry: () => ref.invalidate(myRoutesProvider),
+            child: AnimatedSwitcher(
+              duration: AppDurations.normal,
+              child: KeyedSubtree(
+                key: ValueKey(_tab),
+                child: switch (_tab) {
+                  _YatraTab.discover => _discover(context, l10n, mine, inProgress.firstOrNull),
+                  _YatraTab.inProgress => _mine(context, l10n, inProgress),
+                  _YatraTab.planned => _mine(context, l10n, planned),
+                  _YatraTab.completed => _mine(context, l10n, completed),
+                },
               ),
-              data: (routes) => _content(context, l10n, routes),
             ),
           ),
         ],
@@ -58,9 +83,87 @@ class _MyYatrasPageState extends ConsumerState<MyYatrasPage> {
     );
   }
 
-  Widget _content(BuildContext context, AppLocalizations l10n, List<MyRouteProgress> routes) {
+  Widget _discover(BuildContext context, AppLocalizations l10n, List<MyRouteProgress> mine, MyRouteProgress? current) {
+    final async = ref.watch(discoverRoutesProvider(_type));
+    final joined = {for (final r in mine) r.slug: r};
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(discoverRoutesProvider(_type));
+        ref.invalidate(myRoutesProvider);
+      },
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.huge),
+        children: [
+          if (current != null) ...[
+            _ContinueStrip(route: current, onTap: () => _openRoute(current.slug)),
+            const Gap(AppSpacing.md),
+          ],
+          SizedBox(
+            height: 52,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: _types.length,
+              separatorBuilder: (_, _) => const Gap.h(AppSpacing.sm),
+              itemBuilder: (context, i) {
+                final t = _types[i];
+                return Center(
+                  child: AppFilterChip(
+                    label: t == null ? l10n.ryTypeAll : routeTypeMeta(l10n, t).label,
+                    selected: _type == t,
+                    onSelected: (_) => setState(() => _type = t),
+                  ),
+                );
+              },
+            ),
+          ),
+          const Gap(AppSpacing.sm),
+          ...async.when(
+            loading: () => [const SkeletonBox(height: 220, radius: AppRadius.card)],
+            error: (e, _) => [
+              ErrorView(
+                title: l10n.ryErrorTitle,
+                message: l10n.ryErrorBody,
+                onRetry: () => ref.invalidate(discoverRoutesProvider(_type)),
+              ),
+            ],
+            data: (routes) => routes.isEmpty
+                ? [EmptyView(art: StateArt.journey, icon: AppIcons.route, title: l10n.ryNoRoutes, message: l10n.ryNoRoutesBody)]
+                : [
+                    for (final (i, r) in routes.indexed) ...[
+                      RepaintBoundary(
+                        child: RouteCard(
+                          name: r.name,
+                          type: r.type,
+                          templeCount: r.templeCount,
+                          coverImage: r.coverImage,
+                          description: r.description,
+                          percent: joined[r.slug]?.planned == false ? joined[r.slug]!.percent : null,
+                          completedTemples: joined[r.slug]?.planned == false ? joined[r.slug]!.completedTemples : null,
+                          onTap: () => _openRoute(r.slug),
+                        ),
+                      ).fadeIn(delay: AppDurations.stagger * i.clamp(0, 6)),
+                      const Gap(AppSpacing.md),
+                    ],
+                  ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _mine(BuildContext context, AppLocalizations l10n, List<MyRouteProgress> routes) {
+    final async = ref.watch(myRoutesProvider);
+    if (async.isLoading && !async.hasValue) return const LoadingView();
+    if (async.hasError && !async.hasValue) {
+      return ErrorView(
+        title: l10n.ryErrorTitle,
+        message: l10n.ryErrorBody,
+        onRetry: () => ref.invalidate(myRoutesProvider),
+      );
+    }
     if (routes.isEmpty) {
-      return EmptyView(art: StateArt.journey, 
+      return EmptyView(
+        art: StateArt.journey,
         icon: AppIcons.route,
         title: l10n.ryNoYatras,
         message: l10n.ryNoYatrasBody,
@@ -68,52 +171,16 @@ class _MyYatrasPageState extends ConsumerState<MyYatrasPage> {
           label: l10n.ryDiscover,
           icon: AppIcons.explore,
           expand: false,
-          onPressed: () => context.pushNamed(RouteNames.routesDiscover),
+          onPressed: () => setState(() => _tab = _YatraTab.discover),
         ),
       );
     }
-
-    final inProgress = routes.where((r) => r.inProgress).toList()
-      ..sort((a, b) => b.percent.compareTo(a.percent));
-    final completed = routes.where((r) => r.isComplete).toList();
-    final planned = routes.where((r) => r.planned).toList();
-    final filters = _YatraFilter.values;
-    bool show(_YatraFilter f) => _filter == _YatraFilter.all || _filter == f;
-
-    List<Widget> section(String title, List<MyRouteProgress> items) => [
-          const Gap(AppSpacing.lg),
-          SectionHeader(title: title),
-          for (final r in items) ...[_routeItem(context, l10n, r), const Gap(AppSpacing.md)],
-        ];
-
-    final sections = <Widget>[
-      if (show(_YatraFilter.inProgress) && inProgress.isNotEmpty) ...section(l10n.ryInProgress, inProgress),
-      if (show(_YatraFilter.planned) && planned.isNotEmpty) ...section(l10n.ryPlannedYatras, planned),
-      if (show(_YatraFilter.completed) && completed.isNotEmpty) ...section(l10n.ryCompletedYatras, completed),
-    ];
-
     return RefreshIndicator(
       onRefresh: () async => ref.invalidate(myRoutesProvider),
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.huge),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.huge),
         children: [
-          PillTabs(
-            labels: [l10n.ryAll, l10n.ryInProgress, l10n.ryPlanned, l10n.ryCompleted],
-            selected: filters.indexOf(_filter),
-            onChanged: (i) => setState(() => _filter = filters[i]),
-          ),
-          if (sections.isEmpty)
-            Padding(
-              padding: AppSpacing.screenAll,
-              child: Center(
-                child: Text(l10n.ryNoInFilter,
-                    style: context.textTheme.bodyMedium?.copyWith(color: context.colors.textSecondary)),
-              ),
-            )
-          else
-            ...sections,
-          const Gap(AppSpacing.md),
-          _DiscoverBanner(onTap: () => context.pushNamed(RouteNames.routesDiscover)),
+          for (final r in routes) ...[_routeItem(context, l10n, r), const Gap(AppSpacing.md)],
         ],
       ),
     );
@@ -170,41 +237,53 @@ class _MyYatrasPageState extends ConsumerState<MyYatrasPage> {
       );
 }
 
-/// "Embark on a Divine Journey" — the entry to Discover Routes.
-class _DiscoverBanner extends StatelessWidget {
-  const _DiscoverBanner({required this.onTap});
+/// "Continue your yatra" — the in-progress route closest to done, on top of
+/// Discover so the next temple is one tap away.
+class _ContinueStrip extends StatelessWidget {
+  const _ContinueStrip({required this.route, required this.onTap});
 
+  final MyRouteProgress route;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final light = context.colors.card;
+    final gold = context.colors.gold;
     return AppCard(
       gradient: AppGradients.navy,
       onTap: onTap,
-      padding: AppSpacing.allXl,
+      padding: AppSpacing.allMd,
       child: Row(
         children: [
+          AppCircularProgress(
+            value: (route.percent / 100).clamp(0, 1),
+            size: 52,
+            strokeWidth: 5,
+            color: gold,
+            backgroundColor: light.withValues(alpha: 0.15),
+            center: Text('${route.percent}%', style: context.caption.copyWith(color: light)),
+          ),
+          const Gap.h(AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.ryEmbarkTitle, style: context.displayText.titleLarge.copyWith(color: Colors.white)),
-                const Gap(AppSpacing.xs),
-                Text(l10n.ryEmbarkBody, style: context.textTheme.bodySmall?.copyWith(color: Colors.white70)),
-                const Gap(AppSpacing.md),
-                Text(l10n.ryDiscover, style: context.textTheme.labelLarge?.bold.withColor(context.colors.gold)),
+                Text(l10n.ryContinueYatra.toUpperCase(), style: context.overline.copyWith(color: gold, letterSpacing: 1.2)),
+                Text(
+                  route.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textTheme.titleSmall?.semiBold.withColor(light),
+                ),
+                Text(
+                  l10n.ryTemplesDone(route.completedTemples, route.totalTemples),
+                  style: context.caption.copyWith(color: light.withValues(alpha: 0.75)),
+                ),
               ],
             ),
           ),
-          const Gap.h(AppSpacing.md),
-          IllustratedIcon(
-            asset: BrandAssets.iconRoutes,
-            fallbackIcon: AppIcons.route,
-            color: context.colors.gold,
-            background: Colors.white12,
-            size: 64,
-          ),
+          Icon(AppIcons.chevronRight, color: light.withValues(alpha: 0.7)),
         ],
       ),
     );

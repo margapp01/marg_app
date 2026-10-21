@@ -14,6 +14,7 @@ class MapboxGeocoder {
   final String token;
 
   static const String _reversePath = '/search/geocode/v6/reverse';
+  static const String _forwardPath = '/search/geocode/v6/forward';
 
   /// Returns the place for [latitude]/[longitude], or an empty [GeoPlace] if
   /// nothing matched. Throws [DioException] on network/HTTP failure.
@@ -32,6 +33,34 @@ class MapboxGeocoder {
       },
     );
     return GeoPlace.fromMapboxV6(res.data ?? const {});
+  }
+
+  /// Cities and towns matching [query] (autocomplete), best match first, each
+  /// with its centre coordinates.
+  Future<List<({GeoPlace place, double latitude, double longitude})>> searchPlaces(String query) async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      _forwardPath,
+      queryParameters: {
+        'q': query,
+        'types': 'place,locality',
+        'autocomplete': true,
+        'limit': 8,
+        'access_token': token,
+      },
+    );
+    final features = (res.data?['features'] as List?) ?? const [];
+    return [
+      for (final f in features.whereType<Map<dynamic, dynamic>>())
+        if (_point(f) case (final double lat, final double lng))
+          (place: GeoPlace.fromMapboxV6Feature(f), latitude: lat, longitude: lng),
+    ];
+  }
+
+  static (double, double)? _point(Map<dynamic, dynamic> feature) {
+    final coords = (feature['properties'] as Map?)?['coordinates'] as Map?;
+    final lat = coords?['latitude'];
+    final lng = coords?['longitude'];
+    return lat is num && lng is num ? (lat.toDouble(), lng.toDouble()) : null;
   }
 }
 

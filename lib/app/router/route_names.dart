@@ -67,11 +67,10 @@ abstract final class RouteNames {
   static const String profile = 'profile';
   static const String profileEdit = 'profileEdit';
   static const String profilePreferences = 'profilePreferences';
-  static const String profilePrivacy = 'profilePrivacy';
   static const String profileDevices = 'profileDevices';
   static const String profileStatistics = 'profileStatistics';
-  static const String profileAppPreferences = 'profileAppPreferences';
   static const String profileHelp = 'profileHelp';
+  static const String profileSettings = 'profileSettings';
   static const String profileDelete = 'profileDelete';
   static const String profileStaticPage = 'profileStaticPage';
   static const String knowledge = 'knowledge';
@@ -84,4 +83,9 @@ abstract final class RouteNames {
   static const String knowledgeFaq = 'knowledgeFaq';
   static const String knowledgeAbout = 'knowledgeAbout';
   static const String knowledgeStaticPage = 'knowledgeStaticPage';
+
+  /// The five bottom-tab roots (Home · Explore · Cards · Yatra · Profile).
+  /// From anywhere else these are opened with `goNamed` (switching tab), never
+  /// pushed — see `openNamed`. [passport] redirects into the Profile tab.
+  static const Set<String> tabRoots = {home, explore, cards, routes, profile, passport};
 }

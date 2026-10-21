@@ -155,6 +155,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeOfflineMessage => 'Reconnect to load the latest.';
 
   @override
+  String get drawerExploreTemples => 'Explore Temples';
+
+  @override
+  String get drawerMyCards => 'My Cards';
+
+  @override
+  String get drawerYatraRoutes => 'Yatra Routes';
+
+  @override
+  String get drawerYatrasCompleted => 'Yatras Completed';
+
+  @override
   String get navHome => 'Home';
 
   @override
@@ -825,6 +837,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ryYourStats => 'Your Stats';
+
+  @override
+  String get ryScratchHeader => 'Scratch & win';
+
+  @override
+  String get ryScratchCover => 'Scratch to reveal your reward';
+
+  @override
+  String get ryScratchCoverHint => 'Rub the gold with your finger';
+
+  @override
+  String get ryScratchLocked => 'Complete this Yatra to scratch';
+
+  @override
+  String get ryScratchWon => 'You\'ve won!';
+
+  @override
+  String get ryScratchTshirt => 'MARG T-shirt';
+
+  @override
+  String get ryScratchTshirtHint => 'Official MARG pilgrim tee';
+
+  @override
+  String get ryScratchMobileLabel => 'Recharge to your registered mobile';
+
+  @override
+  String get ryScratchAddMobile =>
+      'Add your mobile number to receive the recharge.';
+
+  @override
+  String get ryScratchAddMobileCta => 'Add mobile number';
+
+  @override
+  String get ryScratchSemantics =>
+      'Scratch card. Activate to reveal your Yatra reward.';
+
+  @override
+  String ryScratchRecharge(int months) {
+    return '$months-month mobile recharge';
+  }
+
+  @override
+  String ryScratchRechargeHint(String amount) {
+    return 'Worth up to ₹$amount';
+  }
+
+  @override
+  String get ryScratchWinLabel => 'Complete to win';
+
+  @override
+  String get ryScratchTermsTshirt =>
+      'T&C apply: Completing this Yatra with verified check-ins earns one MARG T-shirt. Our team will contact you on the mobile number registered on your MARG account for T-shirt size and delivery. Rewards are subject to verification and the offer may change.';
+
+  @override
+  String ryScratchTermsRecharge(int months, String amount) {
+    return 'T&C apply: Completing this Yatra with verified check-ins earns one $months-month mobile recharge plan worth up to ₹$amount, made to the mobile number registered on your MARG account. Rewards are subject to verification and the offer may change.';
+  }
+
+  @override
+  String ryScratchTermsBoth(int months, String amount) {
+    return 'T&C apply: Completing this Yatra with verified check-ins earns one MARG T-shirt and one $months-month mobile recharge plan worth up to ₹$amount. The recharge is made to the mobile number registered on your MARG account; our team will contact you on that number for T-shirt size and delivery. Rewards are subject to verification and the offer may change.';
+  }
+
+  @override
+  String get ryScratchLockedBadge => 'Locked';
+
+  @override
+  String get ryScratchHeadlineTop => 'Scratch';
+
+  @override
+  String get ryScratchHeadlineBottom => '& Win';
+
+  @override
+  String ryScratchTemplesLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count temples to go',
+      one: '1 temple to go',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get ryCongratulations => 'Congratulations!';
@@ -1937,6 +2031,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pfSpiritualProgress => 'Spiritual Progress';
 
   @override
+  String get pfGroupPermissions => 'Notifications & Location';
+
+  @override
+  String get pfHelpSupportHint => 'FAQs, contact and rate the app';
+
+  @override
   String get pfGroupAccount => 'Account';
 
   @override
@@ -2266,19 +2366,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pfDetailedMap => 'Detailed map outline';
 
   @override
-  String get pfDetailedMapHint =>
-      'Sharper borders and coastline on every map (about 3 MB)';
+  String get pfDetailedMapHint => 'Sharper borders and coastline on every map';
 
   @override
-  String get pfDetailedMapDownload => 'Download';
+  String get pfMapOutlineBuiltIn => 'Built-in';
+
+  @override
+  String get pfMapOutlineDetailed => 'Detailed';
+
+  @override
+  String get pfMapOutlineFull => 'Full resolution';
+
+  @override
+  String get pfMapOutlineBuiltInOption => 'Built-in (no download)';
+
+  @override
+  String get pfMapOutlineDetailedOption => 'Detailed · about 3 MB';
+
+  @override
+  String get pfMapOutlineFullOption => 'Full resolution · about 14 MB';
 
   @override
   String pfDetailedMapProgress(int percent) {
     return '$percent%';
   }
-
-  @override
-  String get pfDetailedMapReady => 'Downloaded';
 
   @override
   String get pfDetailedMapSaved => 'Detailed map ready';
@@ -2805,7 +2916,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get suBack => 'Back';
 
   @override
-  String get suSkip => 'Skip';
+  String get suSkip => 'Skip for now';
 
   @override
   String get suContinue => 'Continue';
@@ -2848,7 +2959,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get suPhotoError => 'Could not open your photos. Please try again.';
 
   @override
-  String get suInvalidMobile => 'Enter a valid 10-digit mobile number';
+  String get suInvalidMobile =>
+      'Check the mobile number — it looks too short or too long';
 
   @override
   String get suMobileTaken =>
@@ -2875,9 +2987,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get suGettingLocation => 'Getting your location…';
-
-  @override
-  String get suLocationEnabled => 'Location enabled';
 
   @override
   String get suUpdate => 'Update';
@@ -3410,15 +3519,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeMenu => 'Menu';
 
   @override
-  String get drawerJourney => 'Your Journey';
-
-  @override
-  String get drawerDiscover => 'Discover';
-
-  @override
-  String get drawerAccount => 'Account';
-
-  @override
   String get savedEmptyTitle => 'No saved places yet';
 
   @override
@@ -3670,7 +3770,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get suWelcomeSubtitle =>
-      'Let\'s begin by creating your personal profile';
+      'Just the basics — you can skip the rest and finish it later';
 
   @override
   String get suAddPhoto => 'Add Photo';
@@ -3938,11 +4038,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ryKmCovered => 'KM Covered';
-
-  @override
-  String ryAlsoNearby(int count) {
-    return 'Also visit nearby · $count';
-  }
 
   @override
   String ryVisitedOn(Object date) {
@@ -4541,4 +4636,265 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get upDismiss => 'Dismiss';
+
+  @override
+  String get phoneLabel => 'Mobile number';
+
+  @override
+  String get phoneHint => 'Enter your mobile number';
+
+  @override
+  String phoneCountryCode(String country, String code) {
+    return 'Country code: $country $code';
+  }
+
+  @override
+  String get phoneChooseCountry => 'Choose country';
+
+  @override
+  String get phoneSearchCountry => 'Search country or code';
+
+  @override
+  String get phoneNoCountry => 'No country matches your search';
+
+  @override
+  String get suOptional => '(Optional)';
+
+  @override
+  String get suMobileHint => 'Optional — add it now or later from your profile';
+
+  @override
+  String get suLocationHint =>
+      'We use it to show temples — and the Sacred Cards waiting there — near you';
+
+  @override
+  String get suNotifTitle => 'Stay in the loop';
+
+  @override
+  String get suNotifBody =>
+      'Get a nudge when a card is waiting at a temple near you, when you unlock something new and before a festival.';
+
+  @override
+  String get suNotifAllow => 'Turn on notifications';
+
+  @override
+  String get suNotifOn => 'Notifications are on';
+
+  @override
+  String get suNotifBlocked =>
+      'Notifications are off for MARG. You can turn them on any time in your phone\'s settings.';
+
+  @override
+  String get suAgeConfirmTitle => 'Confirm your age';
+
+  @override
+  String suAgeConfirmBody(int age) {
+    return 'MARG is for people aged $age and over. Please confirm you\'re $age or older — you can add your date of birth later in your profile.';
+  }
+
+  @override
+  String suAgeConfirmYes(int age) {
+    return 'I\'m $age or older';
+  }
+
+  @override
+  String get suAgeConfirmNo => 'Go back';
+
+  @override
+  String get navCards => 'Cards';
+
+  @override
+  String homeQuestWaitingNearby(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cards waiting near you',
+      one: '1 card waiting near you',
+      zero: 'Temples near you',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeQuestWaitingPopular => 'Popular cards to collect';
+
+  @override
+  String get homeCardWaiting => 'Card waiting';
+
+  @override
+  String get homeCardCollected => 'Collected';
+
+  @override
+  String get homeCardVisit => 'Visit';
+
+  @override
+  String get scShowcaseTitle => 'My Sacred Collection';
+
+  @override
+  String scShowcaseTitleOf(String name) {
+    return '$name\'s Sacred Collection';
+  }
+
+  @override
+  String get scShowcaseCards => 'Sacred Cards collected';
+
+  @override
+  String scShowcaseComplete(int percent) {
+    return '$percent% of Bharat\'s Sacred Cards';
+  }
+
+  @override
+  String get scShowcaseSignature =>
+      'MARG · Collect Bharat\'s Sacred Cards · margapp.in';
+
+  @override
+  String get scShowOff => 'Show off my collection';
+
+  @override
+  String get scShowOffError => 'Couldn\'t create the image. Please try again.';
+
+  @override
+  String shCollection(int owned, int total) {
+    return '🪔 I\'ve collected $owned of $total Sacred Cards from Bharat\'s temples on MARG!';
+  }
+
+  @override
+  String pfCompletionTitle(int percent) {
+    return 'Your profile is $percent% complete';
+  }
+
+  @override
+  String get pfCompletionBody =>
+      'Add the rest so we can suggest temples, yatras and festivals made for you.';
+
+  @override
+  String get pfCompletionCta => 'Complete my profile';
+
+  @override
+  String get pfItemPhoto => 'Photo';
+
+  @override
+  String get pfItemMobile => 'Mobile';
+
+  @override
+  String get pfItemBirthday => 'Birthday';
+
+  @override
+  String get pfItemGender => 'Gender';
+
+  @override
+  String get pfItemCity => 'City';
+
+  @override
+  String get pfItemInterests => 'Interests';
+
+  @override
+  String get pfItemDeities => 'Deities';
+
+  @override
+  String get pfItemFrequency => 'Visit frequency';
+
+  @override
+  String get pfItemYatras => 'Yatras';
+
+  @override
+  String get pfMySacredCards => 'My Sacred Cards';
+
+  @override
+  String get pfPassportSections => 'My Spiritual Passport';
+
+  @override
+  String get pfInvite => 'Invite';
+
+  @override
+  String get ryDiscoverTab => 'Discover';
+
+  @override
+  String get ryContinueYatra => 'Continue your yatra';
+
+  @override
+  String ryTemplesDone(int done, int total) {
+    return '$done of $total temples visited';
+  }
+
+  @override
+  String get scTotal => 'Total';
+
+  @override
+  String get scRarestCard => 'Your rarest card';
+
+  @override
+  String get scAlbumComplete => 'Set complete';
+
+  @override
+  String scAlbumNext(String name) {
+    return 'Next: $name';
+  }
+
+  @override
+  String get scSeriesSummary => 'Your series';
+
+  @override
+  String get scSeasonsSummary => 'Your seasons';
+
+  @override
+  String get scSetsComplete => 'Sets complete';
+
+  @override
+  String get scGalleryHint => 'Every card, owned and locked';
+
+  @override
+  String get scSeriesHint => 'Complete a set, earn its glory';
+
+  @override
+  String get scSeasonsHint => 'Limited cards by season';
+
+  @override
+  String get scStatisticsHint => 'Rarity, sets and progress';
+
+  @override
+  String get cityChoose => 'Choose your city';
+
+  @override
+  String get citySearchHint => 'Search your city';
+
+  @override
+  String get cityCurrentLocation => 'Current location';
+
+  @override
+  String get cityUseCurrent => 'Use my current location';
+
+  @override
+  String get cityUseCurrentHint => 'Most accurate for temples near you';
+
+  @override
+  String get cityTypeMore => 'Type at least 2 letters of your city';
+
+  @override
+  String get cityNoResults => 'No city found — try another spelling';
+
+  @override
+  String get cityError =>
+      'Couldn\'t search right now. Check your connection and try again.';
+
+  @override
+  String get citySearchInstead => 'Search for your city instead';
+
+  @override
+  String get cityTapToChoose => 'Tap to detect or choose your city';
+
+  @override
+  String get cityDetecting => 'Finding your location…';
+
+  @override
+  String get pfAboutYou => 'About you';
+
+  @override
+  String get pfYourCity => 'Your city';
+
+  @override
+  String get pfYourCityHint => 'We show the temples and Sacred Cards around it';
+
+  @override
+  String get pfContact => 'Contact';
 }

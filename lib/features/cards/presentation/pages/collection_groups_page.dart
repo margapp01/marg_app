@@ -12,8 +12,9 @@ import 'card_gallery_page.dart';
 
 enum CollectionGroupMode { series, season }
 
-/// Series Collection / Season Collection — a list of every series (or season)
-/// with the user's completion. Tapping opens the gallery filtered to that group.
+/// Series Collection / Season Collection — a night-sky summary (sets
+/// completed, cards held across them) over every series (or season) drawn as
+/// a collector's album. Tapping one opens the gallery filtered to it.
 class CollectionGroupsPage extends ConsumerWidget {
   const CollectionGroupsPage({required this.mode, super.key});
 
@@ -47,20 +48,22 @@ class CollectionGroupsPage extends ConsumerWidget {
           }
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(provider),
-            child: ListView.separated(
-              padding: AppSpacing.screenAll,
-              itemCount: groups.length,
-              separatorBuilder: (_, _) => const Gap(AppSpacing.md),
-              itemBuilder: (context, i) {
-                final g = groups[i];
-                return RepaintBoundary(
-                  child: GroupProgressTile(
-                    group: g,
-                    accent: groupAccent(context, i),
-                    onTap: () => _openGroup(context, g, isSeries),
-                  ),
-                );
-              },
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.huge),
+              children: [
+                GroupsSummary(groups: groups, series: isSeries).fadeIn(),
+                const Gap(AppSpacing.lg),
+                for (final (i, g) in groups.indexed) ...[
+                  RepaintBoundary(
+                    child: GroupProgressTile(
+                      group: g,
+                      accent: groupAccent(context, i),
+                      onTap: () => _openGroup(context, g, isSeries),
+                    ),
+                  ).fadeIn(delay: AppDurations.stagger * i.clamp(0, 8)),
+                  const Gap(AppSpacing.md),
+                ],
+              ],
             ),
           );
         },

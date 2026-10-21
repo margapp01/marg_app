@@ -18,6 +18,7 @@ import '../../features/temple_detail/presentation/controllers/temple_detail_cont
 import '../../features/temple_visit/data/offline_checkins.dart';
 import '../../shared/design_system.dart';
 import '../localization/app_localizations.dart';
+import '../router/app_navigation.dart';
 import '../router/route_names.dart';
 import '../router/web_links.dart';
 
@@ -155,7 +156,7 @@ class _SessionHostState extends ConsumerState<SessionHost> {
     );
     dest == null
         ? context.pushNamed(RouteNames.notifications)
-        : context.pushNamed(dest.routeName, pathParameters: dest.pathParameters);
+        : context.openNamed(dest.routeName, pathParameters: dest.pathParameters);
   }
 
   void _banner(RemoteMessage message) {

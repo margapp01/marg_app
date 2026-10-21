@@ -13,6 +13,7 @@ class YatraRoute {
     this.coverImage,
     this.rewardCard,
     this.temples = const [],
+    this.prizes = RoutePrizes.none,
   });
 
   final String id;
@@ -28,6 +29,9 @@ class YatraRoute {
 
   /// Ordered temples (detail only).
   final List<RouteTempleEntry> temples;
+
+  /// What completing the route wins (admin-set; detail only).
+  final RoutePrizes prizes;
 
   /// Total route distance (km) as the sum of great-circle hops between
   /// consecutive temples. Derived from real coordinates — 0 when < 2 temples
@@ -61,6 +65,43 @@ class YatraRoute {
           .map((m) => RouteTempleEntry.fromJson(m.cast<String, dynamic>()))
           .where((e) => e.temple.id.isNotEmpty)
           .toList(growable: false),
+      prizes: RoutePrizes.fromJson(json),
+    );
+  }
+}
+
+/// Backend `CompletionReward`: a physical prize for completing a route.
+enum CompletionReward {
+  tshirt('TSHIRT'),
+  recharge('RECHARGE');
+
+  const CompletionReward(this.wire);
+  final String wire;
+}
+
+/// The prizes a route's completion wins — set per route in admin (Completion
+/// Prizes): a MARG T-shirt and/or a mobile recharge plan of [rechargeMonths]
+/// worth up to [rechargeMaxInr]. Empty when the route offers none (or the
+/// server predates prizes).
+class RoutePrizes {
+  const RoutePrizes({this.rewards = const {}, this.rechargeMonths = 3, this.rechargeMaxInr = 1000});
+
+  static const RoutePrizes none = RoutePrizes();
+
+  final Set<CompletionReward> rewards;
+  final int rechargeMonths;
+  final int rechargeMaxInr;
+
+  bool get isEmpty => rewards.isEmpty;
+  bool get tshirt => rewards.contains(CompletionReward.tshirt);
+  bool get recharge => rewards.contains(CompletionReward.recharge);
+
+  factory RoutePrizes.fromJson(Map<String, dynamic> json) {
+    final wire = ((json['completionRewards'] as List?) ?? const []).map((e) => '$e').toSet();
+    return RoutePrizes(
+      rewards: {for (final r in CompletionReward.values) if (wire.contains(r.wire)) r},
+      rechargeMonths: YatraRoute._i(json['rechargeMonths'], 3),
+      rechargeMaxInr: YatraRoute._i(json['rechargeMaxInr'], 1000),
     );
   }
 }

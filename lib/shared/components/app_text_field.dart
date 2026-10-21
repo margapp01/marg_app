@@ -31,6 +31,7 @@ class AppTextField extends StatelessWidget {
     this.maxLength,
     this.prefixIcon,
     this.prefixText,
+    this.prefix,
     this.suffixIcon,
     this.suffix,
     this.focusNode,
@@ -66,6 +67,9 @@ class AppTextField extends StatelessWidget {
 
   /// Fixed text shown before the input (e.g. a phone dial code).
   final String? prefixText;
+
+  /// A custom leading widget (e.g. a country-code picker); wins over [prefixIcon].
+  final Widget? prefix;
   final IconData? suffixIcon;
   final Widget? suffix;
   final FocusNode? focusNode;
@@ -102,7 +106,7 @@ class AppTextField extends StatelessWidget {
         hintText: hint,
         helperText: helperText,
         errorText: errorText,
-        prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
+        prefixIcon: prefix ?? (prefixIcon == null ? null : Icon(prefixIcon)),
         prefixText: prefixText,
         suffixIcon: _suffix(),
       ),

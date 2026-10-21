@@ -45,6 +45,26 @@ class PushMessaging {
     } catch (_) {/* push is best-effort; the in-app inbox still works */}
   }
 
+  /// Whether the OS currently lets MARG post notifications.
+  Future<bool> isAllowed() async {
+    try {
+      return _allowed(await FirebaseMessaging.instance.getNotificationSettings());
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Asks for notification permission now (onboarding's explicit prompt) and
+  /// records the ask so [start] doesn't repeat it. True when allowed.
+  Future<bool> requestPermission() async {
+    try {
+      await _ref.read(keyValueStoreProvider).setBool(_askedKey, value: true);
+      return _allowed(await FirebaseMessaging.instance.requestPermission());
+    } catch (_) {
+      return false;
+    }
+  }
+
   void stop() {
     for (final s in _subscriptions) {
       s.cancel();

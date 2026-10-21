@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/localization/app_localizations.dart';
@@ -10,15 +9,6 @@ import '../../../../app/router/route_paths.dart';
 import '../../../../shared/design_system.dart';
 import '../../domain/entities/cms_content.dart';
 import '../controllers/profile_controllers.dart';
-
-final _appVersionProvider = FutureProvider.autoDispose<String>((ref) async {
-  try {
-    final info = await PackageInfo.fromPlatform();
-    return '${info.version}+${info.buildNumber}';
-  } catch (_) {
-    return '';
-  }
-});
 
 /// Screen 9 — Help & Support. FAQs + CMS static pages + version, licenses,
 /// contact and rate. Reuses the CMS content endpoints.
@@ -29,7 +19,7 @@ class HelpSupportPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final faqs = ref.watch(faqsProvider);
-    final version = ref.watch(_appVersionProvider).valueOrNull ?? '';
+    final version = ref.watch(appVersionProvider).valueOrNull ?? '';
     final p = context.palette;
 
     return Scaffold(

@@ -30,4 +30,17 @@ class GeoPlace {
       country: pick('country'),
     );
   }
+
+  /// One Mapbox v6 forward-search feature: its own name plus the region and
+  /// country from its context.
+  factory GeoPlace.fromMapboxV6Feature(Map<dynamic, dynamic> feature) {
+    final props = (feature['properties'] as Map?) ?? const {};
+    final context = (props['context'] as Map?) ?? const {};
+    String? named(String key) => (context[key] as Map?)?['name'] as String?;
+    return GeoPlace(
+      city: props['name'] as String?,
+      state: named('region'),
+      country: named('country'),
+    );
+  }
 }

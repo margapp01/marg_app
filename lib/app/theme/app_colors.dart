@@ -7,34 +7,34 @@ import 'package:flutter/material.dart';
 /// does not model), so a dark scheme can be introduced in one place without
 /// touching feature code.
 abstract final class AppColors {
-  // ── Primary — Bhagwa / Saffron ────────────────────────────────────────
-  static const Color primary = Color(0xFFE8730C);
-  static const Color primaryDark = Color(0xFFB4550A);
-  static const Color primaryLight = Color(0xFFF59A4C);
-  static const Color primaryContainer = Color(0xFFFBE7D2);
+  // ── Primary — Bhagwa / Saffron (the logo's path and temple) ───────────
+  static const Color primary = Color(0xFFF76800);
+  static const Color primaryDark = Color(0xFFC75200);
+  static const Color primaryLight = Color(0xFFFF8A33);
+  static const Color primaryContainer = Color(0xFFFFEDDF);
 
-  // ── Secondary — Deep Blue ─────────────────────────────────────────────
-  static const Color secondary = Color(0xFF1B3A6B);
-  static const Color secondaryDark = Color(0xFF102A52);
-  static const Color secondaryLight = Color(0xFF3E5C8A);
-  static const Color secondaryContainer = Color(0xFFDCE6F6);
+  // ── Secondary — Logo Navy (the logo's M) ──────────────────────────────
+  static const Color secondary = Color(0xFF11224E);
+  static const Color secondaryDark = Color(0xFF0A1636);
+  static const Color secondaryLight = Color(0xFF2E4378);
+  static const Color secondaryContainer = Color(0xFFE4E9F5);
 
   // ── Accent — Maroon (devotional accent for tilaks / emphasis) ─────────
   static const Color maroon = Color(0xFF7A2E2E);
 
-  // ── Surfaces ──────────────────────────────────────────────────────────
-  static const Color background = Color(0xFFFDF9F3);
-  static const Color surface = Color(0xFFFFFBF6);
-  static const Color surfaceContainer = Color(0xFFF6EEE3);
+  // ── Surfaces — clean white / off-white (no cream) ────────────────────
+  static const Color background = Color(0xFFF7F8FA);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceContainer = Color(0xFFF0F2F6);
   static const Color card = Color(0xFFFFFFFF);
-  static const Color divider = Color(0xFFEADFD1);
-  static const Color border = Color(0xFFD9CBBA);
-  static const Color outline = Color(0xFF85736A);
+  static const Color divider = Color(0xFFE8EAF0);
+  static const Color border = Color(0xFFD9DCE4);
+  static const Color outline = Color(0xFF737889);
 
-  // ── Text ──────────────────────────────────────────────────────────────
-  static const Color textPrimary = Color(0xFF1F1B16);
-  static const Color textSecondary = Color(0xFF6B6157);
-  static const Color textDisabled = Color(0xFFA99F94);
+  // ── Text — navy-tinted ink ────────────────────────────────────────────
+  static const Color textPrimary = Color(0xFF141A2E);
+  static const Color textSecondary = Color(0xFF5B6275);
+  static const Color textDisabled = Color(0xFFA2A7B5);
   static const Color onPrimary = Color(0xFFFFFFFF);
   static const Color onSecondary = Color(0xFFFFFFFF);
 
@@ -45,14 +45,13 @@ abstract final class AppColors {
   static const Color error = Color(0xFFBA1A1A);
 
   // ── Tiers (achievements / leaderboards) ───────────────────────────────
-  static const Color gold = Color(0xFFD4AF37);
+  static const Color gold = Color(0xFFD9A93A);
   static const Color silver = Color(0xFFAAB2BD);
   static const Color bronze = Color(0xFFB08D57);
 
-  /// Warm cream matching the upper region of the splash backdrop. Used to
-  /// multiply-blend the white-backed wordmark so its box disappears into the
-  /// splash canvas.
-  static const Color splashCanvas = Color(0xFFFBF4E8);
+  /// The splash / sign-in / setup canvas — pure white, so the white-backed
+  /// wordmark sits on it without a visible box.
+  static const Color splashCanvas = Color(0xFFFFFFFF);
 
   // ── Domain accents (temples / map) ────────────────────────────────────
   static const Color templeSand = Color(0xFFE8D5B5);
@@ -74,7 +73,16 @@ abstract final class AppColors {
     error: error,
     surface: surface,
     onSurface: textPrimary,
+    onSurfaceVariant: textSecondary,
     outline: outline,
     outlineVariant: border,
+    // Neutral containers — the saffron seed would otherwise tint every
+    // Material surface (sheets, menus, nav bar) peach.
+    surfaceTint: Colors.transparent,
+    surfaceContainerLowest: card,
+    surfaceContainerLow: background,
+    surfaceContainer: surfaceContainer,
+    surfaceContainerHigh: Color(0xFFE9ECF2),
+    surfaceContainerHighest: Color(0xFFE2E6EE),
   );
 }

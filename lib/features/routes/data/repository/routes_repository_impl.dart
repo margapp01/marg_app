@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../temple_detail/domain/entities/temple_detail.dart' show NearbyTempleRef;
 import '../../domain/entities/my_route.dart';
 import '../../domain/entities/route_detail_bundle.dart';
 import '../../domain/entities/route_progress.dart';
@@ -22,19 +21,17 @@ class RoutesRepositoryImpl implements RoutesRepository {
 
   @override
   Future<RouteDetailBundle> loadDetail(String slug) async {
-    // Detail is the hard dependency; progress, visit dates and nearby
-    // suggestions are best-effort so a failed sub-call still renders the route.
+    // Detail is the hard dependency; progress and visit dates are
+    // best-effort so a failed sub-call still renders the route.
     final route = await _remote.detail(slug);
     final results = await Future.wait([
       _soft(() => _remote.progress(route.id)),
       _soft(_remote.visitDates),
-      _soft(() => _remote.nearbyByStop(slug)),
     ]);
     return RouteDetailBundle(
       route: route,
       progress: results[0] as RouteProgress?,
       visitDateByTempleId: (results[1] as Map<String, DateTime>?) ?? const {},
-      nearbyByTempleId: (results[2] as Map<String, List<NearbyTempleRef>>?) ?? const {},
     );
   }
 

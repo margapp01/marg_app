@@ -7,9 +7,13 @@ enough to render smoothly, and written in the app's boundary format (a
 FeatureCollection with `akhandBharat` + `india`; Bharat's official outline is
 taken from the bundled asset, which the source lacks).
 
-  python3 tool/geo/make_detailed_boundaries.py <source.json>
+With --full every surveyed point is kept (~13 MB, rounded to ~10 cm) for the
+"Full resolution" download tier.
 
-Writes ../marg_backend/assets/geo/bharat_boundaries_detailed.geojson.
+  python3 tool/geo/make_detailed_boundaries.py <source.json> [--full]
+
+Writes ../marg_backend/assets/geo/bharat_boundaries_detailed.geojson (or
+bharat_boundaries_full.geojson with --full).
 """
 import json
 import sys
@@ -19,7 +23,7 @@ TOLERANCE = 0.0003
 HERE = Path(__file__).resolve().parent
 APP = HERE.parent.parent
 BUNDLED = APP / 'assets' / 'geo' / 'bharat_boundaries.geojson'
-OUT = APP.parent / 'marg_backend' / 'assets' / 'geo' / 'bharat_boundaries_detailed.geojson'
+GEO_OUT = APP.parent / 'marg_backend' / 'assets' / 'geo'
 
 
 def simplify(points, tolerance):
@@ -52,12 +56,14 @@ def simplify(points, tolerance):
     return [p for p, k in zip(points, keep) if k]
 
 
-def main(source):
+def main(source, full=False):
+    out = GEO_OUT / ('bharat_boundaries_full.geojson' if full else 'bharat_boundaries_detailed.geojson')
+    digits = 6 if full else 5
     geometry = json.loads(Path(source).read_text())['geometries'][0]
     polygons = []
     for polygon in geometry['coordinates']:
         rings = [
-            [[round(x, 5), round(y, 5)] for x, y in simplify(ring, TOLERANCE)]
+            [[round(x, digits), round(y, digits)] for x, y in (ring if full else simplify(ring, TOLERANCE))]
             for ring in polygon
         ]
         rings = [r for r in rings if len(r) >= 4]
@@ -75,11 +81,11 @@ def main(source):
             india,
         ],
     }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(collection, separators=(',', ':')))
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(collection, separators=(',', ':')))
     points = sum(len(r) for p in polygons for r in p)
-    print(f'{OUT} — {len(polygons)} polygons, {points} points, {OUT.stat().st_size} bytes')
+    print(f'{out} — {len(polygons)} polygons, {points} points, {out.stat().st_size} bytes')
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main(sys.argv[1], full='--full' in sys.argv[2:])

@@ -3,19 +3,24 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../../../app/localization/app_localizations.dart';
+import '../../../../../core/location/captured_location.dart';
 import '../../../../../core/media/picked_photo.dart';
+import '../../../../../core/models/country_dial_code.dart';
 import '../../../../../shared/design_system.dart';
 import 'setup_common.dart';
 
-/// Step 1 — "Welcome to Marg": the photo (inside a mandala ring), name and the
-/// Google-owned email. A brand-new account also supplies its mobile number
-/// here ([showMobile]).
+/// Step 1 — "Welcome to Marg": the photo (inside a mandala ring), name, the
+/// Google-owned email, an optional mobile number (any country) and the city
+/// from the device location. Everything after this step can be skipped.
 class WelcomeStep extends StatelessWidget {
   const WelcomeStep({
     required this.nameController,
     required this.email,
-    required this.showMobile,
     required this.mobileController,
+    required this.country,
+    required this.onCountryChanged,
+    required this.location,
+    required this.onLocation,
     required this.onEditPhoto,
     this.photoUrl,
     this.pickedPhoto,
@@ -25,9 +30,12 @@ class WelcomeStep extends StatelessWidget {
 
   final TextEditingController nameController;
   final String email;
-  final bool showMobile;
   final TextEditingController mobileController;
+  final CountryDialCode country;
+  final ValueChanged<CountryDialCode> onCountryChanged;
   final String? mobileError;
+  final CapturedLocation? location;
+  final ValueChanged<CapturedLocation> onLocation;
   final String? photoUrl;
 
   /// A just-picked avatar shown as an instant preview before it's uploaded.
@@ -61,10 +69,31 @@ class WelcomeStep extends StatelessWidget {
           label: l10n.suEmail,
           child: AppTextField(initialValue: email, enabled: false, prefixIcon: AppIcons.mail),
         ),
-        if (showMobile) ...[
-          const Gap(AppSpacing.lg),
-          PhoneField(controller: mobileController, label: l10n.suMobileNumber, errorText: mobileError),
-        ],
+        const Gap(AppSpacing.lg),
+        LabeledField(
+          label: l10n.suMobileNumber,
+          hint: l10n.suOptional,
+          child: PhoneField(
+            controller: mobileController,
+            country: country,
+            onCountryChanged: onCountryChanged,
+            floatingLabel: false,
+            errorText: mobileError,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.xs, left: AppSpacing.xxs),
+          child: Text(l10n.suMobileHint, style: context.textTheme.bodySmall?.withColor(context.colors.textSecondary)),
+        ),
+        const Gap(AppSpacing.lg),
+        LabeledField(
+          label: l10n.suCityLocation,
+          child: CityField(value: location?.place?.label, gpsFirst: true, onPicked: onLocation),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.xs, left: AppSpacing.xxs),
+          child: Text(l10n.suLocationHint, style: context.textTheme.bodySmall?.withColor(context.colors.textSecondary)),
+        ),
       ],
     );
   }

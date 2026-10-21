@@ -115,6 +115,7 @@ abstract final class AppIcons {
   static const IconData directions = Symbols.directions_rounded;
   static const IconData category = Symbols.category_rounded;
   static const IconData layers = Symbols.layers_rounded;
+  static const IconData download = Symbols.download_rounded;
   static const IconData tune = Symbols.tune_rounded;
   static const IconData publicMap = Symbols.public_rounded;
   static const IconData pandit = Symbols.self_improvement_rounded;

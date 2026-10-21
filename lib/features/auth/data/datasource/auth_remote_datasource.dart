@@ -27,13 +27,13 @@ class AuthRemoteDataSource {
 
   Future<({AuthUser user, AuthTokens tokens})> completeRegistration({
     required String firebaseIdToken,
-    required String mobile,
+    String? mobile,
     String? name,
     String? profilePhoto,
   }) async {
     final res = await _dio.post<dynamic>(
       '/auth/complete-registration',
-      data: {'mobile': mobile, 'name': ?name, 'profilePhoto': ?profilePhoto},
+      data: {'mobile': ?mobile, 'name': ?name, 'profilePhoto': ?profilePhoto},
       options: Options(headers: {'Authorization': 'Bearer $firebaseIdToken'}),
     );
     final data = _data(res);

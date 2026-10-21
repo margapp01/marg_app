@@ -50,143 +50,6 @@ class _ExpandableTextState extends State<ExpandableText> {
   }
 }
 
-/// Live Temple Intelligence card: occupancy / capacity / peak + best-time.
-class IntelligenceCard extends StatelessWidget {
-  const IntelligenceCard({
-    required this.crowd,
-    required this.bestTimeWindow,
-    required this.peakWindow,
-    super.key,
-  });
-
-  final CrowdInfo crowd;
-  final String? bestTimeWindow;
-  final String? peakWindow;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final meta = crowdMeta(context, l10n, crowd.crowdLevel);
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.tdIntelligenceTitle,
-                  style: context.textTheme.titleSmall?.bold.withColor(context.scheme.secondary),
-                ),
-              ),
-              _LiveDot(),
-              const Gap.h(AppSpacing.xs),
-              Text(
-                l10n.tdUpdatedLive,
-                style: context.textTheme.labelSmall?.copyWith(color: context.colors.textSecondary),
-              ),
-            ],
-          ),
-          const Gap(AppSpacing.lg),
-          Row(
-            children: [
-              Expanded(
-                child: _Gauge(
-                  label: l10n.tdOccupancy,
-                  value: '${crowd.occupancyPercent}%',
-                  sub: meta.label,
-                  color: meta.color,
-                ),
-              ),
-              Expanded(
-                child: _Gauge(
-                  label: l10n.tdCapacity,
-                  value: crowd.capacity > 0 ? '${crowd.capacity}' : '—',
-                  sub: l10n.tdPeople,
-                  color: context.scheme.primary,
-                ),
-              ),
-              if (peakWindow != null)
-                Expanded(
-                  child: _Gauge(
-                    label: l10n.tdPeakHours,
-                    value: peakWindow!,
-                    sub: '',
-                    color: context.scheme.secondary,
-                    small: true,
-                  ),
-                ),
-            ],
-          ),
-          if (bestTimeWindow != null) ...[
-            const Gap(AppSpacing.lg),
-            Container(
-              padding: AppSpacing.allMd,
-              decoration: BoxDecoration(
-                color: context.scheme.primary.withValues(alpha: 0.08),
-                borderRadius: AppRadius.card,
-              ),
-              child: Row(
-                children: [
-                  Icon(AppIcons.check, size: 18, color: context.scheme.primary),
-                  const Gap.h(AppSpacing.sm),
-                  Expanded(
-                    child: Text(
-                      '${l10n.tdBestTimeToday}: $bestTimeWindow',
-                      style: context.textTheme.labelLarge?.copyWith(color: context.scheme.secondary),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _LiveDot extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 8,
-      height: 8,
-      decoration: BoxDecoration(color: context.colors.success, shape: BoxShape.circle),
-    );
-  }
-}
-
-class _Gauge extends StatelessWidget {
-  const _Gauge({required this.label, required this.value, required this.sub, required this.color, this.small = false});
-
-  final String label;
-  final String value;
-  final String sub;
-  final Color color;
-  final bool small;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(label, style: context.textTheme.labelSmall?.copyWith(color: context.colors.textSecondary)),
-        const Gap(AppSpacing.xs),
-        Text(
-          value,
-          textAlign: TextAlign.center,
-          // Time windows ("5:00 AM – 10:00 AM") wrap rather than truncate.
-          maxLines: small ? 2 : 1,
-          overflow: TextOverflow.ellipsis,
-          style: (small ? context.textTheme.labelLarge : context.displayText.titleLarge)?.bold.withColor(color),
-        ),
-        if (sub.isNotEmpty)
-          Text(sub, style: context.textTheme.labelSmall?.copyWith(color: context.colors.textSecondary)),
-      ],
-    );
-  }
-}
-
 /// About + read-more.
 class AboutSection extends StatelessWidget {
   const AboutSection({required this.name, required this.description, super.key});
@@ -627,8 +490,8 @@ class SacredCardShowcase extends StatelessWidget {
   }
 }
 
-/// The temple at a glance on parchment: open or closed today with its hours,
-/// the live crowd, the wait, and the rating — divided by gold rules.
+/// The temple at a glance on parchment: open or closed today with its hours
+/// and the rating — divided by gold rules.
 class TempleGlance extends StatelessWidget {
   const TempleGlance({required this.cells, super.key});
 

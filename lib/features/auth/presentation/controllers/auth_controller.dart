@@ -31,7 +31,7 @@ class AuthController extends Notifier<AuthState> {
         state = AuthState(status: AuthStatus.authenticated, user: result.user);
       } else {
         state = AuthState(
-          status: AuthStatus.needsMobile,
+          status: AuthStatus.needsRegistration,
           googleProfile: result.profile,
         );
       }
@@ -48,10 +48,11 @@ class AuthController extends Notifier<AuthState> {
     }
   }
 
-  /// Attach the mobile number and finish the account. Rethrows on failure so
-  /// the onboarding form can surface field errors (e.g. mobile already in use).
+  /// Finish the account, attaching the mobile number when one was given.
+  /// Rethrows on failure so the onboarding form can surface field errors
+  /// (e.g. mobile already in use).
   Future<void> completeRegistration({
-    required String mobile,
+    String? mobile,
     String? name,
     String? profilePhoto,
   }) async {

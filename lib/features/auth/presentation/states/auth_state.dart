@@ -7,8 +7,8 @@ enum AuthStatus {
   authenticating,
   unauthenticated,
 
-  /// Google-authenticated but the account isn't complete (needs mobile).
-  needsMobile,
+  /// Google-authenticated but registration isn't complete (no Marg session yet).
+  needsRegistration,
   authenticated,
 }
 

@@ -29,11 +29,11 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     OnboardingDraft draft, {
     required bool requiresRegistration,
   }) async {
-    // 1. A brand-new Google account has no Marg session yet — attaching the
-    //    mobile creates the account and stores the token pair.
+    // 1. A brand-new Google account has no Marg session yet — completing
+    //    registration (mobile optional) activates it and stores the tokens.
     if (requiresRegistration) {
       await _auth.completeRegistration(
-        mobile: draft.mobile!,
+        mobile: draft.mobile,
         name: draft.name,
         profilePhoto: draft.profilePhoto,
       );
@@ -42,6 +42,9 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     // 2. Upload a newly-picked avatar (best-effort — a storage hiccup must not
     //    block onboarding; we fall back to the Google photo URL).
     final patch = draft.profilePatch();
+    // Registration already attached a new account's mobile; an existing
+    // account adds (or keeps) it on the profile.
+    if (!requiresRegistration && draft.mobile != null) patch['phone'] = draft.mobile;
     if (draft.pickedPhoto != null) {
       try {
         patch['profilePhoto'] = await _photo.upload(draft.pickedPhoto!);

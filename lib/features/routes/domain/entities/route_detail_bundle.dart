@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import '../../../temple_detail/domain/entities/temple_detail.dart' show NearbyTempleRef;
 import 'route_progress.dart';
 import 'yatra_route.dart';
 
@@ -15,15 +14,11 @@ class RouteDetailBundle {
     required this.route,
     this.progress,
     this.visitDateByTempleId = const {},
-    this.nearbyByTempleId = const {},
   });
 
   final YatraRoute route;
   final RouteProgress? progress;
   final Map<String, DateTime> visitDateByTempleId;
-
-  /// Other temples worth a darshan near each stop (best-effort; may be empty).
-  final Map<String, List<NearbyTempleRef>> nearbyByTempleId;
 
   int get completedCount => progress?.completedTemples ?? _visitedInRoute;
   int get totalCount => progress?.totalTemples ?? route.temples.length;

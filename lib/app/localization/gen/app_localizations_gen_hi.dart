@@ -156,6 +156,18 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeOfflineMessage => 'नवीनतम लोड करने के लिए पुनः कनेक्ट करें।';
 
   @override
+  String get drawerExploreTemples => 'मंदिर खोजें';
+
+  @override
+  String get drawerMyCards => 'मेरे कार्ड';
+
+  @override
+  String get drawerYatraRoutes => 'यात्रा मार्ग';
+
+  @override
+  String get drawerYatrasCompleted => 'पूर्ण यात्राएँ';
+
+  @override
   String get navHome => 'होम';
 
   @override
@@ -826,6 +838,88 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get ryYourStats => 'आपके आँकड़े';
+
+  @override
+  String get ryScratchHeader => 'स्क्रैच करें और जीतें';
+
+  @override
+  String get ryScratchCover => 'अपना इनाम देखने के लिए स्क्रैच करें';
+
+  @override
+  String get ryScratchCoverHint => 'उँगली से सुनहरी परत रगड़ें';
+
+  @override
+  String get ryScratchLocked => 'स्क्रैच करने के लिए यह यात्रा पूरी करें';
+
+  @override
+  String get ryScratchWon => 'आपने जीता है!';
+
+  @override
+  String get ryScratchTshirt => 'MARG टी-शर्ट';
+
+  @override
+  String get ryScratchTshirtHint => 'आधिकारिक MARG तीर्थयात्री टी-शर्ट';
+
+  @override
+  String get ryScratchMobileLabel => 'आपके पंजीकृत मोबाइल पर रिचार्ज';
+
+  @override
+  String get ryScratchAddMobile =>
+      'रिचार्ज पाने के लिए अपना मोबाइल नंबर जोड़ें।';
+
+  @override
+  String get ryScratchAddMobileCta => 'मोबाइल नंबर जोड़ें';
+
+  @override
+  String get ryScratchSemantics =>
+      'स्क्रैच कार्ड। अपना यात्रा इनाम देखने के लिए सक्रिय करें।';
+
+  @override
+  String ryScratchRecharge(int months) {
+    return '$months महीने का मोबाइल रिचार्ज';
+  }
+
+  @override
+  String ryScratchRechargeHint(String amount) {
+    return '₹$amount तक का';
+  }
+
+  @override
+  String get ryScratchWinLabel => 'पूरा करें और जीतें';
+
+  @override
+  String get ryScratchTermsTshirt =>
+      'नियम व शर्तें लागू: सत्यापित चेक-इन के साथ यह यात्रा पूरी करने पर एक MARG टी-शर्ट मिलेगी। टी-शर्ट के साइज़ और डिलीवरी के लिए हमारी टीम आपके MARG खाते में पंजीकृत मोबाइल नंबर पर आपसे संपर्क करेगी। इनाम सत्यापन के अधीन हैं और ऑफ़र बदल सकता है।';
+
+  @override
+  String ryScratchTermsRecharge(int months, String amount) {
+    return 'नियम व शर्तें लागू: सत्यापित चेक-इन के साथ यह यात्रा पूरी करने पर ₹$amount तक का एक $months महीने का मोबाइल रिचार्ज प्लान मिलेगा, जो आपके MARG खाते में पंजीकृत मोबाइल नंबर पर किया जाएगा। इनाम सत्यापन के अधीन हैं और ऑफ़र बदल सकता है।';
+  }
+
+  @override
+  String ryScratchTermsBoth(int months, String amount) {
+    return 'नियम व शर्तें लागू: सत्यापित चेक-इन के साथ यह यात्रा पूरी करने पर एक MARG टी-शर्ट और ₹$amount तक का एक $months महीने का मोबाइल रिचार्ज प्लान मिलेगा। रिचार्ज आपके MARG खाते में पंजीकृत मोबाइल नंबर पर किया जाएगा; टी-शर्ट के साइज़ और डिलीवरी के लिए हमारी टीम उसी नंबर पर आपसे संपर्क करेगी। इनाम सत्यापन के अधीन हैं और ऑफ़र बदल सकता है।';
+  }
+
+  @override
+  String get ryScratchLockedBadge => 'लॉक है';
+
+  @override
+  String get ryScratchHeadlineTop => 'स्क्रैच करें';
+
+  @override
+  String get ryScratchHeadlineBottom => 'और जीतें';
+
+  @override
+  String ryScratchTemplesLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count मंदिर बाकी',
+      one: '1 मंदिर बाकी',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get ryCongratulations => 'बधाई हो!';
@@ -1930,6 +2024,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get pfSpiritualProgress => 'आध्यात्मिक प्रगति';
 
   @override
+  String get pfGroupPermissions => 'सूचनाएँ और स्थान';
+
+  @override
+  String get pfHelpSupportHint => 'सामान्य प्रश्न, संपर्क और ऐप को रेट करें';
+
+  @override
   String get pfGroupAccount => 'खाता';
 
   @override
@@ -2262,19 +2362,30 @@ class AppLocalizationsHi extends AppLocalizations {
   String get pfDetailedMap => 'विस्तृत नक्शा रूपरेखा';
 
   @override
-  String get pfDetailedMapHint =>
-      'हर नक्शे पर साफ़ सीमाएँ और तटरेखा (लगभग 3 MB)';
+  String get pfDetailedMapHint => 'हर नक्शे पर साफ़ सीमाएँ और तटरेखा';
 
   @override
-  String get pfDetailedMapDownload => 'डाउनलोड करें';
+  String get pfMapOutlineBuiltIn => 'अंतर्निहित';
+
+  @override
+  String get pfMapOutlineDetailed => 'विस्तृत';
+
+  @override
+  String get pfMapOutlineFull => 'पूर्ण रिज़ॉल्यूशन';
+
+  @override
+  String get pfMapOutlineBuiltInOption => 'अंतर्निहित (डाउनलोड नहीं)';
+
+  @override
+  String get pfMapOutlineDetailedOption => 'विस्तृत · लगभग 3 MB';
+
+  @override
+  String get pfMapOutlineFullOption => 'पूर्ण रिज़ॉल्यूशन · लगभग 14 MB';
 
   @override
   String pfDetailedMapProgress(int percent) {
     return '$percent%';
   }
-
-  @override
-  String get pfDetailedMapReady => 'डाउनलोड हो गया';
 
   @override
   String get pfDetailedMapSaved => 'विस्तृत नक्शा तैयार है';
@@ -2802,7 +2913,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get suBack => 'वापस';
 
   @override
-  String get suSkip => 'छोड़ें';
+  String get suSkip => 'अभी छोड़ें';
 
   @override
   String get suContinue => 'आगे बढ़ें';
@@ -2846,7 +2957,8 @@ class AppLocalizationsHi extends AppLocalizations {
       'हम आपकी फ़ोटो नहीं खोल सके। कृपया पुनः प्रयास करें।';
 
   @override
-  String get suInvalidMobile => 'मान्य 10 अंकों का मोबाइल नंबर दर्ज करें';
+  String get suInvalidMobile =>
+      'मोबाइल नंबर जाँचें — यह बहुत छोटा या बहुत लंबा लग रहा है';
 
   @override
   String get suMobileTaken =>
@@ -2874,9 +2986,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get suGettingLocation => 'आपका स्थान प्राप्त किया जा रहा है…';
-
-  @override
-  String get suLocationEnabled => 'स्थान सक्षम है';
 
   @override
   String get suUpdate => 'अपडेट करें';
@@ -3406,15 +3515,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeMenu => 'मेनू';
 
   @override
-  String get drawerJourney => 'आपकी यात्रा';
-
-  @override
-  String get drawerDiscover => 'खोजें';
-
-  @override
-  String get drawerAccount => 'खाता';
-
-  @override
   String get savedEmptyTitle => 'अभी कोई स्थान सहेजा नहीं गया';
 
   @override
@@ -3661,7 +3761,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get suWelcomeSubtitle =>
-      'आइए आपकी व्यक्तिगत प्रोफ़ाइल बनाकर शुरू करें';
+      'बस ज़रूरी जानकारी — बाकी आप छोड़कर बाद में पूरा कर सकते हैं';
 
   @override
   String get suAddPhoto => 'फ़ोटो जोड़ें';
@@ -3907,11 +4007,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get ryKmCovered => 'तय कि.मी.';
-
-  @override
-  String ryAlsoNearby(int count) {
-    return 'पास में और दर्शन · $count';
-  }
 
   @override
   String ryVisitedOn(Object date) {
@@ -4491,4 +4586,266 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get upDismiss => 'बंद करें';
+
+  @override
+  String get phoneLabel => 'मोबाइल नंबर';
+
+  @override
+  String get phoneHint => 'अपना मोबाइल नंबर दर्ज करें';
+
+  @override
+  String phoneCountryCode(String country, String code) {
+    return 'देश कोड: $country $code';
+  }
+
+  @override
+  String get phoneChooseCountry => 'देश चुनें';
+
+  @override
+  String get phoneSearchCountry => 'देश या कोड खोजें';
+
+  @override
+  String get phoneNoCountry => 'आपकी खोज से कोई देश नहीं मिला';
+
+  @override
+  String get suOptional => '(वैकल्पिक)';
+
+  @override
+  String get suMobileHint => 'वैकल्पिक — अभी जोड़ें या बाद में प्रोफ़ाइल से';
+
+  @override
+  String get suLocationHint =>
+      'इससे हम आपके पास के मंदिर — और वहाँ आपका इंतज़ार कर रहे पवित्र कार्ड — दिखाते हैं';
+
+  @override
+  String get suNotifTitle => 'जुड़े रहें';
+
+  @override
+  String get suNotifBody =>
+      'जब आपके पास किसी मंदिर में कार्ड इंतज़ार कर रहा हो, जब आप कुछ नया अनलॉक करें और किसी त्योहार से पहले — हम आपको याद दिलाएँगे।';
+
+  @override
+  String get suNotifAllow => 'सूचनाएँ चालू करें';
+
+  @override
+  String get suNotifOn => 'सूचनाएँ चालू हैं';
+
+  @override
+  String get suNotifBlocked =>
+      'MARG के लिए सूचनाएँ बंद हैं। आप इन्हें कभी भी फ़ोन की सेटिंग्स में चालू कर सकते हैं।';
+
+  @override
+  String get suAgeConfirmTitle => 'अपनी आयु की पुष्टि करें';
+
+  @override
+  String suAgeConfirmBody(int age) {
+    return 'MARG $age वर्ष और उससे अधिक आयु के लोगों के लिए है। कृपया पुष्टि करें कि आपकी आयु $age वर्ष या अधिक है — जन्म तिथि आप बाद में प्रोफ़ाइल में जोड़ सकते हैं।';
+  }
+
+  @override
+  String suAgeConfirmYes(int age) {
+    return 'मेरी आयु $age वर्ष या अधिक है';
+  }
+
+  @override
+  String get suAgeConfirmNo => 'वापस जाएँ';
+
+  @override
+  String get navCards => 'कार्ड';
+
+  @override
+  String homeQuestWaitingNearby(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'आपके पास $count कार्ड इंतज़ार में',
+      one: 'आपके पास 1 कार्ड इंतज़ार में',
+      zero: 'आपके पास के मंदिर',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeQuestWaitingPopular => 'इकट्ठा करने लायक लोकप्रिय कार्ड';
+
+  @override
+  String get homeCardWaiting => 'कार्ड इंतज़ार में';
+
+  @override
+  String get homeCardCollected => 'संग्रहित';
+
+  @override
+  String get homeCardVisit => 'दर्शन करें';
+
+  @override
+  String get scShowcaseTitle => 'मेरा पवित्र संग्रह';
+
+  @override
+  String scShowcaseTitleOf(String name) {
+    return '$name का पवित्र संग्रह';
+  }
+
+  @override
+  String get scShowcaseCards => 'पवित्र कार्ड संग्रहित';
+
+  @override
+  String scShowcaseComplete(int percent) {
+    return 'भारत के $percent% पवित्र कार्ड';
+  }
+
+  @override
+  String get scShowcaseSignature =>
+      'MARG · भारत के पवित्र कार्ड इकट्ठा करें · margapp.in';
+
+  @override
+  String get scShowOff => 'अपना संग्रह दिखाएँ';
+
+  @override
+  String get scShowOffError => 'छवि नहीं बन सकी। कृपया फिर से कोशिश करें।';
+
+  @override
+  String shCollection(int owned, int total) {
+    return '🪔 मैंने MARG पर भारत के मंदिरों से $total में से $owned पवित्र कार्ड इकट्ठा कर लिए हैं!';
+  }
+
+  @override
+  String pfCompletionTitle(int percent) {
+    return 'आपकी प्रोफ़ाइल $percent% पूर्ण है';
+  }
+
+  @override
+  String get pfCompletionBody =>
+      'बाकी जानकारी जोड़ें ताकि हम आपके लिए मंदिर, यात्राएँ और त्योहार सुझा सकें।';
+
+  @override
+  String get pfCompletionCta => 'मेरी प्रोफ़ाइल पूरी करें';
+
+  @override
+  String get pfItemPhoto => 'फ़ोटो';
+
+  @override
+  String get pfItemMobile => 'मोबाइल';
+
+  @override
+  String get pfItemBirthday => 'जन्म तिथि';
+
+  @override
+  String get pfItemGender => 'लिंग';
+
+  @override
+  String get pfItemCity => 'शहर';
+
+  @override
+  String get pfItemInterests => 'रुचियाँ';
+
+  @override
+  String get pfItemDeities => 'आराध्य देव';
+
+  @override
+  String get pfItemFrequency => 'दर्शन की आवृत्ति';
+
+  @override
+  String get pfItemYatras => 'यात्राएँ';
+
+  @override
+  String get pfMySacredCards => 'मेरे पवित्र कार्ड';
+
+  @override
+  String get pfPassportSections => 'मेरा आध्यात्मिक पासपोर्ट';
+
+  @override
+  String get pfInvite => 'आमंत्रित करें';
+
+  @override
+  String get ryDiscoverTab => 'खोजें';
+
+  @override
+  String get ryContinueYatra => 'अपनी यात्रा जारी रखें';
+
+  @override
+  String ryTemplesDone(int done, int total) {
+    return '$total में से $done मंदिरों के दर्शन';
+  }
+
+  @override
+  String get scTotal => 'कुल';
+
+  @override
+  String get scRarestCard => 'आपका सबसे दुर्लभ कार्ड';
+
+  @override
+  String get scAlbumComplete => 'सेट पूरा';
+
+  @override
+  String scAlbumNext(String name) {
+    return 'अगला: $name';
+  }
+
+  @override
+  String get scSeriesSummary => 'आपकी सीरीज़';
+
+  @override
+  String get scSeasonsSummary => 'आपके सीज़न';
+
+  @override
+  String get scSetsComplete => 'पूरे सेट';
+
+  @override
+  String get scGalleryHint => 'हर कार्ड, संग्रहित और लॉक';
+
+  @override
+  String get scSeriesHint => 'सेट पूरा करें, सम्मान पाएँ';
+
+  @override
+  String get scSeasonsHint => 'सीज़न के सीमित कार्ड';
+
+  @override
+  String get scStatisticsHint => 'दुर्लभता, सेट और प्रगति';
+
+  @override
+  String get cityChoose => 'अपना शहर चुनें';
+
+  @override
+  String get citySearchHint => 'अपना शहर खोजें';
+
+  @override
+  String get cityCurrentLocation => 'वर्तमान स्थान';
+
+  @override
+  String get cityUseCurrent => 'मेरी वर्तमान लोकेशन इस्तेमाल करें';
+
+  @override
+  String get cityUseCurrentHint => 'आपके पास के मंदिरों के लिए सबसे सटीक';
+
+  @override
+  String get cityTypeMore => 'अपने शहर के कम से कम 2 अक्षर लिखें';
+
+  @override
+  String get cityNoResults => 'कोई शहर नहीं मिला — दूसरी वर्तनी आज़माएँ';
+
+  @override
+  String get cityError =>
+      'अभी खोज नहीं हो सकी। अपना कनेक्शन जाँचें और फिर कोशिश करें।';
+
+  @override
+  String get citySearchInstead => 'इसके बजाय अपना शहर खोजें';
+
+  @override
+  String get cityTapToChoose => 'अपना शहर पहचानने या चुनने के लिए टैप करें';
+
+  @override
+  String get cityDetecting => 'आपकी लोकेशन ढूँढ रहे हैं…';
+
+  @override
+  String get pfAboutYou => 'आपके बारे में';
+
+  @override
+  String get pfYourCity => 'आपका शहर';
+
+  @override
+  String get pfYourCityHint =>
+      'हम इसके आसपास के मंदिर और पवित्र कार्ड दिखाते हैं';
+
+  @override
+  String get pfContact => 'संपर्क';
 }

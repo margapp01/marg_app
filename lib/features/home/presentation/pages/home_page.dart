@@ -98,23 +98,6 @@ class _HomeContent extends StatelessWidget {
   void _templeDetail(BuildContext context, String slug) =>
       context.pushNamed(RouteNames.templeDetail, pathParameters: {RoutePaths.templeIdParam: slug});
 
-  void _onQuickAction(BuildContext context, HomeQuickAction a) {
-    switch (a) {
-      case HomeQuickAction.myRoutes:
-        context.goNamed(RouteNames.routes);
-      case HomeQuickAction.nearby:
-        context.goNamed(RouteNames.exploreNearby);
-      case HomeQuickAction.cards:
-        context.pushNamed(RouteNames.cards);
-      case HomeQuickAction.achievements:
-        context.pushNamed(RouteNames.achievements);
-      case HomeQuickAction.passport:
-        context.goNamed(RouteNames.passport);
-      case HomeQuickAction.saved:
-        context.goNamed(RouteNames.exploreSaved);
-    }
-  }
-
   void _onShortcut(BuildContext context, HomeShortcut s) {
     switch (s) {
       case HomeShortcut.knowledge:
@@ -151,16 +134,16 @@ class _HomeContent extends StatelessWidget {
         ),
         const OfflineBanner(),
         const Gap(AppSpacing.xl),
-        padded(RepaintBoundary(child: QuickActionsGrid(onAction: (a) => _onQuickAction(context, a)))),
-        section,
+        // Cards first: the quest and the cards waiting at temples near you.
         padded(
           RepaintBoundary(
             child: CardJourneyCard(
               collected: d.passport?.cardsCollected ?? d.recentCards.length,
               recent: d.recentCards,
-              nextTemple: d.nearbyTemples.firstOrNull ?? d.popularTemples.firstOrNull,
-              onFindTemple: () => context.goNamed(RouteNames.exploreNearby),
-              onOpenCollection: () => context.pushNamed(RouteNames.cards),
+              temples: temples,
+              nearby: hasNearby,
+              onFindTemple: () => context.goNamed(hasNearby ? RouteNames.exploreNearby : RouteNames.explore),
+              onOpenCollection: () => context.goNamed(RouteNames.cards),
               onOpenTemple: (t) => _templeDetail(context, t.slug),
             ).fadeIn(),
           ),
@@ -181,28 +164,10 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
         ],
-        section,
-        RepaintBoundary(
-          child: TempleRail(
-            title: hasNearby || d.popularTemples.isEmpty ? l10n.homeSectionNearby : l10n.homeSectionPopular,
-            temples: temples,
-            onViewAll: () => context.goNamed(hasNearby ? RouteNames.exploreNearby : RouteNames.explore),
-            onOpen: (t) => _templeDetail(context, t.slug),
-          ),
-        ),
         if (quotes.isNotEmpty) ...[
           section,
           RepaintBoundary(
             child: InspirationCarousel(quotes: quotes, onOpen: () => context.pushNamed(RouteNames.knowledgeQuotes)),
-          ),
-        ],
-        if (d.templeIntelligence.isNotEmpty) ...[
-          section,
-          padded(
-            TempleIntelligenceSection(
-              items: d.templeIntelligence,
-              onOpen: (t) => _templeDetail(context, t.slug),
-            ),
           ),
         ],
         // The card quest above invites a first card; the rail shows the rest.
@@ -211,7 +176,7 @@ class _HomeContent extends StatelessWidget {
           RepaintBoundary(
             child: SacredCardsRail(
             cards: d.recentCards,
-            onViewAll: () => context.pushNamed(RouteNames.cards),
+            onViewAll: () => context.goNamed(RouteNames.cards),
               onOpen: (c) => context.pushNamed(RouteNames.cardDetail, pathParameters: {RoutePaths.cardIdParam: c.id}),
             ),
           ),

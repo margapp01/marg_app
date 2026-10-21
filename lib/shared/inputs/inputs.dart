@@ -5,6 +5,7 @@ library;
 export '../components/app_search_bar.dart';
 export '../components/app_text_field.dart';
 export 'app_dropdown.dart';
+export 'city_field.dart';
 export 'date_field.dart';
 export 'multiline_field.dart';
 export 'otp_field.dart';

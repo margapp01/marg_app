@@ -160,7 +160,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Temple Detail renders hero + intelligence from the bundle', (tester) async {
+  testWidgets('Temple Detail renders the hero from the bundle', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [templeDetailRepositoryProvider.overrideWithValue(_FakeRepo())],
@@ -175,7 +175,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Kashi Vishwanath Temple'), findsWidgets);
-    expect(find.text('Temple Intelligence (Live)'), findsOneWidget);
+    expect(find.text('Temple Intelligence (Live)'), findsNothing);
     expect(find.text('Verified Temple'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

@@ -55,7 +55,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         return; // still resolving — a later trigger will advance
       case AuthStatus.unauthenticated:
         _go(RouteNames.auth);
-      case AuthStatus.needsMobile:
+      case AuthStatus.needsRegistration:
         _go(RouteNames.setup);
       case AuthStatus.authenticated:
         _go(auth.user?.isOnboarded == true ? RouteNames.home : RouteNames.setup);

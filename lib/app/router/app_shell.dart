@@ -7,7 +7,8 @@ import '../../shared/design_system.dart';
 import '../localization/app_localizations.dart';
 import '../session/session_host.dart';
 
-/// The persistent five-tab shell: Home · Explore · Yatra · Passport · Profile.
+/// The persistent five-tab shell: Home · Explore · Cards · Yatra · Profile —
+/// the Sacred Card collection sits at the centre of the bar.
 /// Each tab keeps its own navigation stack (state survives tab switches);
 /// re-tapping the active tab pops it back to its root, and system Back at the
 /// root of any other tab returns to Home. Back at Home asks before leaving
@@ -73,7 +74,7 @@ class AppShell extends StatelessWidget {
       child: SessionHost(
         child: Scaffold(
           key: _scaffoldKey,
-          drawer: const HomeDrawer(),
+          drawer: HomeDrawer(currentTab: navigationShell.currentIndex),
           body: NotificationListener<NavigationNotification>(
             onNotification: (n) => _claimBack(context, n),
             child: navigationShell,
@@ -84,8 +85,8 @@ class AppShell extends StatelessWidget {
             items: [
               AppNavItem(icon: AppIcons.home, label: l10n.navHome),
               AppNavItem(icon: AppIcons.explore, label: l10n.navExplore),
-              AppNavItem(icon: AppIcons.temple, label: l10n.navYatra),
-              AppNavItem(icon: AppIcons.passport, label: l10n.navPassport),
+              AppNavItem(icon: AppIcons.card, label: l10n.navCards),
+              AppNavItem(icon: AppIcons.route, label: l10n.navYatra),
               AppNavItem(icon: AppIcons.profile, label: l10n.navProfile),
             ],
           ),

@@ -32,7 +32,7 @@ class SignInPage extends ConsumerWidget {
       if (next.error != null && next.error != prev?.error) {
         AppSnackbar.error(context, next.error!);
       }
-      if (next.status == AuthStatus.needsMobile) {
+      if (next.status == AuthStatus.needsRegistration) {
         context.goNamed(RouteNames.setup);
       } else if (next.status == AuthStatus.authenticated) {
         context.goNamed(

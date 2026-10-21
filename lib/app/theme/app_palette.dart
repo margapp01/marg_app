@@ -53,7 +53,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color crowdHigh;
   final Color crowdVeryHigh;
 
-  /// Warm cream used behind hero imagery.
+  /// The light canvas behind hero imagery (white — the app has no cream).
   final Color heroCream;
 
   /// Deep night-sky navy for dark showcase cards (card unlock, share cards).
@@ -66,7 +66,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     tileSky: Color(0xFFE3F0FB),
     tileRose: Color(0xFFFCE6EA),
     tileButter: Color(0xFFFDF3D6),
-    accentSaffron: Color(0xFFE8730C),
+    accentSaffron: Color(0xFFF76800),
     accentViolet: Color(0xFF7B5CD6),
     accentTeal: Color(0xFF239A8A),
     accentBlue: Color(0xFF2F80ED),
@@ -77,8 +77,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
     crowdModerate: Color(0xFFD99A00),
     crowdHigh: Color(0xFFE2574C),
     crowdVeryHigh: Color(0xFF7B5CD6),
-    heroCream: Color(0xFFFFF6EC),
-    night: Color(0xFF1A1633),
+    heroCream: Color(0xFFFFFFFF),
+    night: Color(0xFF0E1C44),
   );
 
   /// The palette is a fixed token set; themes swap whole instances.
@@ -116,16 +116,16 @@ class AppPalette extends ThemeExtension<AppPalette> {
 /// Gradient tokens for the redesigned surfaces (CTAs, hero fades, showcase
 /// cards). Like [AppShadows], these are const tokens referenced directly.
 abstract final class AppGradients {
-  /// Saffron call-to-action fill.
+  /// Saffron call-to-action fill — the logo path's orange sweep.
   static const LinearGradient primary = LinearGradient(
-    colors: [Color(0xFFF5933D), Color(0xFFE8730C)],
+    colors: [Color(0xFFFF8A1F), Color(0xFFF76800)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  /// Fades hero imagery into the cream page background (left → right).
+  /// Fades hero imagery into the page background (left → right).
   static const LinearGradient heroFade = LinearGradient(
-    colors: [Color(0xFFFDF9F3), Color(0xE6FDF9F3), Color(0x00FDF9F3)],
+    colors: [Color(0xFFF7F8FA), Color(0xE6F7F8FA), Color(0x00F7F8FA)],
     stops: [0, 0.45, 0.8],
   );
 
@@ -133,7 +133,7 @@ abstract final class AppGradients {
   static const LinearGradient heroBottomFade = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0x00FDF9F3), Color(0xFFFDF9F3)],
+    colors: [Color(0x00F7F8FA), Color(0xFFF7F8FA)],
   );
 
   /// Dark scrim for text over photos (bottom-up).
@@ -150,23 +150,23 @@ abstract final class AppGradients {
     stops: [0, 0.6, 1],
   );
 
-  /// Warm parchment for quote / blessing cards.
+  /// White with a whisper of saffron for quote / blessing / hub cards.
   static const LinearGradient parchment = LinearGradient(
-    colors: [Color(0xFFFFF4E6), Color(0xFFFCE6D0)],
+    colors: [Color(0xFFFFFFFF), Color(0xFFFFF3E8)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  /// Soft peach for promo cards (Invite & Earn, Need Help).
+  /// Soft saffron wash for promo cards (Invite & Earn, Need Help).
   static const LinearGradient peach = LinearGradient(
-    colors: [Color(0xFFFFF1E6), Color(0xFFFBDCC4)],
+    colors: [Color(0xFFFFF6EE), Color(0xFFFFE3CC)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  /// Deep navy for passport / progress showcase cards.
+  /// The logo's navy for passport / progress showcase cards.
   static const LinearGradient navy = LinearGradient(
-    colors: [Color(0xFF1B2A4A), Color(0xFF0F1A33)],
+    colors: [Color(0xFF1A3170), Color(0xFF0A1636)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -186,9 +186,9 @@ abstract final class AppGradients {
     end: Alignment.bottomRight,
   );
 
-  /// Night sky for card-unlock / share showcase surfaces.
+  /// Night sky (logo navy) for card-unlock / share showcase surfaces.
   static const LinearGradient night = LinearGradient(
-    colors: [Color(0xFF2B1D52), Color(0xFF14112B)],
+    colors: [Color(0xFF1C3375), Color(0xFF081231)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );

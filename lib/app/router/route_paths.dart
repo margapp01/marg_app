@@ -107,11 +107,13 @@ abstract final class RoutePaths {
   /// Profile, Account & Personalization sub-screens.
   static const String profileEdit = '/profile/edit';
   static const String profilePreferences = '/profile/preferences';
+  /// Legacy: Privacy & Security and App Preferences now live on Settings.
   static const String profilePrivacy = '/profile/privacy';
   static const String profileDevices = '/profile/devices';
   static const String profileStatistics = '/profile/statistics';
   static const String profileAppPreferences = '/profile/app-preferences';
   static const String profileHelp = '/profile/help';
+  static const String profileSettings = '/profile/settings';
   static const String profileDelete = '/profile/delete';
   static const String staticPageKindParam = 'kind';
   static const String profileStaticPage = '/profile/page/:$staticPageKindParam';

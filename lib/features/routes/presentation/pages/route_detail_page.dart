@@ -12,8 +12,6 @@ import '../../../../app/router/route_paths.dart';
 import '../../../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../../../features/directions/domain/route_plan.dart';
 import '../../../../shared/design_system.dart';
-import '../../../temple_detail/domain/entities/temple_detail.dart' show NearbyTempleRef;
-import '../../../temple_detail/presentation/widgets/temple_sections.dart';
 import '../../data/repository/routes_repository_impl.dart';
 import '../../domain/entities/route_detail_bundle.dart';
 import '../../domain/entities/yatra_route.dart';
@@ -559,30 +557,12 @@ class _TemplesTab extends StatelessWidget {
       itemBuilder: (context, i) {
         final entry = temples[i];
         final date = bundle.visitDateByTempleId[entry.temple.id];
-        final nearby = bundle.nearbyByTempleId[entry.temple.id] ?? const <NearbyTempleRef>[];
-        final item = TempleChecklistItem(
+        return TempleChecklistItem(
           index: i + 1,
           entry: entry,
           status: bundle.statusOf(entry),
           visitedOn: date == null ? null : l10n.ryVisitedOn(_date(context, date)),
           onTap: () => _openTemple(context, entry.temple.slug),
-        );
-        if (nearby.isEmpty) return item;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            item,
-            ExpandableSection(
-              padding: AppSpacing.allSm,
-              leading: Icon(AppIcons.nearby, color: context.scheme.primary),
-              title: Text(l10n.ryAlsoNearby(nearby.length), style: context.textTheme.labelLarge?.semiBold),
-              child: NearbyTemplesSection(
-                nearby: nearby,
-                showHeader: false,
-                onOpen: (slug) => _openTemple(context, slug),
-              ),
-            ),
-          ],
         );
       },
     );
@@ -701,6 +681,17 @@ class _RewardsTab extends ConsumerWidget {
             LedgerStat(icon: AppIcons.temple, color: context.colors.success, value: bundle.completedCount, label: l10n.ryTemplesVisited),
           ],
         ),
+        if (!route.prizes.isEmpty) ...[
+          const Gap(AppSpacing.xl),
+          GoldRuleHeader(label: l10n.ryScratchHeader),
+          const Gap(AppSpacing.md),
+          YatraScratchReward(
+            routeId: route.id,
+            prizes: route.prizes,
+            complete: bundle.isComplete,
+            templesLeft: (bundle.totalCount - bundle.completedCount).clamp(0, bundle.totalCount),
+          ),
+        ],
         if (card != null) ...[
           const Gap(AppSpacing.lg),
           GoldRuleHeader(label: l10n.ryRouteReward),

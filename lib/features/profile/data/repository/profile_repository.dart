@@ -24,6 +24,7 @@ class ProfileRepository {
     List<String>? preferredRouteTypes,
     List<String>? festivalInterests,
     int? nearbyRadiusKm,
+    String? phone,
   }) =>
       _remote.updateProfile(
         name: name,
@@ -37,6 +38,7 @@ class ProfileRepository {
         preferredRouteTypes: preferredRouteTypes,
         festivalInterests: festivalInterests,
         nearbyRadiusKm: nearbyRadiusKm,
+        phone: phone,
       );
 
   Future<Profile> uploadAvatar({required List<int> bytes, required String fileName, required String mimeType}) =>

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../data/local/app_preferences_store.dart';
 import '../../data/repository/profile_repository.dart';
@@ -16,6 +17,16 @@ final profileProvider = FutureProvider.autoDispose<Profile>(
 final devicesProvider = FutureProvider.autoDispose<List<UserDevice>>(
   (ref) => ref.watch(profileRepositoryProvider).devices(),
 );
+
+/// "1.4.0+42" — shown on Settings and Help & Support; empty if unknown.
+final appVersionProvider = FutureProvider.autoDispose<String>((ref) async {
+  try {
+    final info = await PackageInfo.fromPlatform();
+    return '${info.version}+${info.buildNumber}';
+  } catch (_) {
+    return '';
+  }
+});
 
 /// Help & Support FAQs.
 final faqsProvider = FutureProvider.autoDispose<List<Faq>>(

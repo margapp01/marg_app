@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../app/localization/app_localizations.dart';
-import '../../../../../core/location/captured_location.dart';
 import '../../../../../shared/design_system.dart';
-import 'location_step.dart';
+import 'notification_permission_card.dart';
 import 'setup_common.dart';
 import 'setup_models.dart';
 
-/// Step 2 — "Tell Us About You": date of birth, gender and city.
+/// Step 2 — "Tell Us About You": date of birth and gender (both optional),
+/// then the notification permission ask. The city was taken on step 1.
 class AboutStep extends StatelessWidget {
   const AboutStep({
     required this.dob,
@@ -16,8 +16,6 @@ class AboutStep extends StatelessWidget {
     required this.gender,
     required this.onPickGender,
     this.genderError,
-    required this.location,
-    required this.onLocation,
     super.key,
   });
 
@@ -29,10 +27,8 @@ class AboutStep extends StatelessWidget {
   final SetupGender? gender;
   final ValueChanged<SetupGender> onPickGender;
 
-  /// Validation message under the gender choices (none picked).
+  /// Validation message under the gender choices.
   final String? genderError;
-  final CapturedLocation? location;
-  final ValueChanged<CapturedLocation> onLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +41,7 @@ class AboutStep extends StatelessWidget {
         const Gap(AppSpacing.xl),
         LabeledField(
           label: l10n.suDateOfBirth,
+          hint: l10n.suOptional,
           child: AppTextField(
             key: ValueKey(dobText),
             initialValue: dobText,
@@ -68,6 +65,7 @@ class AboutStep extends StatelessWidget {
         const Gap(AppSpacing.xl),
         LabeledField(
           label: l10n.suGender,
+          hint: l10n.suOptional,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -95,10 +93,7 @@ class AboutStep extends StatelessWidget {
           ),
         ),
         const Gap(AppSpacing.xl),
-        LabeledField(
-          label: l10n.suCityLocation,
-          child: CityLocationField(captured: location, onCaptured: onLocation),
-        ),
+        const NotificationPermissionCard(),
       ],
     );
   }

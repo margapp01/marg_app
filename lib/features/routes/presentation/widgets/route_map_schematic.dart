@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../shared/design_system.dart';
 import '../../domain/entities/route_detail_bundle.dart';
 
 /// A self-painted schematic of a route: temple markers plotted from their real
-/// latitude/longitude (normalised to the canvas) joined by a polyline, coloured
+/// latitude/longitude (normalised to the canvas) joined by curved dashes, coloured
 /// by completion. This is an honest schematic — NOT a street map (the app has
 /// no map-tile SDK). Completed hops are highlighted; the current temple pulses.
 class RouteMapSchematic extends StatelessWidget {
@@ -132,14 +133,16 @@ class _RouteMapPainter extends CustomPainter {
 
     final offsets = [for (var i = 0; i < lats.length; i++) project(i)];
 
-    // Dashed connecting polyline.
-    final linePaint = Paint()
-      ..color = line.withValues(alpha: 0.5)
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
-    for (var i = 1; i < offsets.length; i++) {
-      _dashLine(canvas, offsets[i - 1], offsets[i], linePaint);
-    }
+    // Curved dashed connectors along one trail through neighbouring temples.
+    final trail = ArcPath.trailOrder([for (var i = 0; i < lats.length; i++) LatLng(lats[i], lngs[i])]);
+    canvas.drawPath(
+      ArcPath.dashed(ArcPath.screen([for (final i in trail) offsets[i]])),
+      Paint()
+        ..color = line.withValues(alpha: 0.5)
+        ..strokeWidth = 2.5
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke,
+    );
 
     // Markers.
     for (var i = 0; i < offsets.length; i++) {
@@ -154,20 +157,6 @@ class _RouteMapPainter extends CustomPainter {
       }
       canvas.drawCircle(o, 7, Paint()..color = surface);
       canvas.drawCircle(o, 6, Paint()..color = c);
-    }
-  }
-
-  void _dashLine(Canvas canvas, Offset a, Offset b, Paint paint) {
-    const dash = 6.0, gap = 4.0;
-    final total = (b - a).distance;
-    if (total == 0) return;
-    final dir = (b - a) / total;
-    var d = 0.0;
-    while (d < total) {
-      final start = a + dir * d;
-      final end = a + dir * (d + dash).clamp(0, total).toDouble();
-      canvas.drawLine(start, end, paint);
-      d += dash + gap;
     }
   }
 

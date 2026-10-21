@@ -129,7 +129,7 @@ void main() {
     });
   });
 
-  testWidgets('My Yatras renders the in-progress section + route card', (tester) async {
+  testWidgets('Yatra opens on Discover; the In Progress tab holds my yatras', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [routesRepositoryProvider.overrideWithValue(_FakeRepo())],
@@ -143,9 +143,14 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Discover first, with a nudge to continue the furthest yatra.
+    expect(find.text('Discover'), findsOneWidget);
+    expect(find.text('CONTINUE YOUR YATRA'), findsOneWidget);
     expect(find.text('12 Jyotirlinga Yatra'), findsWidgets);
-    expect(find.text('In Progress'), findsWidgets);
-    expect(find.text('Embark on a Divine Journey'), findsOneWidget);
+
+    await tester.tap(find.textContaining('In Progress'));
+    await tester.pumpAndSettle();
+    expect(find.text('12 Jyotirlinga Yatra'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 }

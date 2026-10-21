@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../../core/location/chosen_city.dart';
 import '../../../../core/services/connectivity_service.dart';
 import '../../data/repository/home_repository_impl.dart';
 import '../../domain/entities/home_dashboard.dart';
@@ -25,8 +26,15 @@ Future<LocationFix> lastKnownIfGranted() async {
   }
 }
 
+/// Device location when granted, else the city the devotee picked by name
+/// (so Home still shows the temples around them).
 final homeLocationProvider = Provider<Future<LocationFix> Function()>(
-  (ref) => lastKnownIfGranted,
+  (ref) => () async {
+    final fix = await lastKnownIfGranted();
+    if (fix != null) return fix;
+    final city = await ref.read(chosenCityStoreProvider).read();
+    return city == null ? null : (city.latitude, city.longitude);
+  },
 );
 
 /// Drives the Home screen from the single `/home/dashboard` call.

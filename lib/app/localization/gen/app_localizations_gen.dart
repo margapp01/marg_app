@@ -386,6 +386,30 @@ abstract class AppLocalizations {
   /// **'Reconnect to load the latest.'**
   String get homeOfflineMessage;
 
+  /// No description provided for @drawerExploreTemples.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Temples'**
+  String get drawerExploreTemples;
+
+  /// No description provided for @drawerMyCards.
+  ///
+  /// In en, this message translates to:
+  /// **'My Cards'**
+  String get drawerMyCards;
+
+  /// No description provided for @drawerYatraRoutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yatra Routes'**
+  String get drawerYatraRoutes;
+
+  /// No description provided for @drawerYatrasCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Yatras Completed'**
+  String get drawerYatrasCompleted;
+
   /// No description provided for @navHome.
   ///
   /// In en, this message translates to:
@@ -1687,6 +1711,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your Stats'**
   String get ryYourStats;
+
+  /// No description provided for @ryScratchHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Scratch & win'**
+  String get ryScratchHeader;
+
+  /// No description provided for @ryScratchCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Scratch to reveal your reward'**
+  String get ryScratchCover;
+
+  /// No description provided for @ryScratchCoverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rub the gold with your finger'**
+  String get ryScratchCoverHint;
+
+  /// No description provided for @ryScratchLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete this Yatra to scratch'**
+  String get ryScratchLocked;
+
+  /// No description provided for @ryScratchWon.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve won!'**
+  String get ryScratchWon;
+
+  /// No description provided for @ryScratchTshirt.
+  ///
+  /// In en, this message translates to:
+  /// **'MARG T-shirt'**
+  String get ryScratchTshirt;
+
+  /// No description provided for @ryScratchTshirtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Official MARG pilgrim tee'**
+  String get ryScratchTshirtHint;
+
+  /// No description provided for @ryScratchMobileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recharge to your registered mobile'**
+  String get ryScratchMobileLabel;
+
+  /// No description provided for @ryScratchAddMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your mobile number to receive the recharge.'**
+  String get ryScratchAddMobile;
+
+  /// No description provided for @ryScratchAddMobileCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Add mobile number'**
+  String get ryScratchAddMobileCta;
+
+  /// No description provided for @ryScratchSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Scratch card. Activate to reveal your Yatra reward.'**
+  String get ryScratchSemantics;
+
+  /// No description provided for @ryScratchRecharge.
+  ///
+  /// In en, this message translates to:
+  /// **'{months}-month mobile recharge'**
+  String ryScratchRecharge(int months);
+
+  /// No description provided for @ryScratchRechargeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Worth up to ₹{amount}'**
+  String ryScratchRechargeHint(String amount);
+
+  /// No description provided for @ryScratchWinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete to win'**
+  String get ryScratchWinLabel;
+
+  /// No description provided for @ryScratchTermsTshirt.
+  ///
+  /// In en, this message translates to:
+  /// **'T&C apply: Completing this Yatra with verified check-ins earns one MARG T-shirt. Our team will contact you on the mobile number registered on your MARG account for T-shirt size and delivery. Rewards are subject to verification and the offer may change.'**
+  String get ryScratchTermsTshirt;
+
+  /// No description provided for @ryScratchTermsRecharge.
+  ///
+  /// In en, this message translates to:
+  /// **'T&C apply: Completing this Yatra with verified check-ins earns one {months}-month mobile recharge plan worth up to ₹{amount}, made to the mobile number registered on your MARG account. Rewards are subject to verification and the offer may change.'**
+  String ryScratchTermsRecharge(int months, String amount);
+
+  /// No description provided for @ryScratchTermsBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'T&C apply: Completing this Yatra with verified check-ins earns one MARG T-shirt and one {months}-month mobile recharge plan worth up to ₹{amount}. The recharge is made to the mobile number registered on your MARG account; our team will contact you on that number for T-shirt size and delivery. Rewards are subject to verification and the offer may change.'**
+  String ryScratchTermsBoth(int months, String amount);
+
+  /// No description provided for @ryScratchLockedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get ryScratchLockedBadge;
+
+  /// No description provided for @ryScratchHeadlineTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Scratch'**
+  String get ryScratchHeadlineTop;
+
+  /// No description provided for @ryScratchHeadlineBottom.
+  ///
+  /// In en, this message translates to:
+  /// **'& Win'**
+  String get ryScratchHeadlineBottom;
+
+  /// No description provided for @ryScratchTemplesLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 temple to go} other{{count} temples to go}}'**
+  String ryScratchTemplesLeft(int count);
 
   /// No description provided for @ryCongratulations.
   ///
@@ -3842,6 +3992,18 @@ abstract class AppLocalizations {
   /// **'Spiritual Progress'**
   String get pfSpiritualProgress;
 
+  /// No description provided for @pfGroupPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications & Location'**
+  String get pfGroupPermissions;
+
+  /// No description provided for @pfHelpSupportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQs, contact and rate the app'**
+  String get pfHelpSupportHint;
+
   /// No description provided for @pfGroupAccount.
   ///
   /// In en, this message translates to:
@@ -4481,26 +4643,50 @@ abstract class AppLocalizations {
   /// No description provided for @pfDetailedMapHint.
   ///
   /// In en, this message translates to:
-  /// **'Sharper borders and coastline on every map (about 3 MB)'**
+  /// **'Sharper borders and coastline on every map'**
   String get pfDetailedMapHint;
 
-  /// No description provided for @pfDetailedMapDownload.
+  /// No description provided for @pfMapOutlineBuiltIn.
   ///
   /// In en, this message translates to:
-  /// **'Download'**
-  String get pfDetailedMapDownload;
+  /// **'Built-in'**
+  String get pfMapOutlineBuiltIn;
+
+  /// No description provided for @pfMapOutlineDetailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed'**
+  String get pfMapOutlineDetailed;
+
+  /// No description provided for @pfMapOutlineFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full resolution'**
+  String get pfMapOutlineFull;
+
+  /// No description provided for @pfMapOutlineBuiltInOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in (no download)'**
+  String get pfMapOutlineBuiltInOption;
+
+  /// No description provided for @pfMapOutlineDetailedOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed · about 3 MB'**
+  String get pfMapOutlineDetailedOption;
+
+  /// No description provided for @pfMapOutlineFullOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Full resolution · about 14 MB'**
+  String get pfMapOutlineFullOption;
 
   /// No description provided for @pfDetailedMapProgress.
   ///
   /// In en, this message translates to:
   /// **'{percent}%'**
   String pfDetailedMapProgress(int percent);
-
-  /// No description provided for @pfDetailedMapReady.
-  ///
-  /// In en, this message translates to:
-  /// **'Downloaded'**
-  String get pfDetailedMapReady;
 
   /// No description provided for @pfDetailedMapSaved.
   ///
@@ -5513,7 +5699,7 @@ abstract class AppLocalizations {
   /// No description provided for @suSkip.
   ///
   /// In en, this message translates to:
-  /// **'Skip'**
+  /// **'Skip for now'**
   String get suSkip;
 
   /// No description provided for @suContinue.
@@ -5597,7 +5783,7 @@ abstract class AppLocalizations {
   /// No description provided for @suInvalidMobile.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid 10-digit mobile number'**
+  /// **'Check the mobile number — it looks too short or too long'**
   String get suInvalidMobile;
 
   /// No description provided for @suMobileTaken.
@@ -5647,12 +5833,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Getting your location…'**
   String get suGettingLocation;
-
-  /// No description provided for @suLocationEnabled.
-  ///
-  /// In en, this message translates to:
-  /// **'Location enabled'**
-  String get suLocationEnabled;
 
   /// No description provided for @suUpdate.
   ///
@@ -6596,24 +6776,6 @@ abstract class AppLocalizations {
   /// **'Menu'**
   String get homeMenu;
 
-  /// No description provided for @drawerJourney.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Journey'**
-  String get drawerJourney;
-
-  /// No description provided for @drawerDiscover.
-  ///
-  /// In en, this message translates to:
-  /// **'Discover'**
-  String get drawerDiscover;
-
-  /// No description provided for @drawerAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Account'**
-  String get drawerAccount;
-
   /// No description provided for @savedEmptyTitle.
   ///
   /// In en, this message translates to:
@@ -7055,7 +7217,7 @@ abstract class AppLocalizations {
   /// No description provided for @suWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s begin by creating your personal profile'**
+  /// **'Just the basics — you can skip the rest and finish it later'**
   String get suWelcomeSubtitle;
 
   /// No description provided for @suAddPhoto.
@@ -7495,12 +7657,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'KM Covered'**
   String get ryKmCovered;
-
-  /// Expandable row under a route stop listing other temples within about 30 km.
-  ///
-  /// In en, this message translates to:
-  /// **'Also visit nearby · {count}'**
-  String ryAlsoNearby(int count);
 
   /// No description provided for @ryVisitedOn.
   ///
@@ -8431,6 +8587,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dismiss'**
   String get upDismiss;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number'**
+  String get phoneLabel;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your mobile number'**
+  String get phoneHint;
+
+  /// No description provided for @phoneCountryCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Country code: {country} {code}'**
+  String phoneCountryCode(String country, String code);
+
+  /// No description provided for @phoneChooseCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose country'**
+  String get phoneChooseCountry;
+
+  /// No description provided for @phoneSearchCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Search country or code'**
+  String get phoneSearchCountry;
+
+  /// No description provided for @phoneNoCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'No country matches your search'**
+  String get phoneNoCountry;
+
+  /// No description provided for @suOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'(Optional)'**
+  String get suOptional;
+
+  /// No description provided for @suMobileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional — add it now or later from your profile'**
+  String get suMobileHint;
+
+  /// No description provided for @suLocationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'We use it to show temples — and the Sacred Cards waiting there — near you'**
+  String get suLocationHint;
+
+  /// No description provided for @suNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in the loop'**
+  String get suNotifTitle;
+
+  /// No description provided for @suNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a nudge when a card is waiting at a temple near you, when you unlock something new and before a festival.'**
+  String get suNotifBody;
+
+  /// No description provided for @suNotifAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on notifications'**
+  String get suNotifAllow;
+
+  /// No description provided for @suNotifOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are on'**
+  String get suNotifOn;
+
+  /// No description provided for @suNotifBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off for MARG. You can turn them on any time in your phone\'s settings.'**
+  String get suNotifBlocked;
+
+  /// No description provided for @suAgeConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your age'**
+  String get suAgeConfirmTitle;
+
+  /// No description provided for @suAgeConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'MARG is for people aged {age} and over. Please confirm you\'re {age} or older — you can add your date of birth later in your profile.'**
+  String suAgeConfirmBody(int age);
+
+  /// No description provided for @suAgeConfirmYes.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m {age} or older'**
+  String suAgeConfirmYes(int age);
+
+  /// No description provided for @suAgeConfirmNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get suAgeConfirmNo;
+
+  /// No description provided for @navCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Cards'**
+  String get navCards;
+
+  /// No description provided for @homeQuestWaitingNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Temples near you} =1{1 card waiting near you} other{{count} cards waiting near you}}'**
+  String homeQuestWaitingNearby(int count);
+
+  /// No description provided for @homeQuestWaitingPopular.
+  ///
+  /// In en, this message translates to:
+  /// **'Popular cards to collect'**
+  String get homeQuestWaitingPopular;
+
+  /// No description provided for @homeCardWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Card waiting'**
+  String get homeCardWaiting;
+
+  /// No description provided for @homeCardCollected.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected'**
+  String get homeCardCollected;
+
+  /// No description provided for @homeCardVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit'**
+  String get homeCardVisit;
+
+  /// No description provided for @scShowcaseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Sacred Collection'**
+  String get scShowcaseTitle;
+
+  /// No description provided for @scShowcaseTitleOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s Sacred Collection'**
+  String scShowcaseTitleOf(String name);
+
+  /// No description provided for @scShowcaseCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Sacred Cards collected'**
+  String get scShowcaseCards;
+
+  /// No description provided for @scShowcaseComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of Bharat\'s Sacred Cards'**
+  String scShowcaseComplete(int percent);
+
+  /// No description provided for @scShowcaseSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'MARG · Collect Bharat\'s Sacred Cards · margapp.in'**
+  String get scShowcaseSignature;
+
+  /// No description provided for @scShowOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Show off my collection'**
+  String get scShowOff;
+
+  /// No description provided for @scShowOffError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t create the image. Please try again.'**
+  String get scShowOffError;
+
+  /// No description provided for @shCollection.
+  ///
+  /// In en, this message translates to:
+  /// **'🪔 I\'ve collected {owned} of {total} Sacred Cards from Bharat\'s temples on MARG!'**
+  String shCollection(int owned, int total);
+
+  /// No description provided for @pfCompletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile is {percent}% complete'**
+  String pfCompletionTitle(int percent);
+
+  /// No description provided for @pfCompletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the rest so we can suggest temples, yatras and festivals made for you.'**
+  String get pfCompletionBody;
+
+  /// No description provided for @pfCompletionCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete my profile'**
+  String get pfCompletionCta;
+
+  /// No description provided for @pfItemPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get pfItemPhoto;
+
+  /// No description provided for @pfItemMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get pfItemMobile;
+
+  /// No description provided for @pfItemBirthday.
+  ///
+  /// In en, this message translates to:
+  /// **'Birthday'**
+  String get pfItemBirthday;
+
+  /// No description provided for @pfItemGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get pfItemGender;
+
+  /// No description provided for @pfItemCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get pfItemCity;
+
+  /// No description provided for @pfItemInterests.
+  ///
+  /// In en, this message translates to:
+  /// **'Interests'**
+  String get pfItemInterests;
+
+  /// No description provided for @pfItemDeities.
+  ///
+  /// In en, this message translates to:
+  /// **'Deities'**
+  String get pfItemDeities;
+
+  /// No description provided for @pfItemFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit frequency'**
+  String get pfItemFrequency;
+
+  /// No description provided for @pfItemYatras.
+  ///
+  /// In en, this message translates to:
+  /// **'Yatras'**
+  String get pfItemYatras;
+
+  /// No description provided for @pfMySacredCards.
+  ///
+  /// In en, this message translates to:
+  /// **'My Sacred Cards'**
+  String get pfMySacredCards;
+
+  /// No description provided for @pfPassportSections.
+  ///
+  /// In en, this message translates to:
+  /// **'My Spiritual Passport'**
+  String get pfPassportSections;
+
+  /// No description provided for @pfInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get pfInvite;
+
+  /// No description provided for @ryDiscoverTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get ryDiscoverTab;
+
+  /// No description provided for @ryContinueYatra.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue your yatra'**
+  String get ryContinueYatra;
+
+  /// No description provided for @ryTemplesDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} temples visited'**
+  String ryTemplesDone(int done, int total);
+
+  /// No description provided for @scTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get scTotal;
+
+  /// No description provided for @scRarestCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Your rarest card'**
+  String get scRarestCard;
+
+  /// No description provided for @scAlbumComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Set complete'**
+  String get scAlbumComplete;
+
+  /// No description provided for @scAlbumNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {name}'**
+  String scAlbumNext(String name);
+
+  /// No description provided for @scSeriesSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Your series'**
+  String get scSeriesSummary;
+
+  /// No description provided for @scSeasonsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Your seasons'**
+  String get scSeasonsSummary;
+
+  /// No description provided for @scSetsComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets complete'**
+  String get scSetsComplete;
+
+  /// No description provided for @scGalleryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every card, owned and locked'**
+  String get scGalleryHint;
+
+  /// No description provided for @scSeriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete a set, earn its glory'**
+  String get scSeriesHint;
+
+  /// No description provided for @scSeasonsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Limited cards by season'**
+  String get scSeasonsHint;
+
+  /// No description provided for @scStatisticsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rarity, sets and progress'**
+  String get scStatisticsHint;
+
+  /// No description provided for @cityChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your city'**
+  String get cityChoose;
+
+  /// No description provided for @citySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search your city'**
+  String get citySearchHint;
+
+  /// No description provided for @cityCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Current location'**
+  String get cityCurrentLocation;
+
+  /// No description provided for @cityUseCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my current location'**
+  String get cityUseCurrent;
+
+  /// No description provided for @cityUseCurrentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Most accurate for temples near you'**
+  String get cityUseCurrentHint;
+
+  /// No description provided for @cityTypeMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Type at least 2 letters of your city'**
+  String get cityTypeMore;
+
+  /// No description provided for @cityNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No city found — try another spelling'**
+  String get cityNoResults;
+
+  /// No description provided for @cityError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t search right now. Check your connection and try again.'**
+  String get cityError;
+
+  /// No description provided for @citySearchInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for your city instead'**
+  String get citySearchInstead;
+
+  /// No description provided for @cityTapToChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to detect or choose your city'**
+  String get cityTapToChoose;
+
+  /// No description provided for @cityDetecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding your location…'**
+  String get cityDetecting;
+
+  /// No description provided for @pfAboutYou.
+  ///
+  /// In en, this message translates to:
+  /// **'About you'**
+  String get pfAboutYou;
+
+  /// No description provided for @pfYourCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Your city'**
+  String get pfYourCity;
+
+  /// No description provided for @pfYourCityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'We show the temples and Sacred Cards around it'**
+  String get pfYourCityHint;
+
+  /// No description provided for @pfContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get pfContact;
 }
 
 class _AppLocalizationsDelegate

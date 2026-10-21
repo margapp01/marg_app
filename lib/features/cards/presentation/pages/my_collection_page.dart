@@ -3,68 +3,123 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/localization/app_localizations.dart';
+import '../../../../app/router/app_shell.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../app/router/route_paths.dart';
 import '../../../../shared/design_system.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../notifications/presentation/controllers/notification_controllers.dart';
 import '../../domain/entities/collection_group.dart';
 import '../../domain/entities/collection_stats.dart';
 import '../controllers/cards_controllers.dart';
 import '../widgets/card_widgets.dart';
+import '../widgets/collection_showcase.dart';
 import 'card_gallery_page.dart';
 
-/// My Sacred Collection — the cards hub: completion hero, rarity breakdown,
+/// My Sacred Collection — the Cards tab and the heart of MARG: the collection
+/// as a shareable trophy ("Show off my collection" sends it as an image), then
 /// recent unlocks, series progress, and entries into the gallery, seasons,
 /// stats and missing cards.
-class MyCollectionPage extends ConsumerWidget {
+class MyCollectionPage extends ConsumerStatefulWidget {
   const MyCollectionPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyCollectionPage> createState() => _MyCollectionPageState();
+}
+
+class _MyCollectionPageState extends ConsumerState<MyCollectionPage> {
+  final _showcaseKey = GlobalKey();
+  bool _sharing = false;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final statsAsync = ref.watch(collectionStatsProvider);
 
     return Scaffold(
       backgroundColor: context.scheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.scTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(AppIcons.search),
-            tooltip: l10n.scSearch,
-            onPressed: () => _openGallery(context, const GalleryArgs()),
+      body: Column(
+        children: [
+          TabHeader(
+            title: l10n.scTitle,
+            onMenu: AppShell.openMenu,
+            onNotifications: () => context.pushNamed(RouteNames.notifications),
+            notificationCount: ref.watch(unreadBadgeProvider),
+            trailing: IconButton(
+              icon: Icon(AppIcons.search, color: context.scheme.secondary),
+              tooltip: l10n.scSearch,
+              onPressed: () => _openGallery(context, const GalleryArgs()),
+            ),
+          ),
+          Expanded(
+            child: statsAsync.when(
+              loading: () => const LoadingView(),
+              error: (e, _) => ErrorView(
+                title: l10n.scErrorTitle,
+                message: l10n.scErrorBody,
+                onRetry: () => ref.invalidate(collectionStatsProvider),
+              ),
+              data: (stats) => RefreshIndicator(
+                onRefresh: () async {
+                  ref.invalidate(collectionStatsProvider);
+                  ref.invalidate(recentCardsProvider);
+                  ref.invalidate(seriesProgressProvider);
+                },
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.huge),
+                  children: [
+                    RepaintBoundary(
+                      key: _showcaseKey,
+                      child: CollectionShowcase(
+                        stats: stats,
+                        cards: ref.watch(recentCardsProvider).valueOrNull ?? const [],
+                        ownerName: ref.watch(authControllerProvider.select((s) => s.user?.name)),
+                      ),
+                    ).fadeIn(),
+                    const Gap(AppSpacing.md),
+                    AppButton.primary(
+                      label: l10n.scShowOff,
+                      icon: AppIcons.share,
+                      busy: _sharing,
+                      onPressed: stats.ownedCards == 0 ? null : () => _showOff(stats),
+                    ),
+                    _RecentStrip(onOpenCard: (id) => _openCard(context, id)),
+                    const _SeriesStrip(),
+                    const Gap(AppSpacing.xl),
+                    SectionHeader(title: l10n.scExplore),
+                    const Gap(AppSpacing.sm),
+                    const _NavTiles(),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      body: statsAsync.when(
-        loading: () => const LoadingView(),
-        error: (e, _) => ErrorView(
-          title: l10n.scErrorTitle,
-          message: l10n.scErrorBody,
-          onRetry: () => ref.invalidate(collectionStatsProvider),
-        ),
-        data: (stats) => RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(collectionStatsProvider);
-            ref.invalidate(recentCardsProvider);
-            ref.invalidate(seriesProgressProvider);
-          },
-          child: ListView(
-            padding: AppSpacing.screenAll,
-            children: [
-              _ProgressHero(stats: stats).fadeIn(),
-              const Gap(AppSpacing.md),
-              RarityCountStrip(countOf: stats.ownedOf).fadeIn(delay: 60.ms),
-              _RecentStrip(onOpenCard: (id) => _openCard(context, id)),
-              const _SeriesStrip(),
-              const Gap(AppSpacing.xl),
-              SectionHeader(title: l10n.scExplore),
-              const Gap(AppSpacing.sm),
-              const _NavTiles(),
-            ],
-          ),
-        ),
-      ),
     );
+  }
+
+  /// Shares the collection showcase as an image with the collection count,
+  /// linking to the public Sacred Cards page (tagged with the invite code).
+  Future<void> _showOff(CollectionStats stats) async {
+    final l10n = AppLocalizations.of(context);
+    final rarest = kRarityOrder.reversed.where((r) => stats.ownedOf(r) > 0).firstOrNull;
+    setState(() => _sharing = true);
+    try {
+      await ref.read(shareServiceProvider).share(
+            ShareMessage(
+              kind: ShareKind.collection,
+              path: SharePaths.cards,
+              text: ShareCopy.collection(l10n, owned: stats.ownedCards, total: stats.totalCards, rarest: rarest),
+            ),
+            capture: _showcaseKey,
+            fileName: 'marg-collection.png',
+          );
+    } catch (_) {
+      if (mounted) AppSnackbar.error(context, l10n.scShowOffError);
+    } finally {
+      if (mounted) setState(() => _sharing = false);
+    }
   }
 
   void _openGallery(BuildContext context, GalleryArgs args) =>
@@ -74,55 +129,6 @@ class MyCollectionPage extends ConsumerWidget {
         RouteNames.cardDetail,
         pathParameters: {RoutePaths.cardIdParam: id},
       );
-}
-
-/// Parchment hero: owned / total, missing count and the completion ring.
-class _ProgressHero extends StatelessWidget {
-  const _ProgressHero({required this.stats});
-
-  final CollectionStats stats;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final navy = context.scheme.secondary;
-    return ParchmentCard(
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.scCollectionProgress, style: context.textTheme.labelLarge?.withColor(context.colors.textSecondary)),
-                const Gap(AppSpacing.xs),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    AnimatedCount(value: stats.ownedCards, style: context.displayText.headlineLarge.withColor(navy)),
-                    Text(' / ${stats.totalCards}', style: context.textTheme.titleMedium?.withColor(context.colors.textSecondary)),
-                  ],
-                ),
-                const Gap(AppSpacing.xs),
-                Text(
-                  '${stats.missingCards} ${l10n.scMissing}',
-                  style: context.textTheme.bodySmall?.semiBold.withColor(context.scheme.primary),
-                ),
-              ],
-            ),
-          ),
-          AppCircularProgress(
-            value: (stats.percent / 100).clamp(0, 1),
-            size: 92,
-            strokeWidth: 8,
-            color: context.scheme.primary,
-            backgroundColor: context.colors.gold.withValues(alpha: 0.2),
-            center: Text('${stats.percent}%', style: context.textTheme.titleMedium?.bold.withColor(navy)),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _RecentStrip extends ConsumerWidget {
@@ -271,6 +277,7 @@ class _SeriesCard extends StatelessWidget {
   }
 }
 
+/// Gallery, Series, Seasons and Statistics as tinted accent tiles.
 class _NavTiles extends StatelessWidget {
   const _NavTiles();
 
@@ -278,38 +285,25 @@ class _NavTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final p = context.palette;
-    final tiles = <(IconData, Color, String, VoidCallback)>[
-      (AppIcons.card, p.accentSaffron, l10n.scGallery, () => context.pushNamed(RouteNames.cardGallery, extra: const GalleryArgs())),
-      (AppIcons.route, p.accentViolet, l10n.scSeries, () => context.pushNamed(RouteNames.cardSeries)),
-      (AppIcons.calendar, p.accentBlue, l10n.scSeasons, () => context.pushNamed(RouteNames.cardSeasons)),
-      (AppIcons.trending, p.accentTeal, l10n.scStatistics, () => context.pushNamed(RouteNames.cardStats)),
-      (AppIcons.lock, p.accentRose, l10n.scMissingCards, () => context.pushNamed(RouteNames.cardGallery,
-          extra: GalleryArgs(query: const GalleryQuery(missingOnly: true), title: l10n.scMissingCards))),
-      (AppIcons.history, p.accentAmber, l10n.scRecentlyUnlocked, () => context.pushNamed(RouteNames.cardsRecent)),
+    final tiles = <(IconData, Color, String, String, VoidCallback)>[
+      (AppIcons.card, p.accentSaffron, l10n.scGallery, l10n.scGalleryHint,
+          () => context.pushNamed(RouteNames.cardGallery, extra: const GalleryArgs())),
+      (AppIcons.route, p.accentViolet, l10n.scSeries, l10n.scSeriesHint, () => context.pushNamed(RouteNames.cardSeries)),
+      (AppIcons.calendar, p.accentBlue, l10n.scSeasons, l10n.scSeasonsHint, () => context.pushNamed(RouteNames.cardSeasons)),
+      (AppIcons.trending, p.accentTeal, l10n.scStatistics, l10n.scStatisticsHint, () => context.pushNamed(RouteNames.cardStats)),
     ];
     return GridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: context.responsive(compact: 2, medium: 4),
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: AppSpacing.md,
       crossAxisSpacing: AppSpacing.md,
-      childAspectRatio: 2.6,
+      childAspectRatio: 1.45,
       children: [
-        for (final t in tiles)
-          AppCard(
-            onTap: t.$4,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Row(
-              children: [
-                IllustratedIcon(fallbackIcon: t.$1, color: t.$2, size: 36),
-                const Gap.h(AppSpacing.sm),
-                Expanded(
-                  child: Text(t.$3, style: context.textTheme.bodyMedium?.semiBold, maxLines: 2, overflow: TextOverflow.ellipsis),
-                ),
-              ],
-            ),
-          ),
+        for (final (i, (icon, accent, title, hint, onTap)) in tiles.indexed)
+          AccentTile(icon: icon, title: title, subtitle: hint, accent: accent, onTap: onTap)
+              .fadeIn(delay: AppDurations.stagger * i),
       ],
     );
   }

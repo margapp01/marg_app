@@ -1,16 +1,24 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/localization/app_localizations.dart';
+import '../../../../app/router/route_names.dart';
+import '../../../../app/router/route_paths.dart';
 import '../../../../shared/design_system.dart';
 import '../../domain/entities/collection_group.dart';
 import '../../domain/entities/collection_stats.dart';
+import '../../domain/entities/sacred_card.dart';
 import '../controllers/cards_controllers.dart';
 import '../widgets/card_widgets.dart';
+import 'card_gallery_page.dart';
 
-/// Collection Statistics — by-rarity distribution + series/season completion.
-/// The backend exposes rarity + group completion only; by-deity/state/route
-/// groupings are not available and are intentionally not shown.
+/// Collection Statistics — a night-sky hero (completion ring, owned / missing),
+/// the rarest card held, the by-rarity breakdown as glowing gem bars, and every
+/// series and season as a collector's album. The backend exposes rarity and
+/// group completion only; by-deity/state/route groupings are not shown.
 class CollectionStatsPage extends ConsumerWidget {
   const CollectionStatsPage({super.key});
 
@@ -29,115 +37,314 @@ class CollectionStatsPage extends ConsumerWidget {
           message: l10n.scErrorBody,
           onRetry: () => ref.invalidate(collectionStatsProvider),
         ),
-        data: (stats) => ListView(
-          padding: AppSpacing.screenAll,
-          children: [
-            _Overview(stats: stats),
-            const Gap(AppSpacing.lg),
-            SectionHeader(title: l10n.scByRarity),
-            const Gap(AppSpacing.sm),
-            _RarityChart(stats: stats),
-            const Gap(AppSpacing.lg),
-            SectionHeader(title: l10n.scSeriesCompletion),
-            const Gap(AppSpacing.sm),
-            _GroupCompletion(provider: seriesProgressProvider),
-            const Gap(AppSpacing.lg),
-            SectionHeader(title: l10n.scSeasonCompletion),
-            const Gap(AppSpacing.sm),
-            _GroupCompletion(provider: seasonProgressProvider),
-          ],
+        data: (stats) => RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(collectionStatsProvider);
+            ref.invalidate(recentCardsProvider);
+            ref.invalidate(seriesProgressProvider);
+            ref.invalidate(seasonProgressProvider);
+          },
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.huge),
+            children: [
+              _Hero(stats: stats).fadeIn(),
+              const _RarestCard(),
+              const Gap(AppSpacing.xl),
+              GoldRuleHeader(label: l10n.scByRarity),
+              const Gap(AppSpacing.sm),
+              _RarityBreakdown(stats: stats).fadeIn(delay: 80.ms),
+              const Gap(AppSpacing.xl),
+              GoldRuleHeader(label: l10n.scSeriesCompletion),
+              const Gap(AppSpacing.sm),
+              _Albums(provider: seriesProgressProvider, series: true),
+              const Gap(AppSpacing.lg),
+              GoldRuleHeader(label: l10n.scSeasonCompletion),
+              const Gap(AppSpacing.sm),
+              _Albums(provider: seasonProgressProvider, series: false),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _Overview extends StatelessWidget {
-  const _Overview({required this.stats});
+/// Completion ring with owned / missing / total on a night sky.
+class _Hero extends StatelessWidget {
+  const _Hero({required this.stats});
   final CollectionStats stats;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return AppCard(
-      child: Row(
-        children: [
-          _stat(context, '${stats.ownedCards}', l10n.scOwned),
-          _divider(context),
-          _stat(context, '${stats.missingCards}', l10n.scMissing),
-          _divider(context),
-          _stat(context, '${stats.percent}%', l10n.scComplete),
-        ],
-      ),
-    );
-  }
-
-  Widget _stat(BuildContext context, String value, String label) => Expanded(
-        child: Column(
-          children: [
-            Text(value, style: context.textTheme.titleLarge?.bold),
-            Text(label, style: context.textTheme.bodySmall?.copyWith(color: context.colors.textSecondary)),
-          ],
-        ),
-      );
-
-  Widget _divider(BuildContext context) => Container(width: 1, height: 36, color: context.colors.divider);
-}
-
-class _RarityChart extends StatelessWidget {
-  const _RarityChart({required this.stats});
-  final CollectionStats stats;
-  @override
-  Widget build(BuildContext context) {
-    final max = stats.byRarity.values.fold<int>(1, (m, v) => v > m ? v : m);
-    return AppCard(
+    final gold = context.colors.gold;
+    final light = context.colors.card;
+    Widget stat(int value, String label) => Expanded(
       child: Column(
         children: [
-          for (final r in stats.rarityOrder)
-            RarityBar(rarity: r, owned: stats.ownedOf(r), max: max),
+          AnimatedCount(value: value, style: context.displayText.titleLarge.withColor(light)),
+          Text(label, style: context.caption.copyWith(color: light.withValues(alpha: 0.75))),
         ],
+      ),
+    );
+    return GiltFrame(
+      accent: gold,
+      large: true,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(gradient: AppGradients.night),
+        child: Padding(
+          padding: AppSpacing.allLg,
+          child: Column(
+            children: [
+              Text(
+                l10n.scShowcaseTitle.toUpperCase(),
+                style: context.overline.copyWith(color: gold, letterSpacing: 1.4),
+              ),
+              const Gap(AppSpacing.md),
+              AppCircularProgress(
+                value: (stats.percent / 100).clamp(0, 1),
+                size: 132,
+                strokeWidth: 10,
+                color: gold,
+                backgroundColor: light.withValues(alpha: 0.12),
+                center: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('${stats.percent}%', style: context.displayText.headlineMedium.withColor(light)),
+                    Text(l10n.scComplete, style: context.caption.copyWith(color: gold)),
+                  ],
+                ),
+              ),
+              const Gap(AppSpacing.lg),
+              Row(
+                children: [
+                  stat(stats.ownedCards, l10n.scOwned),
+                  stat(stats.missingCards, l10n.scMissing),
+                  stat(stats.totalCards, l10n.scTotal),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
-class _GroupCompletion extends ConsumerWidget {
-  const _GroupCompletion({required this.provider});
-  final ProviderListenable<AsyncValue<List<CollectionGroup>>> provider;
+/// "Your rarest card" — the highest-rarity card owned, face up; hidden until
+/// the first card is collected.
+class _RarestCard extends ConsumerWidget {
+  const _RarestCard();
+
+  static const double _cardWidth = 104;
+
+  static SacredCard? _rarest(List<SacredCard> cards) {
+    SacredCard? best;
+    for (final c in cards.where((c) => c.owned)) {
+      if (best == null ||
+          kRarityOrder.indexOf(c.rarity.toUpperCase()) > kRarityOrder.indexOf(best.rarity.toUpperCase())) {
+        best = c;
+      }
+    }
+    return best;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final async = ref.watch(provider);
-    return async.maybeWhen(
-      orElse: () => const SizedBox(height: 40, child: Center(child: CircularProgressIndicator())),
-      data: (groups) {
-        if (groups.isEmpty) {
-          return Text(l10n.scNoGroupsBody,
-              style: context.textTheme.bodySmall?.copyWith(color: context.colors.textSecondary));
-        }
-        return AppCard(
-          child: Column(
+    final card = _rarest(ref.watch(recentCardsProvider).valueOrNull ?? const []);
+    if (card == null) return const SizedBox.shrink();
+    final accent = rarityColor(context, card.rarity);
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.lg),
+      child: GestureDetector(
+        onTap: () => context.pushNamed(RouteNames.cardDetail, pathParameters: {RoutePaths.cardIdParam: card.id}),
+        child: ParchmentCard(
+          child: Row(
             children: [
-              for (var i = 0; i < groups.length; i++) ...[
-                if (i > 0) AppDivider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-                  child: Row(
-                    children: [
-                      Expanded(child: Text(groups[i].name, style: context.textTheme.bodyMedium?.medium, maxLines: 1, overflow: TextOverflow.ellipsis)),
-                      Text('${groups[i].ownedCards}/${groups[i].totalCards}',
-                          style: context.textTheme.bodySmall?.copyWith(color: context.colors.textSecondary)),
-                      const Gap(AppSpacing.sm),
-                      Text('${groups[i].percent}%',
-                          style: context.textTheme.bodyMedium?.bold.copyWith(color: context.scheme.primary)),
-                    ],
-                  ),
+              SizedBox(
+                width: _cardWidth,
+                child: SacredCardFace(card: card),
+              ),
+              const Gap.h(AppSpacing.lg),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.scRarestCard.toUpperCase(),
+                      style: context.overline.copyWith(color: accent, letterSpacing: 1.2),
+                    ),
+                    const Gap(AppSpacing.xs),
+                    Text(
+                      card.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.displayText.titleLarge,
+                    ),
+                    const Gap(AppSpacing.sm),
+                    RarityRibbon(rarity: card.rarity),
+                  ],
                 ),
-              ],
+              ),
             ],
           ),
-        );
-      },
+        ),
+      ),
+    ).fadeIn(delay: 40.ms);
+  }
+}
+
+/// One glowing gem bar per rarity, rarest first, each with its share of the
+/// cards held.
+class _RarityBreakdown extends StatelessWidget {
+  const _RarityBreakdown({required this.stats});
+  final CollectionStats stats;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final max = math.max(1, stats.byRarity.values.fold<int>(0, math.max));
+    final owned = math.max(1, stats.ownedCards);
+    return AppCard(
+      padding: AppSpacing.allLg,
+      child: Column(
+        children: [
+          for (final (i, r) in kRarityOrder.reversed.indexed) ...[
+            if (i > 0) const Gap(AppSpacing.md),
+            _GemBar(
+              label: rarityLabel(l10n, r),
+              color: rarityColor(context, r),
+              count: stats.ownedOf(r),
+              fraction: stats.ownedOf(r) / max,
+              share: (stats.ownedOf(r) * 100 / owned).round(),
+            ),
+          ],
+        ],
+      ),
     );
+  }
+}
+
+class _GemBar extends StatelessWidget {
+  const _GemBar({
+    required this.label,
+    required this.color,
+    required this.count,
+    required this.fraction,
+    required this.share,
+  });
+
+  final String label;
+  final Color color;
+  final int count;
+  final double fraction;
+  final int share;
+
+  static const double _bar = 12;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: '$label $count',
+      excludeSemantics: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Transform.rotate(
+                angle: math.pi / 4,
+                child: Container(
+                  width: AppSpacing.md,
+                  height: AppSpacing.md,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: AppRadius.xsAll,
+                    boxShadow: [BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: 8)],
+                  ),
+                ),
+              ),
+              const Gap.h(AppSpacing.sm),
+              Expanded(child: Text(label, style: context.textTheme.labelLarge?.semiBold.withColor(color))),
+              Text('$count', style: context.textTheme.titleMedium?.bold.withColor(context.scheme.secondary)),
+              const Gap.h(AppSpacing.xs),
+              SizedBox(
+                width: 44,
+                child: Text(
+                  '$share%',
+                  textAlign: TextAlign.end,
+                  style: context.caption.copyWith(color: context.colors.textSecondary),
+                ),
+              ),
+            ],
+          ),
+          const Gap(AppSpacing.xs),
+          LayoutBuilder(
+            builder: (context, constraints) => TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: fraction.clamp(0, 1)),
+              duration: AppDurations.slow,
+              curve: AppCurves.emphasize,
+              builder: (context, v, _) => Stack(
+                children: [
+                  Container(
+                    height: _bar,
+                    decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: AppRadius.fullAll),
+                  ),
+                  Container(
+                    height: _bar,
+                    width: constraints.maxWidth * v,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [color.withValues(alpha: 0.7), color]),
+                      borderRadius: AppRadius.fullAll,
+                      boxShadow: [BoxShadow(color: color.withValues(alpha: 0.45), blurRadius: 8)],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Every series (or season) as a collector's album; tapping opens its cards.
+class _Albums extends ConsumerWidget {
+  const _Albums({required this.provider, required this.series});
+  final ProviderListenable<AsyncValue<List<CollectionGroup>>> provider;
+  final bool series;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    return ref
+        .watch(provider)
+        .when(
+          loading: () => const SkeletonBox(height: 120, radius: AppRadius.card),
+          error: (_, _) => EmptyCard(icon: AppIcons.error, label: l10n.scErrorBody),
+          data: (groups) {
+            if (groups.isEmpty) return EmptyCard(icon: AppIcons.card, label: l10n.scNoGroupsBody);
+            return Column(
+              children: [
+                for (final (i, g) in groups.indexed) ...[
+                  if (i > 0) const Gap(AppSpacing.md),
+                  GroupProgressTile(
+                    group: g,
+                    accent: groupAccent(context, i),
+                    onTap: () => context.pushNamed(
+                      RouteNames.cardGallery,
+                      extra: GalleryArgs(
+                        query: series ? GalleryQuery(seriesId: g.id) : GalleryQuery(seasonId: g.id),
+                        title: g.name,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            );
+          },
+        );
   }
 }

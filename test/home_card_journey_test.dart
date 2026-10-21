@@ -25,6 +25,7 @@ void main() {
     await tester.pumpWidget(_host(CardJourneyCard(
       collected: 0,
       recent: const [],
+      temples: const [],
       onFindTemple: () => found = true,
       onOpenCollection: () {},
       onOpenTemple: (_) {},
@@ -39,13 +40,20 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('a collector sees progress to the next milestone and the next temple', (tester) async {
+  testWidgets('a collector sees progress and the cards waiting at temples nearby', (tester) async {
     NearbyTemple? opened;
-    final next = NearbyTemple.fromJson(const {'id': 't9', 'name': 'Somnath Temple', 'slug': 'somnath', 'city': 'Veraval'});
+    final waiting = NearbyTemple.fromJson(const {
+      'id': 't9', 'name': 'Somnath Temple', 'slug': 'somnath', 'city': 'Veraval', 'formattedDistance': '2.4 km',
+      'card': {'id': 'c9', 'title': 'Somnath', 'rarity': 'LEGENDARY', 'collected': false},
+    });
+    final held = NearbyTemple.fromJson(const {
+      'id': 't1', 'name': 'Kashi Vishwanath', 'slug': 'kashi',
+      'card': {'id': 'c1', 'title': 'Kashi', 'rarity': 'EPIC', 'collected': true},
+    });
     await tester.pumpWidget(_host(CardJourneyCard(
       collected: 17,
       recent: const [HomeCard(id: 'c1', title: 'Kashi', rarity: 'EPIC')],
-      nextTemple: next,
+      temples: [waiting, held],
       onFindTemple: () {},
       onOpenCollection: () {},
       onOpenTemple: (t) => opened = t,
@@ -54,6 +62,9 @@ void main() {
 
     expect(find.text('17 Sacred Cards collected'), findsOneWidget);
     expect(find.text('8 more to reach 25 cards'), findsOneWidget);
+    expect(find.text('1 CARD WAITING NEAR YOU'), findsOneWidget);
+    expect(find.text('Card waiting · 2.4 km'), findsOneWidget);
+    expect(find.text('Collected'), findsOneWidget);
     expect(find.text('Collect more'), findsOneWidget);
     await tester.tap(find.text('Somnath Temple'));
     expect(opened?.slug, 'somnath');

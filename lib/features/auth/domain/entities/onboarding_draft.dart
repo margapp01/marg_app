@@ -25,8 +25,8 @@ class OnboardingDraft {
 
   final String? name;
 
-  /// E.164 mobile (e.g. `+919876543210`) — only set for a brand-new Google
-  /// account that still needs to complete registration.
+  /// E.164 mobile (e.g. `+919876543210`), optional. A brand-new account
+  /// sends it with registration; an existing one saves it on the profile.
   final String? mobile;
   final DateTime? dob;
 

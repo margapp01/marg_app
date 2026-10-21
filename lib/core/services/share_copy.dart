@@ -21,6 +21,15 @@ abstract final class ShareCopy {
         l10n.shCardCta,
       ]);
 
+  /// The whole Sacred Card collection ("show off"): owned / total and the
+  /// rarest card held, then the invitation to start collecting.
+  static String collection(AppLocalizations l10n, {required int owned, required int total, String? rarest}) =>
+      _lines([
+        l10n.shCollection(owned, total),
+        if (rarest != null) _cardHeadline(l10n, rarest),
+        l10n.shCardCta,
+      ]);
+
   static String passport(AppLocalizations l10n, {required int temples, required int cards, required int percent}) =>
       _lines([l10n.shPassport(temples, cards, percent), l10n.shPassportCta]);
 

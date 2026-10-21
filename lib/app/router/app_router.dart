@@ -55,7 +55,6 @@ import '../../features/notifications/presentation/pages/notification_settings_pa
 import '../../features/notifications/presentation/pages/share_activity_page.dart';
 import '../../features/passport/presentation/pages/passport_certificates_page.dart';
 import '../../features/passport/presentation/pages/passport_collection_page.dart';
-import '../../features/passport/presentation/pages/passport_dashboard_page.dart';
 import '../../features/passport/presentation/pages/passport_map_page.dart';
 import '../../features/passport/presentation/pages/passport_public_page.dart';
 import '../../features/passport/presentation/pages/passport_routes_page.dart';
@@ -64,14 +63,13 @@ import '../../features/passport/presentation/pages/passport_statistics_page.dart
 import '../../features/passport/presentation/pages/passport_temples_page.dart';
 import '../../features/passport/presentation/pages/passport_timeline_page.dart';
 import '../../features/profile/domain/entities/cms_content.dart';
-import '../../features/profile/presentation/pages/app_preferences_page.dart';
 import '../../features/profile/presentation/pages/delete_account_page.dart';
 import '../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../features/profile/presentation/pages/help_support_page.dart';
 import '../../features/profile/presentation/pages/my_devices_page.dart';
 import '../../features/profile/presentation/pages/my_statistics_page.dart';
-import '../../features/profile/presentation/pages/privacy_security_page.dart';
 import '../../features/profile/presentation/pages/profile_dashboard_page.dart';
+import '../../features/profile/presentation/pages/settings_hub_page.dart';
 import '../../features/profile/presentation/pages/spiritual_preferences_page.dart';
 import '../../features/profile/presentation/pages/static_page_page.dart';
 import '../../features/referrals/presentation/pages/community_ranking_page.dart';
@@ -107,7 +105,7 @@ List<NavigatorObserver> _analytics() => [FirebaseAnalyticsObserver(analytics: Fi
 /// the auth guard protects the authenticated area and re-runs whenever the
 /// auth state changes (via [refresh]).
 ///
-/// The five primary tabs (Home · Explore · Yatra · Passport · Profile) live
+/// The five primary tabs (Home · Explore · Cards · Yatra · Profile) live
 /// in a [StatefulShellRoute] so each keeps its own stack; everything else is
 /// a root-level route that opens full-screen above the tab bar.
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -220,6 +218,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
+          // ── Sacred Cards (the collection is the heart of MARG) ─────────
+          StatefulShellBranch(
+            observers: _analytics(),
+            routes: [
+              GoRoute(
+                path: RoutePaths.cards,
+                name: RouteNames.cards,
+                builder: (_, _) => const MyCollectionPage(),
+              ),
+            ],
+          ),
           // ── Yatra (routes) ──────────────────────────────────────────────
           StatefulShellBranch(
             observers: _analytics(),
@@ -247,64 +256,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // ── Spiritual Passport ──────────────────────────────────────────
-          StatefulShellBranch(
-            observers: _analytics(),
-            routes: [
-              GoRoute(
-                path: RoutePaths.passport,
-                name: RouteNames.passport,
-                builder: (_, _) => const PassportDashboardPage(),
-                routes: [
-                  GoRoute(
-                    path: _sub(RoutePaths.passportTimeline, RoutePaths.passport),
-                    name: RouteNames.passportTimeline,
-                    builder: (_, _) => const PassportTimelinePage(),
-                  ),
-                  GoRoute(
-                    path: _sub(RoutePaths.passportMap, RoutePaths.passport),
-                    name: RouteNames.passportMap,
-                    builder: (_, _) => const PassportMapPage(),
-                  ),
-                  GoRoute(
-                    path: _sub(RoutePaths.passportCollection, RoutePaths.passport),
-                    name: RouteNames.passportCollection,
-                    builder: (_, _) => const PassportCollectionPage(),
-                  ),
-                  GoRoute(
-                    path: _sub(RoutePaths.passportRoutes, RoutePaths.passport),
-                    name: RouteNames.passportRoutes,
-                    builder: (_, _) => const PassportRoutesPage(),
-                  ),
-                  GoRoute(
-                    path: _sub(RoutePaths.passportTemples, RoutePaths.passport),
-                    name: RouteNames.passportTemples,
-                    builder: (_, _) => const PassportTemplesPage(),
-                  ),
-                  GoRoute(
-                    path: _sub(RoutePaths.passportStatistics, RoutePaths.passport),
-                    name: RouteNames.passportStatistics,
-                    builder: (_, _) => const PassportStatisticsPage(),
-                  ),
-                  GoRoute(
-                    path: _sub(RoutePaths.passportCertificates, RoutePaths.passport),
-                    name: RouteNames.passportCertificates,
-                    builder: (_, _) => const PassportCertificatesPage(),
-                  ),
-                  GoRoute(
-                    path: _sub(RoutePaths.passportShare, RoutePaths.passport),
-                    name: RouteNames.passportShare,
-                    builder: (_, _) => const PassportSharePage(),
-                  ),
-                  GoRoute(
-                    path: _sub(RoutePaths.passportPublic, RoutePaths.passport),
-                    name: RouteNames.passportPublic,
-                    builder: (_, _) => const PassportPublicPage(),
-                  ),
-                ],
-              ),
-            ],
-          ),
           // ── Profile, Account & Personalization ──────────────────────────
           StatefulShellBranch(
             observers: _analytics(),
@@ -325,11 +276,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     builder: (_, _) => const SpiritualPreferencesPage(),
                   ),
                   GoRoute(
-                    path: _sub(RoutePaths.profilePrivacy, RoutePaths.profile),
-                    name: RouteNames.profilePrivacy,
-                    builder: (_, _) => const PrivacySecurityPage(),
-                  ),
-                  GoRoute(
                     path: _sub(RoutePaths.profileDevices, RoutePaths.profile),
                     name: RouteNames.profileDevices,
                     builder: (_, _) => const MyDevicesPage(),
@@ -340,9 +286,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     builder: (_, _) => const MyStatisticsPage(),
                   ),
                   GoRoute(
-                    path: _sub(RoutePaths.profileAppPreferences, RoutePaths.profile),
-                    name: RouteNames.profileAppPreferences,
-                    builder: (_, _) => const AppPreferencesPage(),
+                    path: _sub(RoutePaths.profileSettings, RoutePaths.profile),
+                    name: RouteNames.profileSettings,
+                    builder: (_, _) => const SettingsHubPage(),
                   ),
                   GoRoute(
                     path: _sub(RoutePaths.profileHelp, RoutePaths.profile),
@@ -404,10 +350,60 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           startAtCheckin: state.uri.queryParameters[RoutePaths.visitStepParam] == RoutePaths.visitStepCheckin,
         ),
       ),
+      // ── Spiritual Passport — lives inside the Profile tab; its sections
+      //    open full-screen. `/passport` itself lands on Profile.
+      GoRoute(path: RoutePaths.passport, name: RouteNames.passport, redirect: (_, _) => RoutePaths.profile),
+      GoRoute(
+        path: RoutePaths.passportTimeline,
+        name: RouteNames.passportTimeline,
+        builder: (_, _) => const PassportTimelinePage(),
+      ),
+      GoRoute(
+        path: RoutePaths.passportMap,
+        name: RouteNames.passportMap,
+        builder: (_, _) => const PassportMapPage(),
+      ),
+      GoRoute(
+        path: RoutePaths.passportCollection,
+        name: RouteNames.passportCollection,
+        builder: (_, _) => const PassportCollectionPage(),
+      ),
+      GoRoute(
+        path: RoutePaths.passportRoutes,
+        name: RouteNames.passportRoutes,
+        builder: (_, _) => const PassportRoutesPage(),
+      ),
+      GoRoute(
+        path: RoutePaths.passportTemples,
+        name: RouteNames.passportTemples,
+        builder: (_, _) => const PassportTemplesPage(),
+      ),
+      GoRoute(
+        path: RoutePaths.passportStatistics,
+        name: RouteNames.passportStatistics,
+        builder: (_, _) => const PassportStatisticsPage(),
+      ),
+      GoRoute(
+        path: RoutePaths.passportCertificates,
+        name: RouteNames.passportCertificates,
+        builder: (_, _) => const PassportCertificatesPage(),
+      ),
+      GoRoute(
+        path: RoutePaths.passportShare,
+        name: RouteNames.passportShare,
+        builder: (_, _) => const PassportSharePage(),
+      ),
+      GoRoute(
+        path: RoutePaths.passportPublic,
+        name: RouteNames.passportPublic,
+        builder: (_, _) => const PassportPublicPage(),
+      ),
       // Legacy deep links from before the tab shell.
       GoRoute(path: RoutePaths.temples, redirect: (_, _) => RoutePaths.explore),
       GoRoute(path: RoutePaths.visits, redirect: (_, _) => RoutePaths.passportTimeline),
-      GoRoute(path: RoutePaths.settings, redirect: (_, _) => RoutePaths.profileAppPreferences),
+      GoRoute(path: RoutePaths.settings, redirect: (_, _) => RoutePaths.profileSettings),
+      GoRoute(path: RoutePaths.profilePrivacy, redirect: (_, _) => RoutePaths.profileSettings),
+      GoRoute(path: RoutePaths.profileAppPreferences, redirect: (_, _) => RoutePaths.profileSettings),
       GoRoute(
         path: RoutePaths.cardGallery,
         name: RouteNames.cardGallery,
@@ -437,11 +433,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: RoutePaths.cardsRecent,
         name: RouteNames.cardsRecent,
         builder: (_, _) => const RecentlyUnlockedPage(),
-      ),
-      GoRoute(
-        path: RoutePaths.cards,
-        name: RouteNames.cards,
-        builder: (_, _) => const MyCollectionPage(),
       ),
       GoRoute(
         path: RoutePaths.achievementGallery,

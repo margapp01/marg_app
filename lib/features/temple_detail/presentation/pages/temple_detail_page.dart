@@ -15,9 +15,9 @@ import '../widgets/temple_engagement.dart';
 import '../widgets/temple_gallery_viewer.dart';
 import '../widgets/temple_sections.dart';
 
-/// The flagship Temple Detail screen: immersive collapsing hero, live
-/// intelligence, route integration, spiritual passport progress, gallery, and
-/// an adaptive sticky CTA. One controller loads everything (fail-soft).
+/// The flagship Temple Detail screen: immersive collapsing hero, sacred card,
+/// route integration, spiritual passport progress, gallery, and an adaptive
+/// sticky CTA. One controller loads everything (fail-soft).
 class TempleDetailPage extends ConsumerWidget {
   const TempleDetailPage({required this.slug, super.key});
 
@@ -74,15 +74,6 @@ class _Content extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _Glance(bundle: bundle),
-                    const Gap(AppSpacing.lg),
-                    if (bundle.crowd != null)
-                      RepaintBoundary(
-                        child: IntelligenceCard(
-                          crowd: bundle.crowd!,
-                          bestTimeWindow: bundle.bestTimeWindow,
-                          peakWindow: bundle.peakWindow,
-                        ),
-                      ),
                     if (temple.card != null) ...[
                       const Gap(AppSpacing.lg),
                       SacredCardShowcase(
@@ -307,7 +298,7 @@ class _CircleButton extends StatelessWidget {
   }
 }
 
-/// Open / closed today, crowd, wait and rating as one parchment strip.
+/// Open / closed today and rating as one parchment strip.
 class _Glance extends StatelessWidget {
   const _Glance({required this.bundle});
 
@@ -317,9 +308,7 @@ class _Glance extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final temple = bundle.temple;
-    final crowd = bundle.crowd;
     final open = _isOpenNow(temple.timings);
-    final crowdLook = crowd == null ? null : crowdMeta(context, l10n, crowd.crowdLevel);
     return TempleGlance(
       cells: [
         if (open != null)
@@ -328,15 +317,6 @@ class _Glance extends StatelessWidget {
             value: open ? l10n.tdOpen : l10n.tdClosed,
             label: _todayHours(temple.timings),
             color: open ? context.colors.success : context.scheme.error,
-          ),
-        if (crowdLook != null)
-          GlanceCell(icon: AppIcons.crowd, value: crowdLook.label, label: l10n.tdCrowd, color: crowdLook.color),
-        if (crowd?.waitMinutes != null)
-          GlanceCell(
-            icon: AppIcons.timer,
-            value: '${crowd!.waitMinutes} ${l10n.tdMinutesShort}',
-            label: l10n.tdWaitTime,
-            color: context.scheme.primary,
           ),
         if (temple.ratingCount > 0)
           GlanceCell(

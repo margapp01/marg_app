@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../../core/location/chosen_city.dart';
 import '../../../../core/location/location_service.dart';
 import '../../data/datasource/explore_remote_datasource.dart';
 import '../../data/repository/explore_repository_impl.dart';
@@ -21,7 +22,8 @@ class ExploreLocation {
 }
 
 /// Resolves the user's location without ever prompting on load (mirrors the
-/// Home dashboard): last-known-if-granted, else a flagged fallback. [locate]
+/// Home dashboard): last-known-if-granted, else the city they picked by name,
+/// else a flagged fallback. [locate]
 /// performs an explicit, user-initiated high-accuracy capture (may prompt).
 class ExploreLocationController extends AutoDisposeAsyncNotifier<ExploreLocation> {
   @override
@@ -47,6 +49,9 @@ class ExploreLocationController extends AutoDisposeAsyncNotifier<ExploreLocation
     } catch (_) {
       /* best-effort */
     }
+    // A city picked by name stands in for GPS.
+    final city = await ref.read(chosenCityStoreProvider).read();
+    if (city != null) return ExploreLocation(city.latitude, city.longitude);
     return ExploreLocation.fallback;
   }
 }

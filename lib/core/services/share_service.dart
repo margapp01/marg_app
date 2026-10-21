@@ -16,6 +16,7 @@ enum ShareKind {
   routeCompletion('route_completion'),
   certificate('certificate'),
   card('card'),
+  collection('collection'),
   passport('passport'),
   achievement('achievement'),
   invite('invite'),
@@ -38,6 +39,7 @@ abstract final class SharePaths {
   static String festival(String slug) => '/festivals/$slug';
   static String blog(String slug) => '/blogs/$slug';
   static String card(String cardId) => '/cards/$cardId';
+  static const String cards = '/cards';
   static String invite(String code) => '/invite/$code';
 }
 

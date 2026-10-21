@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../../../app/router/app_navigation.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../app/router/route_paths.dart';
 import '../../domain/entities/app_notification.dart';
@@ -75,6 +75,6 @@ NotificationDestination? resolveLink({String? actionUrl, String? screen}) {
 bool openNotificationDestination(BuildContext context, AppNotification n) {
   final dest = resolveDestination(n);
   if (dest == null) return false;
-  context.pushNamed(dest.routeName, pathParameters: dest.pathParameters);
+  context.openNamed(dest.routeName, pathParameters: dest.pathParameters);
   return true;
 }

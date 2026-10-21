@@ -48,7 +48,7 @@ RouteGuard authGuard(Ref ref) {
         return null;
       case AuthStatus.unauthenticated:
         return isPublic ? null : RoutePaths.auth;
-      case AuthStatus.needsMobile:
+      case AuthStatus.needsRegistration:
         return isPublic ? null : RoutePaths.setup;
       case AuthStatus.authenticated:
         if (auth.user?.isOnboarded != true) {

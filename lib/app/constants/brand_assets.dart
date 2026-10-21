@@ -96,6 +96,13 @@ abstract final class BrandAssets {
   /// board) — faint ornament in the bottom navigation bar.
   static const String skylineLineArt = 'assets/images/illustrations/skyline_lineart.png';
 
+  /// Yatra completion-prize artwork (16:10), built from the owner's images by
+  /// tool/art/make_reward_art.py: both prizes (locked card), the won flat-lay
+  /// (revealed card) and the T-shirt alone (T-shirt-only routes).
+  static const String rewardBoth = 'assets/images/rewards/yatra_reward_both.jpg';
+  static const String rewardWon = 'assets/images/rewards/yatra_reward_won.jpg';
+  static const String rewardTshirt = 'assets/images/rewards/yatra_reward_tshirt.jpg';
+
   /// Stack of gold coins — points / rewards balances.
   static const String illustrationPoints = 'assets/images/illustrations/points_coins.png';
 

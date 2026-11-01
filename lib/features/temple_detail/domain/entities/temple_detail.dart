@@ -2,7 +2,7 @@
 // (matches AuthUser / HomeDashboard / SearchResults). Everything is
 // null/empty-safe so a partial or reshaped payload degrades gracefully.
 
-String? _s(Object? v) => v is String && v.isNotEmpty ? v : null;
+String? _s(Object? v) => v is String && v.trim().isNotEmpty ? v : null;
 int _i(Object? v) => v is int ? v : (v is num ? v.toInt() : int.tryParse('$v') ?? 0);
 int? _iN(Object? v) => v == null ? null : _i(v);
 double _d(Object? v) => v is num ? v.toDouble() : double.tryParse('$v') ?? 0;
@@ -238,6 +238,46 @@ class TempleTiming {
         closeTime: _s(j['closeTime']) ?? '',
         note: _s(j['note']),
       );
+
+  /// "06:00 – 12:00".
+  String get hours => '$openTime – $closeTime';
+}
+
+/// A temple can open more than once a day (e.g. 06:00–12:00 and 16:00–21:00);
+/// the backend sends one [TempleTiming] per session.
+extension TempleTimingsX on List<TempleTiming> {
+  /// Sessions on [day] (0 = Sunday), earliest first.
+  List<TempleTiming> sessionsOn(int day) =>
+      where((t) => t.dayOfWeek == day).toList()..sort((a, b) => a.openTime.compareTo(b.openTime));
+
+  /// The session open at [now], else the next one today, else today's first.
+  /// Null when the temple has no session today.
+  ({TempleTiming session, bool open})? statusAt(DateTime now) {
+    final sessions = sessionsOn(now.weekday % 7); // Dart Mon=1..Sun=7 → 0=Sun
+    if (sessions.isEmpty) return null;
+    final cur = now.hour * 60 + now.minute;
+    for (final t in sessions) {
+      final open = _minutes(t.openTime);
+      final close = _minutes(t.closeTime);
+      if (open == null || close == null) continue;
+      // A close at/before the open runs past midnight.
+      final inside = close > open ? cur >= open && cur < close : cur >= open || cur < close;
+      if (inside) return (session: t, open: true);
+    }
+    final next = sessions.where((t) => (_minutes(t.openTime) ?? 0) > cur);
+    return (session: next.isNotEmpty ? next.first : sessions.first, open: false);
+  }
+}
+
+int? _minutes(String s) {
+  final m = RegExp(r'^\s*(\d{1,2}):(\d{2})\s*([AaPp][Mm])?').firstMatch(s);
+  if (m == null) return null;
+  var h = int.parse(m.group(1)!);
+  final min = int.parse(m.group(2)!);
+  final ap = m.group(3)?.toUpperCase();
+  if (ap == 'PM' && h != 12) h += 12;
+  if (ap == 'AM' && h == 12) h = 0;
+  return h * 60 + min;
 }
 
 class TempleFacility {

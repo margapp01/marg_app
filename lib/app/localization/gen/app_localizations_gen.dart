@@ -740,6 +740,12 @@ abstract class AppLocalizations {
   /// **'History'**
   String get tdHistory;
 
+  /// No description provided for @tdMythology.
+  ///
+  /// In en, this message translates to:
+  /// **'Mythology'**
+  String get tdMythology;
+
   /// No description provided for @tdFacilities.
   ///
   /// In en, this message translates to:

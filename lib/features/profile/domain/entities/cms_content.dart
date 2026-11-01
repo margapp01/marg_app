@@ -19,6 +19,11 @@ class Faq {
 /// rendered by the design system's own HTML renderer — no HTML dependency.
 class StaticPage {
   const StaticPage({required this.title, required this.contentHtml, this.titleHi, this.contentHtmlHi, this.updatedAt});
+
+  /// A page the CMS hasn't published yet (the API answers 404); screens show
+  /// their own fallback copy for it instead of an error.
+  static const unpublished = StaticPage(title: '', contentHtml: '');
+
   final String title;
   final String contentHtml;
 

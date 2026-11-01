@@ -76,7 +76,8 @@ class AboutSection extends StatelessWidget {
   }
 }
 
-/// Deity / architecture / timings / history rows (only present fields).
+/// Deity and today's timings as rows, then history / mythology / architecture
+/// as read-more cards — each only when the temple has it.
 class InfoSection extends StatelessWidget {
   const InfoSection({required this.temple, super.key});
 
@@ -85,49 +86,43 @@ class InfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final rows = <(IconData, String, String)>[
-      if (temple.deity != null) (AppIcons.pandit, l10n.tdDeity, titleCase(temple.deity!)),
-      if (temple.timings.isNotEmpty) (AppIcons.timer, l10n.tdTimings, _timingLabel(temple.timings)),
-      if (temple.architecture != null) (AppIcons.temple, l10n.tdArchitecture, temple.architecture!),
+    // Every session today (a temple may close at midday and reopen).
+    final today = temple.timings.sessionsOn(DateTime.now().weekday % 7);
+    final rows = <(IconData, String, String, int)>[
+      if (temple.deity != null) (AppIcons.pandit, l10n.tdDeity, titleCase(temple.deity!), 1),
+      if (temple.timings.isNotEmpty)
+        today.isEmpty
+            ? (AppIcons.timer, l10n.tdTimings, l10n.tdClosed, 1)
+            : (AppIcons.timer, l10n.tdTimings, today.map((t) => t.hours).join('\n'), today.length),
     ];
-    if (rows.isEmpty && temple.history == null) return const SizedBox.shrink();
+    final stories = <(String, String)>[
+      if (temple.history != null) (l10n.tdHistory, temple.history!),
+      if (temple.mythology != null) (l10n.tdMythology, temple.mythology!),
+      if (temple.architecture != null) (l10n.tdArchitecture, temple.architecture!),
+    ];
+    if (rows.isEmpty && stories.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(title: l10n.tdInfoTitle),
-        AppCard(
-          padding: AppSpacing.allSm,
-          child: Column(
-            children: [
-              for (var i = 0; i < rows.length; i++) ...[
-                _InfoRow(icon: rows[i].$1, label: rows[i].$2, value: rows[i].$3),
-                if (i < rows.length - 1) const AppDivider(),
-              ],
-            ],
-          ),
-        ),
-        if (temple.history != null) ...[
-          const Gap(AppSpacing.lg),
+        if (rows.isNotEmpty)
           AppCard(
+            padding: AppSpacing.allSm,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.tdHistory, style: context.displayText.titleLarge.withColor(context.scheme.secondary)),
-                const Gap(AppSpacing.sm),
-                ExpandableText(text: temple.history!),
+                for (var i = 0; i < rows.length; i++) ...[
+                  _InfoRow(icon: rows[i].$1, label: rows[i].$2, value: rows[i].$3, maxLines: rows[i].$4),
+                  if (i < rows.length - 1) const AppDivider(),
+                ],
               ],
             ),
           ),
+        for (final (i, story) in stories.indexed) ...[
+          if (rows.isNotEmpty || i > 0) const Gap(AppSpacing.lg),
+          _StoryCard(title: story.$1, text: story.$2),
         ],
       ],
     );
-  }
-
-  static String _timingLabel(List<TempleTiming> timings) {
-    final today = DateTime.now().weekday % 7; // Dart Mon=1..Sun=7 → 0=Sun
-    final match = timings.where((t) => t.dayOfWeek == today);
-    final t = match.isNotEmpty ? match.first : timings.first;
-    return '${t.openTime} – ${t.closeTime}';
   }
 
   /// "SHIVA" / "SHAKTI_PEETH" → "Shiva" / "Shakti Peeth".
@@ -135,12 +130,35 @@ class InfoSection extends StatelessWidget {
       s.split('_').map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}').join(' ');
 }
 
+/// A titled block of long copy (history, mythology, architecture) with read-more.
+class _StoryCard extends StatelessWidget {
+  const _StoryCard({required this.title, required this.text});
+
+  final String title;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: context.displayText.titleLarge.withColor(context.scheme.secondary)),
+          const Gap(AppSpacing.sm),
+          ExpandableText(text: text),
+        ],
+      ),
+    );
+  }
+}
+
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.label, required this.value});
+  const _InfoRow({required this.icon, required this.label, required this.value, this.maxLines = 1});
 
   final IconData icon;
   final String label;
   final String value;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +174,7 @@ class _InfoRow extends StatelessWidget {
             child: Text(
               value,
               textAlign: TextAlign.right,
-              maxLines: 1,
+              maxLines: maxLines,
               overflow: TextOverflow.ellipsis,
               style: context.textTheme.bodyMedium?.semiBold.withColor(context.scheme.secondary),
             ),

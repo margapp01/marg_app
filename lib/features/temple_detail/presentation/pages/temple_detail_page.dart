@@ -308,15 +308,15 @@ class _Glance extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final temple = bundle.temple;
-    final open = _isOpenNow(temple.timings);
+    final status = temple.timings.statusAt(DateTime.now());
     return TempleGlance(
       cells: [
-        if (open != null)
+        if (status != null)
           GlanceCell(
             icon: AppIcons.timer,
-            value: open ? l10n.tdOpen : l10n.tdClosed,
-            label: _todayHours(temple.timings),
-            color: open ? context.colors.success : context.scheme.error,
+            value: status.open ? l10n.tdOpen : l10n.tdClosed,
+            label: status.session.hours,
+            color: status.open ? context.colors.success : context.scheme.error,
           ),
         if (temple.ratingCount > 0)
           GlanceCell(
@@ -327,38 +327,6 @@ class _Glance extends StatelessWidget {
           ),
       ],
     );
-  }
-
-  bool? _isOpenNow(List<TempleTiming> timings) {
-    if (timings.isEmpty) return null;
-    final now = DateTime.now();
-    final today = now.weekday % 7;
-    final match = timings.where((t) => t.dayOfWeek == today);
-    final t = match.isNotEmpty ? match.first : timings.first;
-    final open = _minutes(t.openTime);
-    final close = _minutes(t.closeTime);
-    if (open == null || close == null) return null;
-    final cur = now.hour * 60 + now.minute;
-    return close < open ? (cur >= open || cur <= close) : (cur >= open && cur <= close);
-  }
-
-  String _todayHours(List<TempleTiming> timings) {
-    if (timings.isEmpty) return '';
-    final today = DateTime.now().weekday % 7;
-    final match = timings.where((t) => t.dayOfWeek == today);
-    final t = match.isNotEmpty ? match.first : timings.first;
-    return '${t.openTime} – ${t.closeTime}';
-  }
-
-  int? _minutes(String s) {
-    final m = RegExp(r'^\s*(\d{1,2}):(\d{2})\s*([AaPp][Mm])?').firstMatch(s);
-    if (m == null) return null;
-    var h = int.parse(m.group(1)!);
-    final min = int.parse(m.group(2)!);
-    final ap = m.group(3)?.toUpperCase();
-    if (ap == 'PM' && h != 12) h += 12;
-    if (ap == 'AM' && h == 12) h = 0;
-    return h * 60 + min;
   }
 }
 

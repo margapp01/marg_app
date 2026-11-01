@@ -303,12 +303,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: _sub(RoutePaths.profileStaticPage, RoutePaths.profile),
                     name: RouteNames.profileStaticPage,
-                    builder: (_, state) => StaticPageScreen(
-                      kind: PageKind.values.firstWhere(
+                    builder: (_, state) {
+                      final kind = PageKind.values.firstWhere(
                         (k) => k.name == state.pathParameters[RoutePaths.staticPageKindParam],
                         orElse: () => PageKind.about,
-                      ),
-                    ),
+                      );
+                      // About is the branded About MARG screen everywhere (drawer, Settings, Help).
+                      return kind == PageKind.about ? const AboutMargPage() : StaticPageScreen(kind: kind);
+                    },
                   ),
                 ],
               ),

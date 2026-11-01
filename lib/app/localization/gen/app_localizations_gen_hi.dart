@@ -334,6 +334,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tdHistory => 'इतिहास';
 
   @override
+  String get tdMythology => 'पौराणिक कथा';
+
+  @override
   String get tdFacilities => 'सुविधाएँ';
 
   @override

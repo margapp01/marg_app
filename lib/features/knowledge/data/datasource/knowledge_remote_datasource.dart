@@ -84,8 +84,13 @@ class KnowledgeRemoteDataSource {
 
   // ── Static pages ─────────────────────────────────────────────────────────
   Future<StaticPage> staticPage(PageKind kind) async {
-    final res = await _dio.get<dynamic>('/cms/pages/${kind.wire}');
-    return StaticPage.fromJson(_obj(res) ?? const {});
+    try {
+      final res = await _dio.get<dynamic>('/cms/pages/${kind.wire}');
+      return StaticPage.fromJson(_obj(res) ?? const {});
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return StaticPage.unpublished;
+      rethrow;
+    }
   }
 }
 

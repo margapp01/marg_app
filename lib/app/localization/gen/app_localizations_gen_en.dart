@@ -333,6 +333,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tdHistory => 'History';
 
   @override
+  String get tdMythology => 'Mythology';
+
+  @override
   String get tdFacilities => 'Facilities';
 
   @override

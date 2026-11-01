@@ -100,8 +100,13 @@ class ProfileRemoteDataSource {
   }
 
   Future<StaticPage> page(PageKind kind) async {
-    final res = await _dio.get<dynamic>('/cms/pages/${kind.wire}');
-    return StaticPage.fromJson(_data(res));
+    try {
+      final res = await _dio.get<dynamic>('/cms/pages/${kind.wire}');
+      return StaticPage.fromJson(_data(res));
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return StaticPage.unpublished;
+      rethrow;
+    }
   }
 }
 

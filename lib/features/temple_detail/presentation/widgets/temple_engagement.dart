@@ -93,11 +93,13 @@ class _VisitorRowState extends State<_VisitorRow> {
                     duration: AppDurations.normal,
                     curve: AppCurves.standard,
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      widget.body,
+                    child: Text.rich(
+                      plainTextSpan(
+                        widget.body,
+                        style: context.textTheme.bodySmall?.copyWith(color: context.colors.textSecondary, height: 1.45),
+                      ),
                       maxLines: _open ? null : 2,
                       overflow: _open ? TextOverflow.visible : TextOverflow.ellipsis,
-                      style: context.textTheme.bodySmall?.copyWith(color: context.colors.textSecondary, height: 1.45),
                     ),
                   ),
                 ],

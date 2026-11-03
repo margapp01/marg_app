@@ -47,6 +47,7 @@ export 'components/section_header.dart';
 export 'components/sunburst_frame.dart';
 export 'content/cms_document_view.dart';
 export 'content/html_content_view.dart';
+export 'content/plain_text_span.dart';
 export 'dialogs/dialogs.dart';
 export 'dividers/dividers.dart';
 export 'empty/empty.dart';

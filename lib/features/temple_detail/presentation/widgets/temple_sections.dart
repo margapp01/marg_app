@@ -30,9 +30,8 @@ class _ExpandableTextState extends State<ExpandableText> {
           duration: AppDurations.normal,
           curve: AppCurves.standard,
           alignment: Alignment.topCenter,
-          child: Text(
-            widget.text,
-            style: style,
+          child: Text.rich(
+            plainTextSpan(widget.text, style: style),
             maxLines: _expanded ? null : widget.trimLines,
             overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
           ),

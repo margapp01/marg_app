@@ -122,7 +122,10 @@ class _FestivalDetailSheet extends ConsumerWidget {
             const Gap(AppSpacing.md),
           ],
           if (hasDescription)
-            Text(f.description!, style: context.textTheme.bodyMedium?.copyWith(color: context.colors.textSecondary, height: 1.5)),
+            HtmlContentView(
+              html: f.description!,
+              textStyle: context.textTheme.bodyMedium?.copyWith(color: context.colors.textSecondary, height: 1.5),
+            ),
         ],
       ),
     );

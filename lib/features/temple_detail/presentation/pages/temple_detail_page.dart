@@ -73,7 +73,7 @@ class _Content extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _Glance(bundle: bundle),
+                    DarshanTodaySection(temple: temple, now: DateTime.now()),
                     if (temple.card != null) ...[
                       const Gap(AppSpacing.lg),
                       SacredCardShowcase(
@@ -294,38 +294,6 @@ class _CircleButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Open / closed today and rating as one parchment strip.
-class _Glance extends StatelessWidget {
-  const _Glance({required this.bundle});
-
-  final TempleDetailBundle bundle;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final temple = bundle.temple;
-    final status = temple.timings.statusAt(DateTime.now());
-    return TempleGlance(
-      cells: [
-        if (status != null)
-          GlanceCell(
-            icon: AppIcons.timer,
-            value: status.open ? l10n.tdOpen : l10n.tdClosed,
-            label: status.session.hours,
-            color: status.open ? context.colors.success : context.scheme.error,
-          ),
-        if (temple.ratingCount > 0)
-          GlanceCell(
-            icon: AppIcons.star,
-            value: temple.ratingAverage.toStringAsFixed(1),
-            label: l10n.tdReviewCount(temple.ratingCount),
-            color: context.colors.gold,
-          ),
-      ],
     );
   }
 }

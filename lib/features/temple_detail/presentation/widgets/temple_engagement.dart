@@ -15,7 +15,8 @@ class VisitorInfoSection extends StatelessWidget {
 
   final VisitorInfo info;
 
-  String? _photography(AppLocalizations l10n) => switch (info.photographyPolicy) {
+  /// The temple's photography rule in words, or null when not set.
+  static String? photographyLabel(AppLocalizations l10n, String? policy) => switch (policy) {
         'ALLOWED' => l10n.tdPhotoAllowed,
         'RESTRICTED' => l10n.tdPhotoRestricted,
         'NOT_ALLOWED' => l10n.tdPhotoNotAllowed,
@@ -27,11 +28,12 @@ class VisitorInfoSection extends StatelessWidget {
     if (info.isEmpty) return const SizedBox.shrink();
     final l10n = AppLocalizations.of(context);
     final p = context.palette;
+    final photo = photographyLabel(l10n, info.photographyPolicy);
     final rows = <(IconData, Color, String, String)>[
       if (info.howToReach != null) (AppIcons.directions, p.accentSaffron, l10n.tdHowToReach, info.howToReach!),
       if (info.parkingInfo != null) (AppIcons.parking, p.accentGreen, l10n.tdParking, info.parkingInfo!),
       if (info.dressCode != null) (AppIcons.checkroom, p.accentViolet, l10n.tdDressCode, info.dressCode!),
-      if (_photography(l10n) != null) (AppIcons.camera, p.accentBlue, l10n.tdPhotography, _photography(l10n)!),
+      if (photo != null) (AppIcons.camera, p.accentBlue, l10n.tdPhotography, photo),
       if (info.prasadInfo != null) (AppIcons.restaurant, p.accentAmber, l10n.tdPrasad, info.prasadInfo!),
       if (info.accommodationInfo != null) (AppIcons.hotel, p.accentTeal, l10n.tdStay, info.accommodationInfo!),
       if (info.visitorRules != null) (AppIcons.rule, p.accentRose, l10n.tdRules, info.visitorRules!),

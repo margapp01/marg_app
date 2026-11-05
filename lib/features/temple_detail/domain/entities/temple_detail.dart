@@ -241,7 +241,16 @@ class TempleTiming {
 
   /// "06:00 – 12:00".
   String get hours => '$openTime – $closeTime';
+
+  /// Minutes after midnight, or null when the time can't be read.
+  int? get openMinutes => _minutes(openTime);
+  int? get closeMinutes => _minutes(closeTime);
 }
+
+/// What the temple does next from a moment in the day: closes (while open),
+/// opens later today, or opens tomorrow. [minutes] is the wait, null for
+/// tomorrow.
+typedef TimingChange = ({bool open, bool tomorrow, String at, int? minutes});
 
 /// A temple can open more than once a day (e.g. 06:00–12:00 and 16:00–21:00);
 /// the backend sends one [TempleTiming] per session.
@@ -266,6 +275,53 @@ extension TempleTimingsX on List<TempleTiming> {
     }
     final next = sessions.where((t) => (_minutes(t.openTime) ?? 0) > cur);
     return (session: next.isNotEmpty ? next.first : sessions.first, open: false);
+  }
+
+  /// The next open/close change after [now], or null when the temple has no
+  /// session today or tomorrow.
+  TimingChange? nextChange(DateTime now) {
+    final cur = now.hour * 60 + now.minute;
+    final status = statusAt(now);
+    if (status != null) {
+      final s = status.session;
+      final close = s.closeMinutes;
+      final open = s.openMinutes;
+      if (status.open && close != null) {
+        return (open: true, tomorrow: false, at: s.closeTime, minutes: (close - cur) % (24 * 60));
+      }
+      if (!status.open && open != null && open > cur) {
+        return (open: false, tomorrow: false, at: s.openTime, minutes: open - cur);
+      }
+    }
+    final tomorrow = sessionsOn((now.weekday + 1) % 7);
+    if (tomorrow.isEmpty) return null;
+    return (open: false, tomorrow: true, at: tomorrow.first.openTime, minutes: null);
+  }
+
+  /// Today's sessions as fractions of the day (0–1), for a day bar. A session
+  /// running past midnight is split into two spans.
+  List<(double, double)> daySpans(int day) {
+    const day24 = 24 * 60;
+    final spans = <(double, double)>[];
+    for (final t in sessionsOn(day)) {
+      final open = t.openMinutes;
+      final close = t.closeMinutes;
+      if (open == null || close == null) continue;
+      if (close > open) {
+        spans.add((open / day24, close / day24));
+      } else {
+        spans
+          ..add((open / day24, 1))
+          ..add((0, close / day24));
+      }
+    }
+    return spans;
+  }
+
+  /// Days of the week (0 = Sunday) with no session at all.
+  List<int> get closedDays {
+    final open = map((t) => t.dayOfWeek).toSet();
+    return [for (var d = 0; d < 7; d++) if (!open.contains(d)) d];
   }
 }
 

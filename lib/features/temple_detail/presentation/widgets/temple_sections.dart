@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../app/localization/app_localizations.dart';
 import '../../../../shared/design_system.dart';
 import '../../domain/entities/temple_detail.dart';
+import 'temple_engagement.dart';
 
 /// Expand/collapse long body copy (description, history).
 class ExpandableText extends StatefulWidget {
@@ -87,12 +88,19 @@ class InfoSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     // Every session today (a temple may close at midday and reopen).
     final today = temple.timings.sessionsOn(DateTime.now().weekday % 7);
-    final rows = <(IconData, String, String, int)>[
-      if (temple.deity != null) (AppIcons.pandit, l10n.tdDeity, titleCase(temple.deity!), 1),
+    final notes = {for (final t in today) if (t.note != null) t.note!};
+    final rows = <(IconData, String, String, int, String?)>[
+      if (temple.deity != null) (AppIcons.pandit, l10n.tdDeity, titleCase(temple.deity!), 1, null),
       if (temple.timings.isNotEmpty)
         today.isEmpty
-            ? (AppIcons.timer, l10n.tdTimings, l10n.tdClosed, 1)
-            : (AppIcons.timer, l10n.tdTimings, today.map((t) => t.hours).join('\n'), today.length),
+            ? (AppIcons.timer, l10n.tdTimings, l10n.tdClosed, 1, null)
+            : (
+                AppIcons.timer,
+                l10n.tdTimings,
+                today.map((t) => t.hours).join('\n'),
+                today.length,
+                notes.isEmpty ? null : notes.join('\n\n'),
+              ),
     ];
     final stories = <(String, String)>[
       if (temple.history != null) (l10n.tdHistory, temple.history!),
@@ -110,7 +118,13 @@ class InfoSection extends StatelessWidget {
             child: Column(
               children: [
                 for (var i = 0; i < rows.length; i++) ...[
-                  _InfoRow(icon: rows[i].$1, label: rows[i].$2, value: rows[i].$3, maxLines: rows[i].$4),
+                  _InfoRow(
+                    icon: rows[i].$1,
+                    label: rows[i].$2,
+                    value: rows[i].$3,
+                    maxLines: rows[i].$4,
+                    note: rows[i].$5,
+                  ),
                   if (i < rows.length - 1) const AppDivider(),
                 ],
               ],
@@ -152,32 +166,54 @@ class _StoryCard extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.label, required this.value, this.maxLines = 1});
+  const _InfoRow({required this.icon, required this.label, required this.value, this.maxLines = 1, this.note});
 
   final IconData icon;
   final String label;
   final String value;
   final int maxLines;
 
+  /// Admin guidance shown under the row (e.g. darshan hours inside the
+  /// opening hours, a midday break, how to book).
+  final String? note;
+
+  static const double _iconSize = 18;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: AppSpacing.allSm,
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: context.colors.textSecondary),
-          const Gap.h(AppSpacing.md),
-          Text(label, style: context.textTheme.bodyMedium),
-          const Spacer(),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              maxLines: maxLines,
-              overflow: TextOverflow.ellipsis,
-              style: context.textTheme.bodyMedium?.semiBold.withColor(context.scheme.secondary),
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: _iconSize, color: context.colors.textSecondary),
+              const Gap.h(AppSpacing.md),
+              Text(label, style: context.textTheme.bodyMedium),
+              const Gap.h(AppSpacing.md),
+              Expanded(
+                child: Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  maxLines: maxLines,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textTheme.bodyMedium?.semiBold.withColor(context.scheme.secondary),
+                ),
+              ),
+            ],
           ),
+          if (note != null)
+            Padding(
+              padding: const EdgeInsets.only(left: _iconSize + AppSpacing.md, top: AppSpacing.sm),
+              child: Text.rich(
+                plainTextSpan(
+                  note!,
+                  style: context.textTheme.bodySmall?.copyWith(color: context.colors.textSecondary, height: 1.45),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -507,69 +543,207 @@ class SacredCardShowcase extends StatelessWidget {
   }
 }
 
-/// The temple at a glance on parchment: open or closed today with its hours
-/// and the rating — divided by gold rules.
-class TempleGlance extends StatelessWidget {
-  const TempleGlance({required this.cells, super.key});
+/// Darshan Today — the first thing under the hero: open or closed right
+/// now with a countdown to the next change, today's hours on a 24-hour bar,
+/// and quick facts (open days, photography, rating).
+class DarshanTodaySection extends StatelessWidget {
+  const DarshanTodaySection({required this.temple, required this.now, super.key});
 
-  final List<GlanceCell> cells;
+  final TempleDetail temple;
+  final DateTime now;
 
   @override
   Widget build(BuildContext context) {
-    if (cells.isEmpty) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
+    final timings = temple.timings;
+    final chips = _chips(context, l10n);
+    if (timings.isEmpty && chips.isEmpty) return const SizedBox.shrink();
+
+    final day = now.weekday % 7;
+    final today = timings.sessionsOn(day);
+    final status = timings.statusAt(now);
+    final open = status?.open ?? false;
+    final color = open ? context.colors.success : context.scheme.error;
+    final title = open ? l10n.tdOpenNow : (today.isEmpty ? l10n.tdClosedToday : l10n.tdClosedNow);
+    final spans = timings.daySpans(day);
+
     return ParchmentCard(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.md),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (final (i, cell) in cells.indexed) ...[
-              if (i > 0) const GoldRule(vertical: true),
-              Expanded(child: cell),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.tdDarshanToday.toUpperCase(), style: context.overline.copyWith(color: context.colors.gold)),
+          if (timings.isNotEmpty) ...[
+            const Gap(AppSpacing.sm),
+            Row(
+              children: [
+                IllustratedIcon(fallbackIcon: AppIcons.timer, color: color, size: 40),
+                const Gap.h(AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: context.textTheme.titleMedium?.bold.withColor(color)),
+                      if (_changeLine(l10n) case final line?)
+                        Text(line, style: context.textTheme.bodySmall?.copyWith(color: context.colors.textSecondary)),
+                    ],
+                  ),
+                ),
+                if (today.isNotEmpty) ...[
+                  const Gap.h(AppSpacing.sm),
+                  Text(
+                    today.map((t) => t.hours).join('\n'),
+                    textAlign: TextAlign.right,
+                    style: context.textTheme.bodyMedium?.semiBold.withColor(context.scheme.secondary),
+                  ),
+                ],
+              ],
+            ),
+            if (spans.isNotEmpty) ...[
+              const Gap(AppSpacing.md),
+              _DayBar(spans: spans, now: (now.hour * 60 + now.minute) / (24 * 60), color: context.colors.success),
             ],
           ],
-        ),
+          if (chips.isNotEmpty) ...[
+            const Gap(AppSpacing.md),
+            Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.sm, children: chips),
+          ],
+        ],
       ),
     );
   }
+
+  /// "Closes at 21:30 · in 3 h 10 min", "Opens at 16:00 · in 40 min",
+  /// "Opens tomorrow at 04:30".
+  String? _changeLine(AppLocalizations l10n) {
+    final change = temple.timings.nextChange(now);
+    if (change == null) return null;
+    if (change.tomorrow) return l10n.tdOpensTomorrowAt(change.at);
+    final at = change.open ? l10n.tdClosesAt(change.at) : l10n.tdOpensAt(change.at);
+    final mins = change.minutes!;
+    final wait = mins >= 60 ? l10n.tdInHoursMinutes(mins ~/ 60, mins % 60) : l10n.tdInMinutes(mins);
+    return '$at · $wait';
+  }
+
+  List<Widget> _chips(BuildContext context, AppLocalizations l10n) {
+    final closed = temple.timings.closedDays;
+    final weekday = DateFormat.E(Localizations.localeOf(context).toString());
+    // 1 Jan 2023 was a Sunday, so day d (0 = Sunday) is 1 + d January.
+    String dayName(int d) => weekday.format(DateTime(2023, 1, 1 + d));
+    final photo = VisitorInfoSection.photographyLabel(l10n, temple.visitorInfo.photographyPolicy);
+    return [
+      if (temple.timings.isNotEmpty)
+        closed.isEmpty
+            ? AppBadge(label: l10n.tdOpenAllWeek, icon: AppIcons.calendar, tone: AppBadgeTone.success)
+            : AppBadge(
+                label: l10n.tdClosedOnDays(closed.map(dayName).join(', ')),
+                icon: AppIcons.calendar,
+                tone: AppBadgeTone.warning,
+              ),
+      if (photo != null)
+        AppBadge(
+          label: '${l10n.tdPhotography}: $photo',
+          icon: AppIcons.camera,
+          tone: switch (temple.visitorInfo.photographyPolicy) {
+            'ALLOWED' => AppBadgeTone.success,
+            'RESTRICTED' => AppBadgeTone.warning,
+            _ => AppBadgeTone.error,
+          },
+        ),
+      if (temple.ratingCount > 0)
+        AppBadge(
+          label: '${temple.ratingAverage.toStringAsFixed(1)} · ${l10n.tdReviewCount(temple.ratingCount)}',
+          icon: AppIcons.star,
+          tone: AppBadgeTone.gold,
+        ),
+    ];
+  }
 }
 
-/// One fact in a [TempleGlance]: a tinted icon, the value, a small label.
-class GlanceCell extends StatelessWidget {
-  const GlanceCell({required this.icon, required this.value, required this.label, required this.color, super.key});
+/// Today on a 24-hour track: open spans filled, a dot at the current time,
+/// and 6-hour ticks underneath.
+class _DayBar extends StatelessWidget {
+  const _DayBar({required this.spans, required this.now, required this.color});
 
-  final IconData icon;
-  final String value;
-  final String label;
+  final List<(double, double)> spans;
+  final double now;
   final Color color;
+
+  static const _ticks = ['00:00', '06:00', '12:00', '18:00', '24:00'];
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      label: '$label $value',
-      excludeSemantics: true,
+    return ExcludeSemantics(
       child: Column(
         children: [
-          IllustratedIcon(fallbackIcon: icon, color: color, size: 32),
-          const Gap(AppSpacing.xs),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: context.textTheme.labelLarge?.bold.withColor(color),
+          SizedBox(
+            height: AppSpacing.md,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: _DayBarPainter(
+                spans: spans,
+                now: now,
+                track: context.scheme.outlineVariant,
+                fill: color,
+                marker: context.scheme.primary,
+                ring: context.colors.card,
+              ),
+            ),
           ),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: context.caption.copyWith(color: context.colors.textSecondary),
+          const Gap(AppSpacing.xs),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (final t in _ticks) Text(t, style: context.caption.copyWith(color: context.colors.textSecondary)),
+            ],
           ),
         ],
       ),
     );
   }
+}
+
+class _DayBarPainter extends CustomPainter {
+  _DayBarPainter({
+    required this.spans,
+    required this.now,
+    required this.track,
+    required this.fill,
+    required this.marker,
+    required this.ring,
+  });
+
+  final List<(double, double)> spans;
+  final double now;
+  final Color track;
+  final Color fill;
+  final Color marker;
+  final Color ring;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final barHeight = size.height / 2;
+    final top = (size.height - barHeight) / 2;
+    final radius = Radius.circular(barHeight / 2);
+    canvas.drawRRect(
+      RRect.fromLTRBR(0, top, size.width, top + barHeight, radius),
+      Paint()..color = track,
+    );
+    final paint = Paint()..color = fill;
+    for (final (start, end) in spans) {
+      canvas.drawRRect(
+        RRect.fromLTRBR(start * size.width, top, end * size.width, top + barHeight, radius),
+        paint,
+      );
+    }
+    final centre = Offset(now.clamp(0, 1) * size.width, size.height / 2);
+    canvas
+      ..drawCircle(centre, size.height / 2, Paint()..color = ring)
+      ..drawCircle(centre, size.height / 2 - AppSpacing.xxs, Paint()..color = marker);
+  }
+
+  @override
+  bool shouldRepaint(_DayBarPainter old) =>
+      old.now != now || old.spans != spans || old.fill != fill || old.track != track;
 }
 
 /// Route integration + user progress.

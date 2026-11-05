@@ -277,6 +277,51 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tdClosed => 'बंद';
 
   @override
+  String get tdDarshanToday => 'आज के दर्शन';
+
+  @override
+  String get tdOpenNow => 'अभी खुला है';
+
+  @override
+  String get tdClosedNow => 'अभी बंद है';
+
+  @override
+  String get tdClosedToday => 'आज बंद है';
+
+  @override
+  String tdClosesAt(Object time) {
+    return '$time बजे बंद होगा';
+  }
+
+  @override
+  String tdOpensAt(Object time) {
+    return '$time बजे खुलेगा';
+  }
+
+  @override
+  String tdOpensTomorrowAt(Object time) {
+    return 'कल $time बजे खुलेगा';
+  }
+
+  @override
+  String tdInHoursMinutes(Object hours, Object minutes) {
+    return '$hours घं $minutes मि में';
+  }
+
+  @override
+  String tdInMinutes(Object minutes) {
+    return '$minutes मि में';
+  }
+
+  @override
+  String get tdOpenAllWeek => 'सातों दिन खुला';
+
+  @override
+  String tdClosedOnDays(Object days) {
+    return '$days को बंद';
+  }
+
+  @override
   String get tdAway => 'दूर';
 
   @override

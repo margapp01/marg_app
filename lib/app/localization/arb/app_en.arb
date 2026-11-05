@@ -89,6 +89,48 @@
   "tdVerified": "Verified Temple",
   "tdOpen": "Open",
   "tdClosed": "Closed",
+  "tdDarshanToday": "Darshan Today",
+  "tdOpenNow": "Open now",
+  "tdClosedNow": "Closed now",
+  "tdClosedToday": "Closed today",
+  "tdClosesAt": "Closes at {time}",
+  "@tdClosesAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "tdOpensAt": "Opens at {time}",
+  "@tdOpensAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "tdOpensTomorrowAt": "Opens tomorrow at {time}",
+  "@tdOpensTomorrowAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "tdInHoursMinutes": "in {hours} h {minutes} min",
+  "@tdInHoursMinutes": {
+    "placeholders": {
+      "hours": {},
+      "minutes": {}
+    }
+  },
+  "tdInMinutes": "in {minutes} min",
+  "@tdInMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "tdOpenAllWeek": "Open all 7 days",
+  "tdClosedOnDays": "Closed on {days}",
+  "@tdClosedOnDays": {
+    "placeholders": {
+      "days": {}
+    }
+  },
   "tdAway": "away",
   "tdCrowd": "Crowd",
   "tdWaitTime": "Wait Time",

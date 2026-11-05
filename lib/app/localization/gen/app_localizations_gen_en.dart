@@ -276,6 +276,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tdClosed => 'Closed';
 
   @override
+  String get tdDarshanToday => 'Darshan Today';
+
+  @override
+  String get tdOpenNow => 'Open now';
+
+  @override
+  String get tdClosedNow => 'Closed now';
+
+  @override
+  String get tdClosedToday => 'Closed today';
+
+  @override
+  String tdClosesAt(Object time) {
+    return 'Closes at $time';
+  }
+
+  @override
+  String tdOpensAt(Object time) {
+    return 'Opens at $time';
+  }
+
+  @override
+  String tdOpensTomorrowAt(Object time) {
+    return 'Opens tomorrow at $time';
+  }
+
+  @override
+  String tdInHoursMinutes(Object hours, Object minutes) {
+    return 'in $hours h $minutes min';
+  }
+
+  @override
+  String tdInMinutes(Object minutes) {
+    return 'in $minutes min';
+  }
+
+  @override
+  String get tdOpenAllWeek => 'Open all 7 days';
+
+  @override
+  String tdClosedOnDays(Object days) {
+    return 'Closed on $days';
+  }
+
+  @override
   String get tdAway => 'away';
 
   @override

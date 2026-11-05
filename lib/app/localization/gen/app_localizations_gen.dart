@@ -626,6 +626,72 @@ abstract class AppLocalizations {
   /// **'Closed'**
   String get tdClosed;
 
+  /// No description provided for @tdDarshanToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Darshan Today'**
+  String get tdDarshanToday;
+
+  /// No description provided for @tdOpenNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Open now'**
+  String get tdOpenNow;
+
+  /// No description provided for @tdClosedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed now'**
+  String get tdClosedNow;
+
+  /// No description provided for @tdClosedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed today'**
+  String get tdClosedToday;
+
+  /// No description provided for @tdClosesAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes at {time}'**
+  String tdClosesAt(Object time);
+
+  /// No description provided for @tdOpensAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens at {time}'**
+  String tdOpensAt(Object time);
+
+  /// No description provided for @tdOpensTomorrowAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens tomorrow at {time}'**
+  String tdOpensTomorrowAt(Object time);
+
+  /// No description provided for @tdInHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'in {hours} h {minutes} min'**
+  String tdInHoursMinutes(Object hours, Object minutes);
+
+  /// No description provided for @tdInMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'in {minutes} min'**
+  String tdInMinutes(Object minutes);
+
+  /// No description provided for @tdOpenAllWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Open all 7 days'**
+  String get tdOpenAllWeek;
+
+  /// No description provided for @tdClosedOnDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed on {days}'**
+  String tdClosedOnDays(Object days);
+
   /// No description provided for @tdAway.
   ///
   /// In en, this message translates to:

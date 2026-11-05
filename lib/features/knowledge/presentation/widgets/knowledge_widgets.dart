@@ -272,26 +272,23 @@ class FestivalTile extends StatelessWidget {
   }
 }
 
+/// "Happening now", "Tomorrow" or "5 days to go"; null once the festival has
+/// passed or when it has no date.
+String? countdownLabel(AppLocalizations l10n, Festival festival) {
+  final n = festival.daysUntil;
+  if (festival.isToday) return l10n.kbHappeningNow;
+  if (n == null || n < 1) return null;
+  return n == 1 ? l10n.kbTomorrow : '$n ${l10n.kbDaysToGo}';
+}
+
 class _Countdown extends StatelessWidget {
   const _Countdown({required this.festival});
   final Festival festival;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final n = festival.daysUntil;
-    final String text;
-    if (festival.isToday) {
-      text = l10n.kbHappeningNow;
-    } else if (n == null) {
-      return const SizedBox.shrink();
-    } else if (n == 1) {
-      text = l10n.kbTomorrow;
-    } else if (n > 1) {
-      text = '$n ${l10n.kbDaysToGo}';
-    } else {
-      return const SizedBox.shrink();
-    }
+    final text = countdownLabel(AppLocalizations.of(context), festival);
+    if (text == null) return const SizedBox.shrink();
     return Text(
       text,
       textAlign: TextAlign.end,

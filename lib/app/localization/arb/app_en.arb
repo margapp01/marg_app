@@ -2071,5 +2071,16 @@
   "pfAboutYou": "About you",
   "pfYourCity": "Your city",
   "pfYourCityHint": "We show the temples and Sacred Cards around it",
-  "pfContact": "Contact"
+  "pfContact": "Contact",
+  "kbAboutFestival": "About {name}",
+  "@kbAboutFestival": {"placeholders": {"name": {"type": "String"}}},
+  "kbAcrossIndia": "Across India",
+  "kbRegional": "Regional",
+  "kbStoriesAndGuides": "Stories & guides",
+  "kbInThisArticle": "In this article",
+  "kbVisitTitle": "Visit a temple near you",
+  "kbVisitFestivalTitle": "Celebrate {name} at a temple",
+  "@kbVisitFestivalTitle": {"placeholders": {"name": {"type": "String"}}},
+  "kbVisitBody": "Take darshan, then check in on MARG: the visit joins your Spiritual Passport and you collect the temple's Sacred Card.",
+  "kbVisitCta": "Find temples near you"
 }

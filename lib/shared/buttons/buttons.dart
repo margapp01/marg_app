@@ -5,3 +5,4 @@ export 'app_button.dart';
 export 'app_fab.dart';
 export 'app_icon_button.dart';
 export 'bottom_action_bar.dart';
+export 'photo_icon_button.dart';

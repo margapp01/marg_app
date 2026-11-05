@@ -4896,4 +4896,36 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pfContact => 'संपर्क';
+
+  @override
+  String kbAboutFestival(String name) {
+    return '$name के बारे में';
+  }
+
+  @override
+  String get kbAcrossIndia => 'पूरे भारत में';
+
+  @override
+  String get kbRegional => 'क्षेत्रीय';
+
+  @override
+  String get kbStoriesAndGuides => 'कथाएँ और मार्गदर्शिकाएँ';
+
+  @override
+  String get kbInThisArticle => 'इस लेख में';
+
+  @override
+  String get kbVisitTitle => 'अपने पास के मंदिर जाएँ';
+
+  @override
+  String kbVisitFestivalTitle(String name) {
+    return '$name मंदिर में मनाएँ';
+  }
+
+  @override
+  String get kbVisitBody =>
+      'दर्शन करें, फिर MARG पर चेक-इन करें: यात्रा आपके आध्यात्मिक पासपोर्ट में जुड़ेगी और आपको मंदिर का पवित्र कार्ड मिलेगा।';
+
+  @override
+  String get kbVisitCta => 'पास के मंदिर खोजें';
 }

@@ -9115,6 +9115,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contact'**
   String get pfContact;
+
+  /// No description provided for @kbAboutFestival.
+  ///
+  /// In en, this message translates to:
+  /// **'About {name}'**
+  String kbAboutFestival(String name);
+
+  /// No description provided for @kbAcrossIndia.
+  ///
+  /// In en, this message translates to:
+  /// **'Across India'**
+  String get kbAcrossIndia;
+
+  /// No description provided for @kbRegional.
+  ///
+  /// In en, this message translates to:
+  /// **'Regional'**
+  String get kbRegional;
+
+  /// No description provided for @kbStoriesAndGuides.
+  ///
+  /// In en, this message translates to:
+  /// **'Stories & guides'**
+  String get kbStoriesAndGuides;
+
+  /// No description provided for @kbInThisArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'In this article'**
+  String get kbInThisArticle;
+
+  /// No description provided for @kbVisitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit a temple near you'**
+  String get kbVisitTitle;
+
+  /// No description provided for @kbVisitFestivalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Celebrate {name} at a temple'**
+  String kbVisitFestivalTitle(String name);
+
+  /// No description provided for @kbVisitBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Take darshan, then check in on MARG: the visit joins your Spiritual Passport and you collect the temple\'s Sacred Card.'**
+  String get kbVisitBody;
+
+  /// No description provided for @kbVisitCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Find temples near you'**
+  String get kbVisitCta;
 }
 
 class _AppLocalizationsDelegate

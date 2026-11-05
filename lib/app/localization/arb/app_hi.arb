@@ -1502,5 +1502,14 @@
   "pfAboutYou": "आपके बारे में",
   "pfYourCity": "आपका शहर",
   "pfYourCityHint": "हम इसके आसपास के मंदिर और पवित्र कार्ड दिखाते हैं",
-  "pfContact": "संपर्क"
+  "pfContact": "संपर्क",
+  "kbAboutFestival": "{name} के बारे में",
+  "kbAcrossIndia": "पूरे भारत में",
+  "kbRegional": "क्षेत्रीय",
+  "kbStoriesAndGuides": "कथाएँ और मार्गदर्शिकाएँ",
+  "kbInThisArticle": "इस लेख में",
+  "kbVisitTitle": "अपने पास के मंदिर जाएँ",
+  "kbVisitFestivalTitle": "{name} मंदिर में मनाएँ",
+  "kbVisitBody": "दर्शन करें, फिर MARG पर चेक-इन करें: यात्रा आपके आध्यात्मिक पासपोर्ट में जुड़ेगी और आपको मंदिर का पवित्र कार्ड मिलेगा।",
+  "kbVisitCta": "पास के मंदिर खोजें"
 }

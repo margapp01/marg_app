@@ -185,9 +185,13 @@ class _HeroAppBar extends StatelessWidget {
       stretch: true,
       backgroundColor: context.scheme.secondary,
       foregroundColor: Colors.white,
-      leading: _CircleButton(icon: AppIcons.back, onTap: () => context.canPop() ? context.pop() : context.goNamed(RouteNames.home)),
+      leading: PhotoIconButton(
+        icon: AppIcons.back,
+        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+        onPressed: () => context.canPop() ? context.pop() : context.goNamed(RouteNames.home),
+      ),
       actions: [
-        _CircleButton(icon: AppIcons.share, onTap: onShare),
+        PhotoIconButton(icon: AppIcons.share, tooltip: l10n.shShare, onPressed: onShare),
         SaveTempleButton(templeId: temple.id, initiallySaved: saved),
         const Gap.h(AppSpacing.sm),
       ],
@@ -266,32 +270,6 @@ class _HeroAppBar extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CircleButton extends StatelessWidget {
-  const _CircleButton({required this.icon, required this.onTap});
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xs),
-      child: Material(
-        color: Colors.black.withValues(alpha: 0.35),
-        shape: const CircleBorder(),
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onTap,
-          child: Padding(
-            padding: AppSpacing.allSm,
-            child: Icon(icon, size: 20, color: Colors.white),
-          ),
         ),
       ),
     );

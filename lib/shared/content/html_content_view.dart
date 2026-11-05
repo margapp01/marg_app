@@ -16,7 +16,8 @@ class HtmlBlock {
   /// `h1`|`h2`|`h3`|`p`|`ul`|`ol`|`blockquote`|`img`|`hr`.
   final String tag;
 
-  /// Inner HTML (still carries inline `<b>/<i>/<a>` for text blocks).
+  /// Inner HTML (still carries inline `<b>/<i>/<a>` for text blocks). For an
+  /// `img` block from a `<figure>`, its `<figcaption>` — usually the credit.
   final String text;
 
   /// Inner HTML of each `<li>` (list blocks only).
@@ -33,18 +34,28 @@ final _blockPattern = RegExp(
   r'|<ol[^>]*>(.*?)</ol>'
   r'|<blockquote[^>]*>(.*?)</blockquote>'
   r'|<img[^>]*?src="([^"]*)"[^>]*?>'
-  r'|<hr\s*/?>',
+  r'|<hr\s*/?>'
+  r'|<figure[^>]*>(.*?)</figure>',
   dotAll: true,
   caseSensitive: false,
 );
 
 final _liPattern = RegExp(r'<li[^>]*>(.*?)</li>', dotAll: true, caseSensitive: false);
+final _imgSrc = RegExp(r'<img[^>]*?src="([^"]*)"', caseSensitive: false);
+final _figcaption = RegExp(r'<figcaption[^>]*>(.*?)</figcaption>', dotAll: true, caseSensitive: false);
+final _anyTag = RegExp(r'<[a-zA-Z/!]');
+final _plainBullet = RegExp(r'^[-*•]\s+');
+final _plainBold = RegExp(r'\*\*(.+?)\*\*');
 
 /// Parses CMS HTML into an ordered list of [HtmlBlock]s. Pure + side-effect
 /// free so it can be unit-tested. Anything the CMS emits that isn't a
 /// recognised block is folded into a trailing paragraph so no text is lost.
+/// Admin-typed plain text (a festival description) is read the way the
+/// website reads it: blank lines split paragraphs, `•`/`-` lines make a list
+/// and `**bold**` is bold.
 List<HtmlBlock> parseHtmlBlocks(String html) {
   if (html.trim().isEmpty) return const [];
+  if (!_anyTag.hasMatch(html)) return _plainTextBlocks(html);
   final blocks = <HtmlBlock>[];
   var cursor = 0;
 
@@ -70,11 +81,57 @@ List<HtmlBlock> parseHtmlBlocks(String html) {
       blocks.add(HtmlBlock('blockquote', text: m.group(6)!.trim()));
     } else if (m.group(7) != null) {
       blocks.add(HtmlBlock('img', src: m.group(7)));
+    } else if (m.group(8) != null) {
+      final figure = m.group(8)!;
+      final src = _imgSrc.firstMatch(figure)?.group(1);
+      final caption = _figcaption.firstMatch(figure)?.group(1)?.trim() ?? '';
+      if (src != null) {
+        blocks.add(HtmlBlock('img', src: src, text: caption));
+      } else {
+        flushText(figure);
+      }
     } else {
       blocks.add(const HtmlBlock('hr'));
     }
   }
   if (cursor < html.length) flushText(html.substring(cursor));
+  return blocks;
+}
+
+List<HtmlBlock> _plainTextBlocks(String text) {
+  String inline(String s) => s
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAllMapped(_plainBold, (m) => '<b>${m[1]}</b>');
+  final blocks = <HtmlBlock>[];
+  for (final chunk in text.split(RegExp(r'\n\s*\n'))) {
+    var lines = <String>[];
+    var items = <String>[];
+    void flushLines() {
+      if (lines.isNotEmpty) blocks.add(HtmlBlock('p', text: inline(lines.join(' '))));
+      lines = [];
+    }
+
+    void flushItems() {
+      if (items.isNotEmpty) blocks.add(HtmlBlock('ul', items: [for (final i in items) inline(i)]));
+      items = [];
+    }
+
+    for (final raw in chunk.split('\n')) {
+      final line = raw.trim();
+      if (line.isEmpty) continue;
+      if (_plainBullet.hasMatch(line)) {
+        flushLines();
+        items.add(line.replaceFirst(_plainBullet, ''));
+      } else {
+        flushItems();
+        lines.add(line);
+      }
+    }
+    flushLines();
+    flushItems();
+  }
   return blocks;
 }
 
@@ -140,7 +197,8 @@ class HtmlContentView extends StatelessWidget {
       children: [
         for (var i = 0; i < blocks.length; i++)
           Padding(
-            padding: EdgeInsets.only(top: i == 0 ? 0 : AppSpacing.md),
+            // Headings open a new section, so they sit further from what precedes them.
+            padding: EdgeInsets.only(top: i == 0 ? 0 : (const {'h1', 'h2', 'h3'}.contains(blocks[i].tag) ? AppSpacing.xxl : AppSpacing.md)),
             child: _block(context, blocks[i]),
           ),
       ],
@@ -195,9 +253,18 @@ class HtmlContentView extends StatelessWidget {
           ),
         );
       case 'img':
-        return ClipRRect(
+        final image = ClipRRect(
           borderRadius: AppRadius.mdAll,
           child: AppNetworkImage(url: b.src ?? '', width: double.infinity, fit: BoxFit.cover),
+        );
+        if (b.text.isEmpty) return image;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            image,
+            const SizedBox(height: AppSpacing.xs),
+            _RichLine(html: b.text, style: context.caption.copyWith(color: context.colors.textSecondary)),
+          ],
         );
       case 'hr':
         return Divider(color: context.colors.border, height: AppSpacing.lg);

@@ -4945,4 +4945,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pfContact => 'Contact';
+
+  @override
+  String kbAboutFestival(String name) {
+    return 'About $name';
+  }
+
+  @override
+  String get kbAcrossIndia => 'Across India';
+
+  @override
+  String get kbRegional => 'Regional';
+
+  @override
+  String get kbStoriesAndGuides => 'Stories & guides';
+
+  @override
+  String get kbInThisArticle => 'In this article';
+
+  @override
+  String get kbVisitTitle => 'Visit a temple near you';
+
+  @override
+  String kbVisitFestivalTitle(String name) {
+    return 'Celebrate $name at a temple';
+  }
+
+  @override
+  String get kbVisitBody =>
+      'Take darshan, then check in on MARG: the visit joins your Spiritual Passport and you collect the temple\'s Sacred Card.';
+
+  @override
+  String get kbVisitCta => 'Find temples near you';
 }

@@ -4,6 +4,7 @@ import 'package:marg_app/app/localization/app_localizations.dart';
 import 'package:marg_app/app/theme/app_theme.dart';
 import 'package:marg_app/features/knowledge/data/repository/knowledge_repository.dart';
 import 'package:marg_app/features/knowledge/domain/entities/knowledge_models.dart';
+import 'package:marg_app/features/knowledge/presentation/widgets/knowledge_reading.dart';
 import 'package:marg_app/features/knowledge/presentation/widgets/knowledge_widgets.dart';
 import 'package:marg_app/shared/content/html_content_view.dart';
 
@@ -53,6 +54,19 @@ void main() {
     expect(KnowledgeRepository.categoriesOf(blogs), ['Temples', 'Yatra']);
   });
 
+  test('storiesForFestival matches tags against the festival name and its words', () {
+    Blog blog(String slug, List<String> tags) => Blog.fromJson({'id': slug, 'title': slug, 'slug': slug, 'tags': tags});
+    final blogs = [
+      blog('guide', ['Diwali', 'Bhai Dooj']),
+      blog('chhath', ['Puja', 'Surya']),
+      blog('navratri', ['Navratri']),
+    ];
+    expect(storiesForFestival('Diwali', blogs).map((b) => b.slug), ['guide']);
+    expect(storiesForFestival('Bhai Dooj', blogs).map((b) => b.slug), ['guide']);
+    expect(storiesForFestival('Chaitra Navratri', blogs).map((b) => b.slug), ['navratri']);
+    expect(storiesForFestival('Govardhan Puja', blogs).map((b) => b.slug), ['chhath'], reason: 'a bare "Puja" tag matches every "X Puja"');
+  });
+
   group('parseHtmlBlocks', () {
     test('splits headings, paragraphs, lists and images in order', () {
       final blocks = parseHtmlBlocks(
@@ -68,6 +82,26 @@ void main() {
       final blocks = parseHtmlBlocks('Just some plain sentence.');
       expect(blocks, hasLength(1));
       expect(blocks.first.tag, 'p');
+    });
+
+    test('reads a figure as an image with its caption', () {
+      final blocks = parseHtmlBlocks(
+        '<p>Lamps.</p><figure><img src="https://x/diya.jpg" alt="A diya">'
+        '<figcaption>A diya. Photo: <a href="https://c/f">Commons</a></figcaption></figure><p>After.</p>',
+      );
+      expect(blocks.map((b) => b.tag).toList(), ['p', 'img', 'p']);
+      expect(blocks[1].src, 'https://x/diya.jpg');
+      expect(blocks[1].text, 'A diya. Photo: <a href="https://c/f">Commons</a>');
+    });
+
+    test('reads admin plain text as paragraphs, bullet lists and bold', () {
+      final blocks = parseHtmlBlocks(
+        'Diwali is the **festival of lights** & more.\nIt lasts five days.\n\n'
+        'The five days:\n• Dhanteras: 6 Nov\n- Bhai Dooj: 11 Nov\n\nConfirm with your temple.',
+      );
+      expect(blocks.map((b) => b.tag).toList(), ['p', 'p', 'ul', 'p']);
+      expect(blocks[0].text, 'Diwali is the <b>festival of lights</b> &amp; more. It lasts five days.');
+      expect(blocks[2].items, ['Dhanteras: 6 Nov', 'Bhai Dooj: 11 Nov']);
     });
   });
 
